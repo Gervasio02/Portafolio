@@ -7,7 +7,7 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 | 1. Estabilidad, seguridad e infraestructura | En curso | Completar la línea base de compilaciones, pruebas, arranque y revisión de seguridad de todas las aplicaciones; investigar las URLs Azure. |
 | 2. Rediseño visual | Pendiente | Evaluar la portada y su accesibilidad. |
 | 3. Explorador de proyectos | Pendiente | Diseñar el catálogo a partir de una fuente común. |
-| 4. TaskFlow 2.0 | En curso | Verificar migraciones y concurrencia con PostgreSQL; completar calendario, SLA y notificaciones. |
+| 4. TaskFlow 2.0 | En curso | Completar SLA y notificaciones; ampliar historial detallado y métricas por responsable. |
 | 5. ReservaYa 2.0 | Pendiente | Verificar disponibilidad y concurrencia con PostgreSQL. |
 | 6. TiendaNova 2.0 | Pendiente | Verificar compra e inventario con PostgreSQL. |
 | 7. Snake e Interrogatorio | Pendiente | Evaluar los juegos y su progreso. |
@@ -45,3 +45,15 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 - Verificado: ocho pruebas de políticas con repositorio simulado, siete pruebas de interfaz, lint, compilación y validación Prisma aprobados. Prueba PostgreSQL añadida para publicación/lectura y actividad de cambios: **no ejecutada** por falta de base aislada. Se volvió a comprobar que `docker`, `pg_ctl` y `psql` no están disponibles en PATH.
 - Migración aditiva `202611230002_activity` creada, **sin aplicar**. Requiere verificación junto con la migración WIP en PostgreSQL de pruebas antes de publicar.
 - Siguiente pendiente: preparar la base de pruebas y verificar ambas migraciones; luego completar calendario, SLA y notificaciones. Fase 4 sigue en curso. No se desplegó ni se modificaron datos productivos.
+
+## Verificación PostgreSQL local y calendario
+
+El bloqueo de PostgreSQL local indicado en los apartados anteriores quedó resuelto en esta continuación. Los resultados anteriores se conservan como historial; estos son los resultados vigentes:
+
+- `8398256`: PostgreSQL 16.15 oficial extraído fuera del repositorio. Clúster aislado en `%LOCALAPPDATA%/CodexTools/postgresql-test/server`, TCP solo en 127.0.0.1:55432, autenticación SCRAM y contraseña aleatoria cifrada para la cuenta Windows. Script repetible `scripts/Test-LocalDatabases.ps1`; requisitos e instrucciones en README.
+- TaskFlow: cuatro migraciones aplicadas desde cero y segunda ejecución sin migraciones pendientes. Ocho pruebas de políticas, once de API/integración y siete de interfaz pasaron antes del calendario. Cobertura de líneas API 99,06 %. La nueva prueba PostgreSQL confirma que tres altas simultáneas con WIP=1 producen una tarjeta y dos rechazos 409. Comentarios, historial y permisos se verificaron con la base real.
+- ReservaYa: nueve pruebas PostgreSQL aprobadas; cobertura 95,55 %. Se verifican migraciones de ida/vuelta, reservas simultáneas, conflicto mantenimiento/reserva, cancelaciones y horarios semanales.
+- TiendaNova: migración inicial aplicada; nueve pruebas aprobadas, sin omisiones. Cobertura de líneas 96,42 %, ramas 84,21 %. Compra concurrente de última unidad, idempotencia, dirección ajena, rechazo simulado y carrito vacío verificados.
+- Calendario TaskFlow: vista mensual, selección de mes, fechas y tareas sin programar; respeta búsqueda/prioridad y abre edición existente. Ocho pruebas de interfaz, lint y compilación aprobados tras añadirlo. No crea nuevas reglas de vencimiento o SLA.
+- El script detuvo PostgreSQL al finalizar ambas ejecuciones. No se tocaron datos productivos, DNS ni infraestructura cloud. Binarios, credenciales, bases y logs permanecen fuera de Git.
+- Siguiente pendiente funcional: SLA, notificaciones y estadísticas por responsable en TaskFlow. Persisten los pendientes funcionales de las fases 2–11, la seguridad multiusuario de los laboratorios y la verificación/publicación de producción. Ninguna fase se declara completa por estos resultados parciales.
