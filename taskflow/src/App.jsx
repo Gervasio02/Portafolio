@@ -445,6 +445,7 @@ function CardForm({
               .filter(Boolean),
             dueAt: fields.dueAt || null,
             assigneeId: fields.assigneeId || null,
+            slaHours: fields.slaHours ? Number(fields.slaHours) : null,
           });
         }}
       >
@@ -497,6 +498,7 @@ function CardForm({
               ))}
             </select>
           </label>
+          <label>SLA en horas desde la creación<input name="slaHours" type="number" min="1" max="8760" defaultValue={card?.slaDueAt ? Math.round((new Date(card.slaDueAt)-new Date(card.createdAt))/3600000) : ""} placeholder="Sin SLA" /></label>
           <label>Responsable<select name="assigneeId" defaultValue={card?.assigneeId || ""}><option value="">Sin responsable</option>{members.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}</select></label>
           <label>
             Etiquetas

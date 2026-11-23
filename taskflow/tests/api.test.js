@@ -123,6 +123,29 @@ test("PostgreSQL serializes competing creates at the WIP limit", async () => {
   expect(persisted.columns[0].cards[0].assigneeId).toBe(owner.user.id);
 });
 
+test("SLA alerts are private, read receipts persist, and closing tracks compliance", async () => {
+  const board = await createBoard(owner);
+  const card = await addCard(board, owner, "SLA verificado", {slaHours:1,assigneeId:owner.user.id});
+  expect(new Date(card.slaDueAt).getTime()).toBeGreaterThan(Date.now());
+  const deadline = new Date(Date.now()-3600000);
+  await db.card.update({where:{id:card.id},data:{slaDueAt:deadline}});
+  const read = async who => (await request(app).get('/api/operations').set(access(who)).expect(200)).body;
+  const snapshot = await read(owner);
+  const notification = snapshot.notifications.find(n=>n.cardId===card.id);
+  expect(notification.read).toBe(false);
+  expect(snapshot.people.find(p=>p.id===owner.user.id).overdue).toBeGreaterThan(0);
+  expect((await read(other)).notifications.some(n=>n.cardId===card.id)).toBe(false);
+  await request(app).post('/api/notifications/read').set(access(other)).send({key:notification.key}).expect(404);
+  await request(app).post('/api/notifications/read').set(access(owner)).send({key:notification.key}).expect(204);
+  expect((await read(owner)).notifications.find(n=>n.cardId===card.id).read).toBe(true);
+  await request(app).post(`/api/boards/${board.id}/cards/${card.id}/move`).set(access(owner)).send({columnId:board.columns[2].id}).expect(204);
+  const completed=await db.card.findUniqueOrThrow({where:{id:card.id}});
+  expect(completed.completedAt).not.toBeNull();
+  expect((await read(owner)).notifications.some(n=>n.cardId===card.id)).toBe(false);
+  await request(app).patch(`/api/boards/${board.id}/cards/${card.id}`).set(access(owner)).send({title:card.title,columnId:board.columns[0].id}).expect(200);
+  expect((await db.card.findUniqueOrThrow({where:{id:card.id}})).completedAt).toBeNull();
+});
+
 test("health, sesión protegida, registro, login, refresh rotatorio y logout", async () => {
   const guest = request.agent(app);
   await guest.get("/api/health").expect(200, { status: "ok" });

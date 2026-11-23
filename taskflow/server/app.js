@@ -10,6 +10,7 @@ import { ZodError } from "zod";
 import { authentication } from "./auth.js";
 import { boardRoutes } from "./boards.js";
 import { HttpError } from "./http.js";
+import { operationsRoutes } from "./operations.js";
 import { dashboardRoutes } from "./dashboard.js";
 
 const dist = fileURLToPath(new URL("../dist", import.meta.url));
@@ -65,7 +66,7 @@ export function createApp(db, settings) {
   });
   app.use(["/api/auth/register", "/api/auth/login"], authLimit);
   app.use("/api/auth", auth.routes);
-  app.use("/api", auth.requireUser, boardRoutes(db), dashboardRoutes(db));
+  app.use("/api", auth.requireUser, boardRoutes(db), dashboardRoutes(db), operationsRoutes(db));
   app.use("/api", (_req, res) =>
     res.status(404).json({ error: "Ruta no encontrada." }),
   );

@@ -1,5 +1,13 @@
 # TaskFlow
 
+## SLA y notificaciones internas
+
+Cada tarjeta permite configurar un SLA de 1 a 8.760 horas corridas desde su creación. No usa horario laboral ni sustituye la fecha límite del calendario. Editar la cantidad de horas recalcula el vencimiento desde la creación original; dejarla vacía retira el SLA. Solo dueños y editores pueden modificarlo.
+
+El centro de control consulta `/api/operations` y muestra cumplimiento, tareas fuera de SLA y estadísticas por responsable usando únicamente los tableros accesibles para la sesión. Las alertas corresponden a tareas abiertas cuyo SLA venció. La marca de lectura es persistente y privada por usuario y vencimiento. No se envían correos ni notificaciones del sistema operativo.
+
+Mover una tarjeta a Hecho registra su fecha de cierre; reabrirla la elimina y un cierre posterior vuelve a evaluarse. Los cierres anteriores a esta función mantienen fecha desconocida: no se inventa cumplimiento histórico. Las alertas desaparecen cuando se cierra la tarjeta o se retira su SLA. Se actualizan con el mecanismo de consulta periódica existente, que suspende las consultas en pestañas ocultas.
+
 Tablero Kanban colaborativo para equipos que coordinan entregas e incidencias.
 El objetivo es detectar a tiempo el trabajo que puede bloquear una entrega.
 Cada tablero puede describir su objetivo y tiene su propio propietario,

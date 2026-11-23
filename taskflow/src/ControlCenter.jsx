@@ -1,3 +1,4 @@
+import { OperationsPanel } from "./OperationsPanel.jsx";
 import { useState } from "react";
 import {
   Activity,
@@ -184,6 +185,7 @@ export function ControlCenter({ api, openBoard, createBoard, revision }) {
               tone="red"
             />
           </div>
+          <OperationsPanel api={api} openBoard={openBoard} revision={revision}/>
           <div className="control-charts">
             <Distribution
               title="Distribución por estado"

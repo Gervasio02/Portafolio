@@ -19,6 +19,7 @@ const cardBody = z.object({
   labels: z.array(z.string().trim().min(1).max(24)).max(8).default([]),
   columnId: uuid,
   assigneeId: uuid.nullish(),
+  slaHours: z.number().int().min(1).max(8760).nullable().optional(),
 });
 
 async function membership(tx, boardId, userId, roles) {
@@ -77,7 +78,8 @@ async function nextPosition(tx, columnId) {
 }
 
 function properties(data) {
-  const { dueAt, labels, ...fields } = data;
+  const { dueAt, labels, slaHours, ...fields } = data;
+  void slaHours;
   return {
     ...fields,
     dueAt: dueAt ? new Date(dueAt) : null,
@@ -221,6 +223,8 @@ export function boardRoutes(db) {
       return tx.card.create({
         data: {
           ...properties(data),
+          slaDueAt: data.slaHours ? new Date(Date.now() + data.slaHours * 3600000) : null,
+          completedAt: column.position === 2 ? new Date() : null,
           position: await nextPosition(tx, data.columnId),
         },
       });
@@ -238,10 +242,12 @@ export function boardRoutes(db) {
       await locked(db, boardId, req.userId, editors, async (tx) => {
         const card = await cardOnBoard(tx, id, boardId);
         const fields = properties(data);
+        if (data.slaHours !== undefined) fields.slaDueAt = data.slaHours === null ? null : new Date(card.createdAt.getTime() + data.slaHours * 3600000);
         await checkAssignee(tx, boardId, data.assigneeId);
         if (columnId && card.columnId !== columnId) {
           const destination = await columnOnBoard(tx, columnId, boardId);
           await checkCapacity(tx, destination);
+          fields.completedAt = destination.position === 2 ? new Date() : null;
           Object.assign(fields, {
             columnId,
             position: await nextPosition(tx, columnId),
@@ -274,6 +280,7 @@ export function boardRoutes(db) {
       const card = await cardOnBoard(tx, id, boardId);
       const destination = await columnOnBoard(tx, columnId, boardId);
       if (card.columnId !== columnId) await checkCapacity(tx, destination);
+      if (card.columnId !== columnId) await tx.card.update({ where: { id }, data: { completedAt: destination.position === 2 ? new Date() : null } });
       const cards = await tx.card.findMany({
         where: { columnId, id: { not: id } },
         orderBy: [{ position: "asc" }, { id: "asc" }],

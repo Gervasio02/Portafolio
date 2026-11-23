@@ -1,0 +1,9 @@
+ALTER TABLE "Card" ADD COLUMN "slaDueAt" TIMESTAMP(3);
+ALTER TABLE "Card" ADD COLUMN "completedAt" TIMESTAMP(3);
+CREATE TABLE "NotificationRead" (
+ "userId" UUID NOT NULL,
+ "key" VARCHAR(150) NOT NULL,
+ "readAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT "NotificationRead_pkey" PRIMARY KEY ("userId", "key"),
+ CONSTRAINT "NotificationRead_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

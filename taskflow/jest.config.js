@@ -8,6 +8,7 @@ export default {
     "server/boards.js",
     "server/order.js",
     "server/dashboard.js",
+    "server/operations.js",
   ],
   coverageThreshold: {
     global: { lines: 70, statements: 70, functions: 70, branches: 70 },

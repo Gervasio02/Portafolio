@@ -29,6 +29,7 @@ model User {
   sessions     Session[]
   assignedCards Card[]
   activities Activity[]
+  notificationReads NotificationRead[]
 }
 
 model Session {
@@ -87,6 +88,8 @@ model Card {
   dueAt       DateTime? @db.Date
   labels      String[]
   position    Int
+  slaDueAt    DateTime?
+  completedAt DateTime?
   createdAt   DateTime  @default(now())
   column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
 
@@ -117,4 +120,12 @@ model Activity {
   board     Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   actor     User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
   @@index([boardId, cardId, createdAt])
+}
+
+model NotificationRead {
+  userId String @db.Uuid
+  key String @db.VarChar(150)
+  readAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, key])
 }
