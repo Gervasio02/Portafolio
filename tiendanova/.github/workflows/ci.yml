@@ -1,0 +1,44 @@
+name: TiendaNova
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://nova:nova@localhost:5432/tiendanova_test
+      DIRECT_URL: postgresql://nova:nova@localhost:5432/tiendanova_test
+      AUTH_SECRET: ci-only-simulated-payments-secret-2026
+      AUTH_TRUST_HOST: "true"
+      SEED_ADMIN_EMAIL: admin-ci@example.test
+      SEED_ADMIN_PASSWORD: ci-only-test-password
+      NEXT_TELEMETRY_DISABLED: "1"
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: nova
+          POSTGRES_PASSWORD: nova
+          POSTGRES_DB: tiendanova_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U nova -d tiendanova_test"
+          --health-interval 4s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

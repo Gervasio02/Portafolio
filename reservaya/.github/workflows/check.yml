@@ -1,0 +1,47 @@
+name: ReservaYa
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: reservaya
+          POSTGRES_PASSWORD: test_only_password
+          POSTGRES_DB: reservaya_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U reservaya -d reservaya_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      RESERVAYA_TEST_DATABASE_URL: postgresql+psycopg://reservaya:test_only_password@localhost:5432/reservaya_test
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check app alembic tests && ruff format --check app alembic tests
+      - run: pytest --cov=app --cov-report=term-missing --cov-fail-under=70
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint && npm test && npm run build

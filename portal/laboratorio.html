@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Prueba tres flujos del portafolio con datos ficticios en tu navegador.">
+  <title>Laboratorio · Portafolio de Gervasio Torres</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="laboratorio.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#demo">Saltar a la demo</a>
+  <header class="shell top"><a class="brand" href="index.html" aria-label="Inicio del portafolio">GT<span>.</span></a><nav aria-label="Principal"><a href="index.html#proyectos">Proyectos</a><a href="index.html#perfil">Perfil</a></nav></header>
+  <main class="shell lab">
+    <p class="eyebrow"><span></span> Laboratorio interactivo</p>
+    <h1>Prueba los proyectos<span>.</span></h1>
+    <p class="lab-intro">Estas demos funcionan en el navegador con datos ficticios. Las aplicaciones completas usan sus propias API y PostgreSQL.</p>
+    <nav class="lab-nav" aria-label="Elegir una demo">
+      <a href="#taskflow">TaskFlow</a><a href="#reservaya">ReservaYa</a><a href="#tiendanova">TiendaNova</a>
+    </nav>
+    <section class="lab-panel" id="demo" aria-labelledby="demo-title">
+      <div class="lab-head"><div><h2 id="demo-title"></h2><p id="demo-intro"></p></div><button class="quiet" type="button" id="reset">Reiniciar demo</button></div>
+      <div id="demo-body"></div>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <details class="concept"><summary>¿Qué resuelve la aplicación completa?</summary><p id="concept-text"></p></details>
+    </section>
+    <noscript><p>Activa JavaScript para probar las demos interactivas.</p></noscript>
+  </main>
+  <footer class="shell footer"><span>Gervasio Torres</span><a href="index.html">Volver al portafolio</a></footer>
+</body>
+</html>

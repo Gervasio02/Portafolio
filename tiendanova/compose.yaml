@@ -1,0 +1,45 @@
+name: tiendanova
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tiendanova
+      POSTGRES_PASSWORD: tiendanova
+      POSTGRES_DB: tiendanova
+    ports:
+      - "127.0.0.1:${NOVA_DB_PORT:-5435}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tiendanova -d tiendanova"]
+      interval: 3s
+      timeout: 3s
+      retries: 18
+  setup:
+    build:
+      context: .
+      target: setup
+    environment:
+      DATABASE_URL: postgresql://tiendanova:tiendanova@db:5432/tiendanova
+      DIRECT_URL: postgresql://tiendanova:tiendanova@db:5432/tiendanova
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build:
+      context: .
+      target: web
+    environment:
+      DATABASE_URL: postgresql://tiendanova:tiendanova@db:5432/tiendanova
+      DIRECT_URL: postgresql://tiendanova:tiendanova@db:5432/tiendanova
+      AUTH_SECRET: ${AUTH_SECRET:?Define AUTH_SECRET in .env}
+      AUTH_TRUST_HOST: "true"
+    ports:
+      - "127.0.0.1:${NOVA_PORT:-3000}:3000"
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+volumes:
+  pgdata:

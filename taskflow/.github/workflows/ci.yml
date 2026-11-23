@@ -1,0 +1,33 @@
+name: TaskFlow CI
+on: [push, pull_request]
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: taskflow
+          POSTGRES_PASSWORD: test-only
+          POSTGRES_DB: taskflow_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U taskflow -d taskflow_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://taskflow:test-only@localhost:5432/taskflow_test
+      TEST_DATABASE_URL: postgresql://taskflow:test-only@localhost:5432/taskflow_test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run db:migrate
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build

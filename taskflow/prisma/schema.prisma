@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id           String          @id @default(uuid()) @db.Uuid
+  name         String          @db.VarChar(80)
+  email        String          @unique @db.VarChar(254)
+  passwordHash String
+  createdAt    DateTime        @default(now())
+  memberships  Membership[]
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @db.Uuid
+  tokenHash String
+  userId    String   @db.Uuid
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Board {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String       @db.VarChar(100)
+  objective   String       @default("") @db.VarChar(280)
+  createdAt   DateTime     @default(now())
+  memberships Membership[]
+  columns     Column[]
+  invitations Invitation[]
+}
+
+model Membership {
+  boardId String @db.Uuid
+  userId  String @db.Uuid
+  role    Role
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([boardId, userId])
+  @@index([userId])
+}
+
+model Column {
+  id       String @id @default(uuid()) @db.Uuid
+  boardId  String @db.Uuid
+  title    String @db.VarChar(80)
+  position Int
+  board    Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards    Card[]
+
+  @@index([boardId, position])
+}
+
+model Card {
+  id          String    @id @default(uuid()) @db.Uuid
+  columnId    String    @db.Uuid
+  title       String    @db.VarChar(120)
+  description String    @default("") @db.VarChar(3000)
+  priority    Priority  @default(MEDIUM)
+  dueAt       DateTime? @db.Date
+  labels      String[]
+  position    Int
+  createdAt   DateTime  @default(now())
+  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+  @@index([columnId, position])
+}
+
+model Invitation {
+  id        String   @id @default(uuid()) @db.Uuid
+  boardId   String   @db.Uuid
+  email     String   @db.VarChar(254)
+  role      Role
+  tokenHash String   @unique
+  expiresAt DateTime
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, email])
+}

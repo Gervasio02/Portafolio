@@ -1,0 +1,40 @@
+name: portafolio-taskflow
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow_local_only
+      POSTGRES_DB: taskflow
+    ports: ["127.0.0.1:5433:5432"]
+    volumes: [taskflow-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow -d taskflow"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+  migrate:
+    build:
+      context: .
+      target: db-tools
+    environment:
+      DATABASE_URL: postgresql://taskflow:taskflow_local_only@db:5432/taskflow
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["sh", "-c", "npm run db:migrate && npm run db:seed"]
+  app:
+    build: .
+    ports: ["127.0.0.1:3001:3001"]
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      APP_ORIGIN: http://localhost:3001
+      DATABASE_URL: postgresql://taskflow:taskflow_local_only@db:5432/taskflow
+      ACCESS_TOKEN_SECRET: only-for-local-taskflow-access-token-development
+      REFRESH_TOKEN_SECRET: only-for-local-taskflow-refresh-token-development
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+volumes:
+  taskflow-data:

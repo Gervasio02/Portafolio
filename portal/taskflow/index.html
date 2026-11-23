@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Organiza el trabajo de un equipo que prepara entregas, atiende incidentes y necesita saber qué se está atrasando.">
+  <title>TaskFlow · Portafolio de Gervasio Torres</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../proyectos.css">
+  <script src="../laboratorio.js" defer></script>
+</head>
+<body class="project-page taskflow" data-demo="taskflow">
+  <a class="skip" href="#demo">Saltar a la demo</a>
+  <header class="shell top">
+    <a class="brand" href="../index.html" aria-label="Inicio del portafolio">GT<span>.</span></a>
+    <nav aria-label="Otras aplicaciones"><a href="../reservaya/index.html">ReservaYa</a><a href="../tiendanova/index.html">TiendaNova</a></nav>
+  </header>
+  <main class="shell">
+    <section class="project-lead" aria-labelledby="project-title">
+      <div>
+        <p class="eyebrow"><span></span> TaskFlow · Control de operaciones</p>
+        <h1 id="project-title">Cada entrega tiene un estado claro.</h1>
+        <p class="project-summary">Organiza el trabajo de un equipo que prepara entregas, atiende incidentes y necesita saber qué se está atrasando.</p>
+        <div class="project-links"><a class="hero-link" href="#demo">Probar TaskFlow</a><a href="#recorrido">Cómo funciona</a></div>
+      </div>
+      <figure>
+        <img src="../capturas/taskflow.png" alt="Centro de control de TaskFlow con métricas y distribución de tarjetas" fetchpriority="high">
+        <figcaption>Captura de la aplicación completa</figcaption>
+      </figure>
+    </section>
+    <section id="recorrido" class="project-steps" aria-labelledby="walkthrough-title">
+      <h2 id="walkthrough-title">Qué puedes probar</h2>
+      <ol><li><strong>Define el tablero</strong><p>Separa las entregas de los incidentes para que el equipo pueda priorizar.</p></li><li><strong>Mueve el trabajo</strong><p>Crea una tarjeta y cámbiala de columna a medida que avanza.</p></li><li><strong>Revisa la distribución</strong><p>Compara el estado de ambos tableros en el panel de control.</p></li></ol>
+    </section>
+    <section class="lab-panel project-lab" id="demo" aria-labelledby="demo-title">
+      <div class="lab-head"><div><p class="eyebrow">Prueba guiada</p><h2 id="demo-title">TaskFlow</h2><p id="demo-intro">Interactúa con datos ficticios en este navegador.</p></div><button class="quiet" type="button" id="reset">Reiniciar demo</button></div>
+      <div id="demo-body"></div>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <details class="concept"><summary>¿Qué resuelve la aplicación completa?</summary><p id="concept-text"></p></details>
+      <noscript><p>Activa JavaScript para usar la demo interactiva.</p></noscript>
+    </section>
+    <section class="project-technical" aria-labelledby="source-title">
+      <div><p class="eyebrow">Cómo se implementa</p><h2 id="source-title">React · Express · Prisma · PostgreSQL</h2></div>
+      <p>La aplicación completa utiliza cuentas, roles y PostgreSQL. Prueba con dos usuarios para comprobar que los cambios de un tablero compartido llegan al panel. Esta demo pública funciona en el navegador con datos ficticios.</p>
+    </section>
+  </main>
+  <footer class="shell footer"><span>TaskFlow · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ayuda a un recinto con varias canchas a publicar sus horarios y bloquear franjas por mantenimiento. Los jugadores pueden ver la disponibilidad antes de reservar.">
+  <title>ReservaYa · Portafolio de Gervasio Torres</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../proyectos.css">
+  <script src="../laboratorio.js" defer></script>
+</head>
+<body class="project-page reservaya" data-demo="reservaya">
+  <a class="skip" href="#demo">Saltar a la demo</a>
+  <header class="shell top">
+    <a class="brand" href="../index.html" aria-label="Inicio del portafolio">GT<span>.</span></a>
+    <nav aria-label="Otras aplicaciones"><a href="../taskflow/index.html">TaskFlow</a><a href="../tiendanova/index.html">TiendaNova</a></nav>
+  </header>
+  <main class="shell">
+    <section class="project-lead" aria-labelledby="project-title">
+      <div>
+        <p class="eyebrow"><span></span> ReservaYa · Operación de un recinto deportivo</p>
+        <h1 id="project-title">Encuentra cancha y reserva tu hora.</h1>
+        <p class="project-summary">Ayuda a un recinto con varias canchas a publicar sus horarios y bloquear franjas por mantenimiento. Los jugadores pueden ver la disponibilidad antes de reservar.</p>
+        <div class="project-links"><a class="hero-link" href="#demo">Probar ReservaYa</a><a href="#recorrido">Cómo funciona</a></div>
+      </div>
+      <figure>
+        <img src="../capturas/reservaya-cancha.png" alt="Vista de una cancha y sus horarios de reserva en ReservaYa" fetchpriority="high">
+        <figcaption>Captura de la aplicación completa</figcaption>
+      </figure>
+    </section>
+    <section id="recorrido" class="project-steps" aria-labelledby="walkthrough-title">
+      <h2 id="walkthrough-title">Qué puedes probar</h2>
+      <ol><li><strong>Elige una cancha</strong><p>Cambia entre fútbol y pádel para comparar la superficie y los horarios.</p></li><li><strong>Confirma una franja</strong><p>La cancha se ilumina al confirmar y la franja queda ocupada.</p></li><li><strong>Libera el turno</strong><p>Cancela tu reserva y comprueba que el horario vuelve a estar disponible.</p></li></ol>
+    </section>
+    <section class="lab-panel project-lab" id="demo" aria-labelledby="demo-title">
+      <div class="lab-head"><div><p class="eyebrow">Prueba guiada</p><h2 id="demo-title">ReservaYa</h2><p id="demo-intro">Interactúa con datos ficticios en este navegador.</p></div><button class="quiet" type="button" id="reset">Reiniciar demo</button></div>
+      <div id="demo-body"></div>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <details class="concept"><summary>¿Qué resuelve la aplicación completa?</summary><p id="concept-text"></p></details>
+      <noscript><p>Activa JavaScript para usar la demo interactiva.</p></noscript>
+    </section>
+    <section class="project-technical" aria-labelledby="source-title">
+      <div><p class="eyebrow">Cómo se implementa</p><h2 id="source-title">React · FastAPI · SQLAlchemy · PostgreSQL</h2></div>
+      <p>El servidor administra la agenda, los bloqueos y las reservas. PostgreSQL evita dos reservas activas para la misma cancha y hora. Esta demo pública funciona en el navegador con datos ficticios.</p>
+    </section>
+  </main>
+  <footer class="shell footer"><span>ReservaYa · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
+</body>
+</html>

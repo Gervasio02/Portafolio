@@ -1,0 +1,23 @@
+.project-page { --accent: #cef472; --wash: #263627; }
+.project-page.taskflow { --accent: #c9c6ff; --wash: #2d294b; }
+.project-page.tiendanova { --accent: #ffc694; --wash: #473328; }
+.project-page .eyebrow, .project-page a:focus-visible { color: var(--accent); }
+.project-page .eyebrow span, .project-page .hero-link, .project-page .lab-action.primary { background: var(--accent); }
+.project-page .lab-action.primary { border-color: var(--accent); }
+.project-lead { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(1rem,5vw,4rem); align-items: center; padding: clamp(2.2rem,7vw,5rem) 0; }
+.project-lead h1 { font-size: clamp(2.9rem,6vw,5.7rem); line-height: .98; letter-spacing: -.07em; margin: .7rem 0 1.1rem; }
+.project-summary { max-width: 42rem; color: var(--muted); font-size: 1.16rem; }
+.project-links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+.project-links a { padding-block: .65rem; }
+.project-lead figure { margin: 0; min-width: 0; background: var(--wash); border: 1px solid var(--line); border-radius: .85rem; padding: clamp(.65rem,2vw,1.2rem); }
+.project-lead img { display: block; width: 100%; object-fit: cover; object-position: top; aspect-ratio: 16/11; border-radius: .4rem; }
+.project-lead figcaption { margin: .65rem 0 0; font-size: .9rem; color: var(--muted); }
+.project-steps { border-top: 1px solid var(--line); padding: 1.5rem 0 2.5rem; }
+.project-steps h2, .project-technical h2 { margin: 0 0 .8rem; font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -.04em; }
+.project-steps ol { padding-left: 1.6rem; display: grid; gap: 1.65rem; grid-template-columns: repeat(3,minmax(0,1fr)); }
+.project-steps li { padding-left: .35rem; }
+.project-steps li::marker { color: var(--accent); font-weight: 800; }
+.project-steps p, .project-technical p:last-child { color: var(--muted); margin-bottom: 0; }
+.project-lab .eyebrow { margin-bottom: .1rem; }
+.project-technical { margin: 2.5rem 0; padding-top: 1.5rem; border-top: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+@media(max-width:800px) { .project-lead,.project-technical { grid-template-columns: 1fr; } .project-steps ol {grid-template-columns: 1fr; gap:.8rem} }
