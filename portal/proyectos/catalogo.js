@@ -31,6 +31,12 @@ function render() {
     body.append(details);card.append(body);$("projects").append(card);
   }
   if(!filtered.length)$("projects").append(element("p","No hay resultados. Prueba otro filtro.","catalog-empty"));
+  openLinkedProject();
+}
+function openLinkedProject() {
+  const target=document.getElementById(location.hash.slice(1));
+  if(target?.classList.contains("catalog-card")) target.querySelector("details").open=true;
 }
 for(const id of ["search","type","technology"])$(id).addEventListener("input",render);
+window.addEventListener("hashchange",openLinkedProject);
 render();
