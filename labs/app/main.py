@@ -31,7 +31,7 @@ def create_app(database="data/labs.db", targets=None):
         "taskflow": "https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "reservaya": "https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "tiendanova": "https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",
-        "snake": "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",
+        "snake": "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
     }
     @contextmanager
     def db():

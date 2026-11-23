@@ -18,7 +18,7 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 
 ## Fase 1: avance verificado
 
-- Continuación interrumpida: los agentes se detuvieron por agotamiento de créditos del espacio de trabajo. Se conservan cambios **sin terminar ni validar** en `taskflow/`, `portal/proyectos/` y `labs/`. El catálogo aún no tiene `catalogo.js`; los laboratorios aún carecen de servidor e interfaz; TaskFlow tiene una migración y cambios de API incompletos. No desplegar ni aplicar esa migración hasta completar y probar el trabajo. `node --check` pasó para `taskflow/server/boards.js`; Prisma no pudo validar sin `DATABASE_URL`.
+- Continuación retomada: los cambios parciales del catálogo, laboratorios y responsables/WIP ya tienen implementación y pruebas locales. Persisten las limitaciones de PostgreSQL y producción indicadas abajo.
 
 - Checkout de trabajo: `interrogatorio-integration`, rama `feat/interrogatorio-demo`, basada en `e819dc1` con trabajo previo `7dd265f`. La copia `snake-integration` tiene cambios anteriores sin integrar y debe preservarse.
 - Interrogatorio: `bd0591a` elimina la clave JWT pública por defecto, exige una clave configurada en modo producción, agrega `/ready` con consulta a base de datos y configura CI para backend y compilación frontend. La clave temporal de desarrollo invalida sesiones al reiniciar.
@@ -28,3 +28,12 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 - La portada publicada indicada en el README respondió HTTP 200; las cuatro URLs Azure de aplicaciones agotaron el tiempo de espera desde este entorno. Esto no identifica la causa ni acredita una caída general. No se desplegaron cambios.
 - Bloqueos y riesgos: Docker no está disponible en PATH. Interrogatorio sigue siendo un prototipo no apto para exposición pública; faltan controles de acceso y concurrencia descritos en su README. Falta ejecutar pruebas y compilaciones del resto de aplicaciones y verificar los servicios y bases de datos reales.
 - Próximo paso: completar lint y pruebas pendientes; ejecutar pruebas con PostgreSQL y revisar arranque y despliegues cuando exista acceso al entorno correspondiente. ReservaYa backend: dependencias instaladas en `.venv`, una prueba pasó y ocho requieren la base aislada.
+
+
+## Entregables de la continuación
+
+- Catálogo: `79f18aa`, ocho proyectos con búsqueda, filtros de tipo/tecnología, arquitectura, aprendizajes y accesos. Las nuevas apps se identifican como locales. Verificado en Chromium a 390 px sin desborde horizontal, filtros y estado vacío. Rediseño integral y auditoría completa de accesibilidad pendientes.
+- Laboratorios: `adc7127`, DataLab CSV/XLSX con limpieza, perfil, distribuciones y exportación segura; DocFlow de facturas de texto con validaciones, revisión y auditoría; CloudOps con comprobaciones manuales limitadas e historial real de cinco servicios. Ocho pruebas aprobadas. Flujos de DataLab y revisión de DocFlow aprobados en Chromium. CI agregada, aún sin ejecución remota. Son apps locales sin autenticación, no desplegadas ni listas para usuarios públicos.
+- TaskFlow: `6165044`, responsables y límites WIP con validación de pertenencia, permisos y capacidad bajo el bloqueo transaccional existente; UI para ambos. Migración aditiva pendiente de aplicar en base de pruebas. Cinco pruebas de políticas con repositorio simulado y cinco de frontend aprobadas; lint y compilación aprobados. Prisma valida. Esto no verifica concurrencia real ni reemplaza las pruebas PostgreSQL.
+- Las fases 2, 3, 4, 8, 9 y 10 tienen avances parciales, no se consideran completas. Las fases 5–7 y 11 conservan pendientes. Faltan, entre otras funciones: auditoría/comentarios/SLA/calendario de TaskFlow, tarifas y comprobantes de ReservaYa, variantes/cupones/devoluciones de TiendaNova, progreso de los juegos, incidentes/alertas de CloudOps, consolidación E2E y publicación.
+- Siguiente tarea: preparar PostgreSQL aislado, aplicar/verificar la migración TaskFlow y completar sus flujos restantes antes de seguir la secuencia funcional. No hay Docker ni PostgreSQL local detectados. No se modificó infraestructura productiva.

@@ -1,6 +1,6 @@
 # Portafolio de Gervasio Torres
 
-Tres aplicaciones full stack de ingeniería informática, con datos ficticios y bases PostgreSQL separadas. La portada en `portal/` incluye un carrusel y una página y demo interactiva para cada aplicación. Las demos públicas usan datos ficticios en el navegador. Abre `portal/index.html` para probarlas.
+Cinco aplicaciones y un conjunto de laboratorios de ingeniería informática, con datos ficticios y bases PostgreSQL separadas. La portada en `portal/` incluye un carrusel y una página y demo interactiva para cada aplicación. Las demos públicas usan datos ficticios en el navegador. Abre `portal/index.html` para probarlas.
 
 | Aplicación | Stack | Decisión que conviene explicar en una entrevista |
 | --- | --- | --- |
@@ -30,3 +30,7 @@ Para dar acceso a ChatGPT, abre Configuración → Complementos → GitHub y aut
 Referencias oficiales: [PostgreSQL en Supabase](https://supabase.com/docs/guides/database/overview) y [Vercel Hobby](https://vercel.com/docs/plans/hobby).
 
 Consulta [PUBLICACION.md](PUBLICACION.md) para preparar GitHub y Azure.
+
+## Catálogo y laboratorios
+
+El catálogo en `portal/proyectos/` permite buscar por nombre, tipo y tecnologías y consultar arquitectura y aprendizajes. DataLab, DocFlow y CloudOps se ejecutan localmente desde [labs/README.md](labs/README.md); sus enlaces indican esa condición. No se han publicado esos laboratorios. El estado verificable de las fases está en [docs/ROADMAP.md](docs/ROADMAP.md).
