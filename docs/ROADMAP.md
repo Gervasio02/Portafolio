@@ -7,8 +7,8 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 | 1. Estabilidad, seguridad e infraestructura | En curso | Completar la línea base de compilaciones, pruebas, arranque y revisión de seguridad de todas las aplicaciones; investigar las URLs Azure. |
 | 2. Rediseño visual | Pendiente | Evaluar la portada y su accesibilidad. |
 | 3. Explorador de proyectos | Pendiente | Diseñar el catálogo a partir de una fuente común. |
-| 4. TaskFlow 2.0 | En curso | Completar SLA y notificaciones; ampliar historial detallado y métricas por responsable. |
-| 5. ReservaYa 2.0 | Pendiente | Verificar disponibilidad y concurrencia con PostgreSQL. |
+| 4. TaskFlow 2.0 | En curso | Ampliar historial detallado/global y completar revisión E2E y responsive. |
+| 5. ReservaYa 2.0 | En curso | Revisar E2E de nuevas tarifas y descarga; consolidar estadísticas de ocupación y navegación visual. |
 | 6. TiendaNova 2.0 | Pendiente | Verificar compra e inventario con PostgreSQL. |
 | 7. Snake e Interrogatorio | Pendiente | Evaluar los juegos y su progreso. |
 | 8. CloudOps | Pendiente | Definir fuentes reales de estado y restricciones de consulta. |
@@ -57,3 +57,12 @@ El bloqueo de PostgreSQL local indicado en los apartados anteriores quedó resue
 - Calendario TaskFlow: vista mensual, selección de mes, fechas y tareas sin programar; respeta búsqueda/prioridad y abre edición existente. Ocho pruebas de interfaz, lint y compilación aprobados tras añadirlo. No crea nuevas reglas de vencimiento o SLA.
 - El script detuvo PostgreSQL al finalizar ambas ejecuciones. No se tocaron datos productivos, DNS ni infraestructura cloud. Binarios, credenciales, bases y logs permanecen fuera de Git.
 - Siguiente pendiente funcional: SLA, notificaciones y estadísticas por responsable en TaskFlow. Persisten los pendientes funcionales de las fases 2–11, la seguridad multiusuario de los laboratorios y la verificación/publicación de producción. Ninguna fase se declara completa por estos resultados parciales.
+
+## SLA de TaskFlow y tarifas de ReservaYa
+
+- `442d14c`: SLA opcional en horas corridas desde creación, fechas de cierre registradas al completar/reabrir, estado de cumplimiento y estadísticas por responsable. Panel de alertas internas con lectura persistente privada por usuario/vencimiento. Solo considera tableros accesibles y no inventa fechas para cierres históricos. Migración `202611230003_sla_notifications` aplicada en PostgreSQL aislado.
+- Verificación TaskFlow: nueve pruebas de políticas/SLA, doce de API con PostgreSQL y diez de interfaz aprobadas. Cobertura de líneas API 99,15 %. Lint y compilación aprobados. Se probó persistencia de lectura, privacidad frente a otro usuario y transición cerrar/reabrir. Los tests de dashboard se aislaron del panel nuevo y este tiene sus propias pruebas.
+- `24976bc`: ReservaYa añade recargo del 20 % a turnos 18–21 h, tarifas por hora en disponibilidad, precio calculado en la transacción y conservado en la reserva. Comprobantes JSON privados para titular/administración, con estado actual y carácter simulado explícito; descarga desde Mis reservas.
+- Verificación ReservaYa: once pruebas con PostgreSQL aprobadas, cobertura 95,69 %. Incluyen límites de horario punta, precio conservado tras cambios administrativos y comprobante privado/cancelado. Dos pruebas frontend, lint de ambos stacks y compilación aprobados. Falta E2E de descarga y tarifas en navegador con datos reales.
+- PostgreSQL se detuvo al terminar; no hubo despliegues ni cambios de infraestructura. Quedan pendientes funcionalidades de TiendaNova, mejoras de juegos, incidentes/alertas de CloudOps, seguridad multiusuario de laboratorios y consolidación visual/E2E. Los pendientes no son bloqueos de PostgreSQL: requieren desarrollo adicional. Las fases siguen abiertas hasta cubrir sus criterios completos.
+- Próxima tarea: historial detallado/global y E2E de TaskFlow/ReservaYa; después continuar TiendaNova (variantes, cupones, cancelaciones y devoluciones transaccionales).
