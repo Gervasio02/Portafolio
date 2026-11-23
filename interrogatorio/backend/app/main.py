@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, os, secrets, time
+import json, os, secrets, time, warnings
 from datetime import datetime, timedelta, timezone
 from typing import Any
 import jwt
@@ -8,12 +8,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from pwdlib import PasswordHash
-from sqlalchemy import JSON, Boolean, Integer, String, create_engine, select
+from sqlalchemy import JSON, Boolean, Integer, String, create_engine, select, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker, Session
 from .engine import Difficulty, answer, generate_case, public_case
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./interrogatorio.db")
-SECRET = os.getenv("JWT_SECRET", "solo-desarrollo-cambiar-antes-de-desplegar")
+def signing_secret() -> str:
+    secret = os.getenv("JWT_SECRET", "").strip()
+    if secret and secret != "solo-desarrollo-cambiar-antes-de-desplegar" and len(secret) >= 32:
+        return secret
+    if os.getenv("APP_ENV", "development").lower() == "production":
+        raise RuntimeError("JWT_SECRET debe tener al menos 32 caracteres y no ser la clave de ejemplo")
+    warnings.warn("JWT_SECRET no configurado de forma segura: las sesiones se perderán al reiniciar", RuntimeWarning)
+    return secrets.token_urlsafe(32)
+
+SECRET = signing_secret()
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {})
 SessionLocal = sessionmaker(engine, expire_on_commit=False)
 class Base(DeclarativeBase): pass
@@ -67,6 +77,14 @@ def state(g: Game) -> dict[str, Any]:
     return {"id":g.id,"case":public_case(generate_case(g.seed, g.difficulty)),"questions":g.questions,"remaining":25-g.questions,"finished":g.finished,"score":g.score,"notes":g.notes,"history":g.history,"presented":g.presented}
 @app.get("/health")
 def health(): return {"status":"ok"}
+@app.get("/ready")
+def readiness():
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        raise HTTPException(503, "Base de datos no disponible")
+    return {"status": "ok"}
 @app.post("/auth/register")
 def register(data: Credentials, session: Session = Depends(db)):
     if session.scalar(select(User).where(User.username == data.username)): raise HTTPException(409,"Nombre ya utilizado")

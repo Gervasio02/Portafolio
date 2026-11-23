@@ -1,0 +1,41 @@
+name: Interrogatorio
+on:
+  push:
+    paths: ['interrogatorio/**', '.github/workflows/interrogatorio.yml']
+  pull_request:
+    paths: ['interrogatorio/**', '.github/workflows/interrogatorio.yml']
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: interrogatorio/backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: interrogatorio/backend/requirements.txt
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: interrogatorio/frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: interrogatorio/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build

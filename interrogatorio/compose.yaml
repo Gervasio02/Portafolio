@@ -16,7 +16,7 @@ services:
     build: ./backend
     environment:
       DATABASE_URL: postgresql+psycopg://detective:detective@db:5432/interrogatorio
-      JWT_SECRET: ${JWT_SECRET:-solo-desarrollo-cambiar-antes-de-desplegar}
+      JWT_SECRET: ${JWT_SECRET:-}
       CORS_ORIGINS: http://localhost:8080
     ports: ["8000:8000"]
     depends_on:
