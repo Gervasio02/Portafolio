@@ -1,0 +1,40 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import {createHash,randomBytes} from 'node:crypto';
+import {PrismaClient} from '@prisma/client';
+import {z,ZodError} from 'zod';
+import {verifyReplay} from './verify';
+
+const prisma=new PrismaClient();
+const app=express();
+const accessSecret=process.env.ACCESS_SECRET;
+if(!accessSecret || accessSecret.length<32) throw new Error('ACCESS_SECRET debe tener al menos 32 caracteres');
+const origin=process.env.WEB_ORIGIN || 'http://localhost:5173';
+const secure=process.env.NODE_ENV==='production';
+const cookieOptions={httpOnly:true,secure,sameSite:'lax' as const,path:'/api/auth',maxAge:7*24*60*60*1000};
+const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
+app.disable('x-powered-by');if(process.env.NODE_ENV==='production')app.set('trust proxy',1);app.use(helmet());app.use(cors({origin,credentials:true}));app.use(express.json({limit:'100kb'}));app.use(cookieParser());
+const asyncRoute=(fn:(req:express.Request,res:express.Response)=>Promise<void>):express.RequestHandler=>(req,res,next)=>{fn(req,res).catch(next)};
+const credentials=z.object({name:z.string().trim().min(3).max(24).regex(/^[a-zA-Z0-9_]+$/),password:z.string().min(8).max(72)}).strict();
+const direction=z.enum(['up','down','left','right']);
+const replaySchema=z.object({mode:z.enum(['classic','wrap','timed']),seed:z.number().int().min(1).max(4294967295),ticks:z.number().int().min(1).max(5000),score:z.number().int().min(0).max(12000),moves:z.array(z.object({tick:z.number().int().min(0),direction}).strict()).max(5000)}).strict().refine(x=>x.moves.every((m,i)=>m.tick<x.ticks && (i===0 || m.tick>x.moves[i-1].tick)),{message:'Los movimientos deben estar ordenados y ser únicos'});
+function userId(req:express.Request):string|null {try{const token=req.get('authorization')?.replace(/^Bearer /,'');if(!token)return null;const payload=jwt.verify(token,accessSecret!);return typeof payload==='object' && typeof payload.sub==='string'?payload.sub:null}catch{return null}}
+async function issue(user:{id:string;name:string},res:express.Response){const token=randomBytes(32).toString('base64url');await prisma.session.create({data:{userId:user.id,tokenHash:hash(token),expiresAt:new Date(Date.now()+cookieOptions.maxAge)}});res.cookie('snake_refresh',token,cookieOptions);return {user,accessToken:jwt.sign({name:user.name},accessSecret!,{subject:user.id,expiresIn:'15m'})};}
+const authLimit=rateLimit({windowMs:15*60*1000,limit:30,standardHeaders:'draft-7',legacyHeaders:false});
+app.get('/api/health',(_req,res)=>res.json({ok:true}));
+app.post('/api/auth/register',authLimit,asyncRoute(async(req,res)=>{const data=credentials.parse(req.body);const existing=await prisma.user.findUnique({where:{name:data.name}});if(existing){res.status(409).json({error:'El nombre ya está en uso'});return}const user=await prisma.user.create({data:{name:data.name,passwordHash:await bcrypt.hash(data.password,12)},select:{id:true,name:true}});res.status(201).json(await issue(user,res));}));
+app.post('/api/auth/login',authLimit,asyncRoute(async(req,res)=>{const data=credentials.parse(req.body);const user=await prisma.user.findUnique({where:{name:data.name}});if(!user || !await bcrypt.compare(data.password,user.passwordHash)){res.status(401).json({error:'Credenciales incorrectas'});return}res.json(await issue({id:user.id,name:user.name},res));}));
+app.post('/api/auth/refresh',authLimit,asyncRoute(async(req,res)=>{const token=typeof req.cookies.snake_refresh==='string'?req.cookies.snake_refresh:'';const session=await prisma.session.findUnique({where:{tokenHash:hash(token)},include:{user:true}});if(!session || session.expiresAt<=new Date()){res.status(401).json({error:'Sesión vencida'});return}await prisma.session.delete({where:{id:session.id}});res.json(await issue({id:session.user.id,name:session.user.name},res));}));
+app.post('/api/auth/logout',asyncRoute(async(req,res)=>{const token=typeof req.cookies.snake_refresh==='string'?req.cookies.snake_refresh:'';await prisma.session.deleteMany({where:{tokenHash:hash(token)}});res.clearCookie('snake_refresh',{...cookieOptions,maxAge:undefined});res.status(204).end();}));
+app.get('/api/ranking',asyncRoute(async(req,res)=>{const mode=z.enum(['classic','wrap','timed']).parse(req.query.mode);const rows=await prisma.game.findMany({where:{mode},orderBy:[{score:'desc'},{createdAt:'asc'}],take:10,select:{id:true,score:true,createdAt:true,user:{select:{name:true}}}});res.json(rows);}));
+app.get('/api/profile',asyncRoute(async(req,res)=>{const id=userId(req);if(!id){res.status(401).json({error:'Inicia sesión'});return}const games=await prisma.game.findMany({where:{userId:id},orderBy:{createdAt:'desc'},take:100,select:{id:true,mode:true,score:true,createdAt:true}});const stats=await prisma.game.aggregate({where:{userId:id},_max:{score:true},_avg:{score:true},_count:true});res.json({games,stats:{best:stats._max.score||0,average:stats._avg.score||0,played:stats._count}});}));
+app.post('/api/games',rateLimit({windowMs:60_000,limit:15,standardHeaders:'draft-7',legacyHeaders:false}),asyncRoute(async(req,res)=>{const id=userId(req);if(!id){res.status(401).json({error:'Inicia sesión'});return}const replay=replaySchema.parse(req.body);const result=verifyReplay(replay);if(!result.valid){res.status(422).json({error:result.reason});return}const game=await prisma.game.create({data:{userId:id,mode:replay.mode,score:replay.score,seed:BigInt(replay.seed),ticks:replay.ticks,moves:replay.moves},select:{id:true,score:true}});res.status(201).json(game);}));
+app.get('/api/games/:id/replay',asyncRoute(async(req,res)=>{const id=z.string().min(1).max(100).parse(req.params.id);const game=await prisma.game.findUnique({where:{id},select:{mode:true,seed:true,ticks:true,moves:true,score:true}});if(!game){res.status(404).json({error:'Partida no encontrada'});return}res.json({...game,seed:Number(game.seed)});}));
+if(process.env.NODE_ENV==='production') app.use(express.static('dist',{index:'index.html',maxAge:'1h'}));
+app.use((error:unknown,_req:express.Request,res:express.Response,_next:express.NextFunction)=>{if(error instanceof ZodError){res.status(400).json({error:'Datos inválidos'});return}console.error(error);res.status(500).json({error:'Error del servidor'});});
+export default app;

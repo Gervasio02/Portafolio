@@ -1,0 +1,43 @@
+name: Snake - verificar y publicar imagen
+on:
+  push:
+    branches: [main]
+    paths: ['snake/**', '.github/workflows/snake-azure.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: snake/package-lock.json
+      - run: npm ci
+        working-directory: snake
+      - run: npx prisma generate
+        working-directory: snake
+      - run: npx tsc -p tsconfig.server.json
+        working-directory: snake
+      - run: npm test
+        working-directory: snake
+      - run: npm run build
+        working-directory: snake
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Publicar imagen en Azure
+        env:
+          REGISTRY_NAME: ${{ vars.AZURE_REGISTRY_NAME }}
+          REGISTRY_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
+        run: |
+          set -euo pipefail
+          az acr login --name "$REGISTRY_NAME" --only-show-errors
+          docker build --platform linux/amd64 -f snake/Dockerfile.api -t "$REGISTRY_SERVER/snake:$GITHUB_SHA" snake
+          docker push "$REGISTRY_SERVER/snake:$GITHUB_SHA"

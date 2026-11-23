@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: snake
+      POSTGRES_PASSWORD: snake
+      POSTGRES_DB: snake
+    volumes:
+      - snake-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U snake -d snake"]
+      interval: 5s
+      retries: 12
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      DATABASE_URL: postgresql://snake:snake@db:5432/snake?schema=public
+      ACCESS_SECRET: local-development-only-change-this-secret-123456
+      WEB_ORIGIN: http://localhost:8080
+      PORT: 3001
+      NODE_ENV: development
+    ports: ["3001:3001"]
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports: ["8080:80"]
+    depends_on: [api]
+volumes:
+  snake-data:
