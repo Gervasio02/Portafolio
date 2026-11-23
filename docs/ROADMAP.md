@@ -7,7 +7,7 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 | 1. Estabilidad, seguridad e infraestructura | En curso | Completar la línea base de compilaciones, pruebas, arranque y revisión de seguridad de todas las aplicaciones; investigar las URLs Azure. |
 | 2. Rediseño visual | Pendiente | Evaluar la portada y su accesibilidad. |
 | 3. Explorador de proyectos | Pendiente | Diseñar el catálogo a partir de una fuente común. |
-| 4. TaskFlow 2.0 | Pendiente | Identificar y verificar funcionalidades existentes. |
+| 4. TaskFlow 2.0 | En curso | Verificar migraciones y concurrencia con PostgreSQL; completar calendario, SLA y notificaciones. |
 | 5. ReservaYa 2.0 | Pendiente | Verificar disponibilidad y concurrencia con PostgreSQL. |
 | 6. TiendaNova 2.0 | Pendiente | Verificar compra e inventario con PostgreSQL. |
 | 7. Snake e Interrogatorio | Pendiente | Evaluar los juegos y su progreso. |
@@ -37,3 +37,11 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 - TaskFlow: `6165044`, responsables y límites WIP con validación de pertenencia, permisos y capacidad bajo el bloqueo transaccional existente; UI para ambos. Migración aditiva pendiente de aplicar en base de pruebas. Cinco pruebas de políticas con repositorio simulado y cinco de frontend aprobadas; lint y compilación aprobados. Prisma valida. Esto no verifica concurrencia real ni reemplaza las pruebas PostgreSQL.
 - Las fases 2, 3, 4, 8, 9 y 10 tienen avances parciales, no se consideran completas. Las fases 5–7 y 11 conservan pendientes. Faltan, entre otras funciones: auditoría/comentarios/SLA/calendario de TaskFlow, tarifas y comprobantes de ReservaYa, variantes/cupones/devoluciones de TiendaNova, progreso de los juegos, incidentes/alertas de CloudOps, consolidación E2E y publicación.
 - Siguiente tarea: preparar PostgreSQL aislado, aplicar/verificar la migración TaskFlow y completar sus flujos restantes antes de seguir la secuencia funcional. No hay Docker ni PostgreSQL local detectados. No se modificó infraestructura productiva.
+
+## Continuación: comentarios y actividad de TaskFlow
+
+- Commit `e8a5b45`: comentarios persistentes de tarjetas, consulta de los 100 eventos más recientes y eventos de edición/movimiento en la misma transacción que el cambio. No constituye todavía un historial de diferencias de todos los campos ni una auditoría global de todas las acciones del tablero.
+- Permisos: lectura por miembros; escritura por dueños y editores; comprobación de que la tarjeta pertenece al tablero. Texto limitado a 2.000 caracteres y renderizado como texto. La interfaz consulta cada 15 segundos y cancela solicitudes al cerrar.
+- Verificado: ocho pruebas de políticas con repositorio simulado, siete pruebas de interfaz, lint, compilación y validación Prisma aprobados. Prueba PostgreSQL añadida para publicación/lectura y actividad de cambios: **no ejecutada** por falta de base aislada. Se volvió a comprobar que `docker`, `pg_ctl` y `psql` no están disponibles en PATH.
+- Migración aditiva `202611230002_activity` creada, **sin aplicar**. Requiere verificación junto con la migración WIP en PostgreSQL de pruebas antes de publicar.
+- Siguiente pendiente: preparar la base de pruebas y verificar ambas migraciones; luego completar calendario, SLA y notificaciones. Fase 4 sigue en curso. No se desplegó ni se modificaron datos productivos.
