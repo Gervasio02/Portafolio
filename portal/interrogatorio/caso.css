@@ -184,3 +184,8 @@
 @media (max-width: 520px) {
   .case-action .field { flex-basis: 100%; }
 }
+
+.case-picker { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.case-picker label { font-size: .9rem; color: var(--muted); }
+.case-picker select { width: auto; min-width: 12rem; }
+#detective-notes { resize: vertical; }

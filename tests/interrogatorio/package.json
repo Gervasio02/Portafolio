@@ -1,0 +1,1 @@
+{"name":"interrogatorio-portfolio-tests","private":true,"scripts":{"test":"playwright test"},"devDependencies":{"@playwright/test":"^1.57.0"}}
