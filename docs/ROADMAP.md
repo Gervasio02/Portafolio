@@ -18,6 +18,8 @@ Actualizado: 2026-11-23. Ninguna fase se considera terminada sin implementar y v
 
 ## Fase 1: avance verificado
 
+- Continuación interrumpida: los agentes se detuvieron por agotamiento de créditos del espacio de trabajo. Se conservan cambios **sin terminar ni validar** en `taskflow/`, `portal/proyectos/` y `labs/`. El catálogo aún no tiene `catalogo.js`; los laboratorios aún carecen de servidor e interfaz; TaskFlow tiene una migración y cambios de API incompletos. No desplegar ni aplicar esa migración hasta completar y probar el trabajo. `node --check` pasó para `taskflow/server/boards.js`; Prisma no pudo validar sin `DATABASE_URL`.
+
 - Checkout de trabajo: `interrogatorio-integration`, rama `feat/interrogatorio-demo`, basada en `e819dc1` con trabajo previo `7dd265f`. La copia `snake-integration` tiene cambios anteriores sin integrar y debe preservarse.
 - Interrogatorio: `bd0591a` elimina la clave JWT pública por defecto, exige una clave configurada en modo producción, agrega `/ready` con consulta a base de datos y configura CI para backend y compilación frontend. La clave temporal de desarrollo invalida sesiones al reiniciar.
 - Pruebas locales: 110 pruebas de backend de Interrogatorio aprobadas con SQLite y compilación frontend aprobada. El workflow nuevo todavía no se ha ejecutado en GitHub. No se ha comprobado PostgreSQL ni Docker Compose.
