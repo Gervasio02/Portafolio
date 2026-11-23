@@ -35,6 +35,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { createApi } from "./api.js";
+import { TaskCalendar } from "./TaskCalendar.jsx";
 import { ControlCenter } from "./ControlCenter.jsx";
 import { useLiveRefresh } from "./live.js";
 
@@ -699,6 +700,7 @@ export function App() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [priority, setPriority] = useState("");
+  const [view, setView] = useState("board");
   const [dialog, setDialog] = useState(null);
   const [busy, setBusy] = useState(false);
   const [theme, setTheme] = useState(
@@ -1033,7 +1035,8 @@ export function App() {
                 <strong>{progress}%</strong>
               </div>
             </div>
-            <DndContext
+            <div role="group" aria-label="Vista de tareas"><button type="button" aria-pressed={view==="board"} onClick={()=>setView("board")}>Tablero</button><button type="button" aria-pressed={view==="calendar"} onClick={()=>setView("calendar")}>Calendario</button></div>
+            {view === "calendar" ? <TaskCalendar cards={filterCards(board.columns.flatMap(column=>column.cards),search,priority)} openCard={card=>setDialog({type:"card",card})}/> : <DndContext
               sensors={sensors}
               collisionDetection={closestCorners}
               onDragStart={() => setDragging(true)}
@@ -1081,7 +1084,7 @@ export function App() {
                   />
                 ))}
               </div>
-            </DndContext>
+            </DndContext>}
           </>
         ) : selected && !error ? (
           <p className="empty-board" aria-busy="true">
