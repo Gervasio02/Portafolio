@@ -281,6 +281,7 @@ function Column({
   editable,
   newCard,
   editCard,
+  configureWip,
 }) {
   const visible = filterCards(column.cards, search, priority);
   const draggable = editable && !search.trim() && !priority;
@@ -297,7 +298,7 @@ function Column({
       <header className="column-head">
         <span className="column-dot" />
         <h2>{column.title}</h2>
-        <span className="count">{visible.length}</span>
+        <span className="count">{visible.length}{column.wipLimit ? ` / ${column.wipLimit}` : ""}</span>
         {editable && (
           <button
             className="icon"
@@ -308,6 +309,11 @@ function Column({
           </button>
         )}
       </header>
+      {configureWip && <form onSubmit={event => {
+        event.preventDefault();
+        const value = new FormData(event.currentTarget).get("wip");
+        void configureWip(value ? Number(value) : null);
+      }}><label>Límite de trabajo en curso<input name="wip" type="number" min="1" max="10000" defaultValue={column.wipLimit || ""} placeholder="Sin límite" /></label><button type="submit">Guardar límite</button></form>}
       <SortableContext
         items={visible.map(({ id }) => id)}
         strategy={verticalListSortingStrategy}
@@ -373,6 +379,7 @@ function CardForm({
   card,
   columnId,
   columns,
+  members = [],
   submit,
   remove,
   editable,
@@ -400,6 +407,7 @@ function CardForm({
               .map((value) => value.trim())
               .filter(Boolean),
             dueAt: fields.dueAt || null,
+            assigneeId: fields.assigneeId || null,
           });
         }}
       >
@@ -452,6 +460,7 @@ function CardForm({
               ))}
             </select>
           </label>
+          <label>Responsable<select name="assigneeId" defaultValue={card?.assigneeId || ""}><option value="">Sin responsable</option>{members.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}</select></label>
           <label>
             Etiquetas
             <input
@@ -1027,6 +1036,10 @@ export function App() {
                     newCard={() =>
                       setDialog({ type: "card", columnId: column.id })
                     }
+                    configureWip={board.role === "OWNER" ? limit => perform(async () => {
+                      await api.request(`/boards/${selected}/columns/${column.id}`, { method: "PATCH", body: { wipLimit: limit } });
+                      await reload();
+                    }) : null}
                     editCard={(card) => setDialog({ type: "card", card })}
                   />
                 ))}
@@ -1053,6 +1066,7 @@ export function App() {
       </main>
       {dialog?.type === "card" && (
         <CardForm
+          members={board.members}
           {...dialog}
           columns={board.columns}
           editable={editable}

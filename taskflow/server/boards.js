@@ -18,6 +18,7 @@ const cardBody = z.object({
   dueAt: z.iso.date().nullish(),
   labels: z.array(z.string().trim().min(1).max(24)).max(8).default([]),
   columnId: uuid,
+  assigneeId: uuid.nullish(),
 });
 
 async function membership(tx, boardId, userId, roles) {
@@ -49,6 +50,22 @@ async function cardOnBoard(tx, id, boardId) {
   const card = await tx.card.findFirst({ where: { id, column: { boardId } } });
   if (!card) fail(404, "No encontramos esa tarjeta.");
   return card;
+}
+
+async function checkAssignee(tx, boardId, assigneeId) {
+  if (assigneeId) {
+    const member = await tx.membership.findUnique({
+      where: { boardId_userId: { boardId, userId: assigneeId } },
+    });
+    if (!member) fail(400, "El responsable debe pertenecer al tablero.");
+  }
+}
+
+async function checkCapacity(tx, column) {
+  if (column.wipLimit !== null) {
+    const count = await tx.card.count({ where: { columnId: column.id } });
+    if (count >= column.wipLimit) fail(409, "La columna alcanzó su límite de trabajo en curso.");
+  }
 }
 
 async function nextPosition(tx, columnId) {
@@ -159,11 +176,26 @@ export function boardRoutes(db) {
     res.status(204).end();
   });
 
+  router.patch("/boards/:id/columns/:columnId", async (req, res) => {
+    const boardId = uuid.parse(req.params.id);
+    const columnId = uuid.parse(req.params.columnId);
+    const { wipLimit } = z.object({ wipLimit: z.number().int().min(1).max(10000).nullable() }).parse(req.body);
+    const column = await locked(db, boardId, req.userId, owner, async (tx) => {
+      await columnOnBoard(tx, columnId, boardId);
+      if (wipLimit !== null && await tx.card.count({ where: { columnId } }) > wipLimit)
+        fail(409, "El límite no puede ser inferior al número actual de tarjetas.");
+      return tx.column.update({ where: { id: columnId }, data: { wipLimit } });
+    });
+    res.json(column);
+  });
+
   router.post("/boards/:id/cards", async (req, res) => {
     const id = uuid.parse(req.params.id);
     const data = cardBody.parse(req.body);
     const card = await locked(db, id, req.userId, editors, async (tx) => {
-      await columnOnBoard(tx, data.columnId, id);
+      const column = await columnOnBoard(tx, data.columnId, id);
+      await checkCapacity(tx, column);
+      await checkAssignee(tx, id, data.assigneeId);
       return tx.card.create({
         data: {
           ...properties(data),
@@ -184,8 +216,10 @@ export function boardRoutes(db) {
       await locked(db, boardId, req.userId, editors, async (tx) => {
         const card = await cardOnBoard(tx, id, boardId);
         const fields = properties(data);
+        await checkAssignee(tx, boardId, data.assigneeId);
         if (columnId && card.columnId !== columnId) {
-          await columnOnBoard(tx, columnId, boardId);
+          const destination = await columnOnBoard(tx, columnId, boardId);
+          await checkCapacity(tx, destination);
           Object.assign(fields, {
             columnId,
             position: await nextPosition(tx, columnId),
@@ -213,8 +247,9 @@ export function boardRoutes(db) {
       .object({ columnId: uuid, beforeId: uuid.nullish() })
       .parse(req.body);
     await locked(db, boardId, req.userId, editors, async (tx) => {
-      await cardOnBoard(tx, id, boardId);
-      await columnOnBoard(tx, columnId, boardId);
+      const card = await cardOnBoard(tx, id, boardId);
+      const destination = await columnOnBoard(tx, columnId, boardId);
+      if (card.columnId !== columnId) await checkCapacity(tx, destination);
       const cards = await tx.card.findMany({
         where: { columnId, id: { not: id } },
         orderBy: [{ position: "asc" }, { id: "asc" }],
@@ -324,6 +359,7 @@ export function boardRoutes(db) {
       const member = await membership(tx, boardId, userId);
       if (member.role === "OWNER")
         fail(403, "El dueño conserva acceso al tablero.");
+      await tx.card.updateMany({ where: { column: { boardId }, assigneeId: userId }, data: { assigneeId: null } });
       await tx.membership.delete({
         where: { boardId_userId: { boardId, userId } },
       });

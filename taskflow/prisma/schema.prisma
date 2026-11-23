@@ -27,6 +27,7 @@ model User {
   createdAt    DateTime        @default(now())
   memberships  Membership[]
   sessions     Session[]
+  assignedCards Card[]
 }
 
 model Session {
@@ -66,6 +67,7 @@ model Column {
   boardId  String @db.Uuid
   title    String @db.VarChar(80)
   position Int
+  wipLimit Int?
   board    Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   cards    Card[]
 
@@ -75,6 +77,8 @@ model Column {
 model Card {
   id          String    @id @default(uuid()) @db.Uuid
   columnId    String    @db.Uuid
+  assigneeId  String?   @db.Uuid
+  assignee    User?     @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
   title       String    @db.VarChar(120)
   description String    @default("") @db.VarChar(3000)
   priority    Priority  @default(MEDIUM)
@@ -85,6 +89,7 @@ model Card {
   column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
 
   @@index([columnId, position])
+  @@index([assigneeId])
 }
 
 model Invitation {
