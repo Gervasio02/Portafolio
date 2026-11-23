@@ -3,32 +3,32 @@ const onixSuspects = [
     id: "elena",
     name: "Elena Rojas",
     role: "Administradora del hotel",
-    alibi: "Estuve en recepci�n desde las 21:50. Mi tarjeta de administraci�n estaba conmigo.",
-    motive: "Vald�s pidi� revisar algunos reembolsos. Era una auditor�a de rutina.",
+    alibi: "Estuve en recepción desde las 21:50. Mi tarjeta de administración estaba conmigo.",
+    motive: "Valdés pidió revisar algunos reembolsos. Era una auditoría de rutina.",
     evidence: {
-      access: "La tarjeta A-17 es m�a y abre esa puerta. No la prest� esa noche.",
-      audit: "Mi firma est� en el informe, pero el importe se pod�a aclarar al d�a siguiente.",
+      access: "La tarjeta A-17 es mía y abre esa puerta. No la presté esa noche.",
+      audit: "Mi firma está en el informe, pero el importe se podía aclarar al día siguiente.",
     },
-    admission: "Entr� a la biblioteca a las 22:02 para recuperar el informe. Ment� sobre haber estado todo el tiempo en recepci�n.",
+    admission: "Entré a la biblioteca a las 22:02 para recuperar el informe. Mentí sobre haber estado todo el tiempo en recepción.",
   },
   {
     id: "tomas",
-    name: "Tom�s Vidal",
+    name: "Tomás Vidal",
     role: "Abogado del hotel",
-    alibi: "Atend� una llamada en el mostrador. El guardia anot� mi nombre cuando me prest� el tel�fono.",
-    motive: "Vald�s pod�a consultarme sobre el informe, pero no ten�amos una reuni�n programada.",
+    alibi: "Atendí una llamada en el mostrador. El guardia anotó mi nombre cuando me prestó el teléfono.",
+    motive: "Valdés podía consultarme sobre el informe, pero no teníamos una reunión programada.",
     evidence: {
-      watch: "La llamada est� anotada a las 22:02. Le pregunt� al guardia la hora cuando colgu�.",
+      watch: "La llamada está anotada a las 22:02. Le pregunté al guardia la hora cuando colgué.",
     },
   },
   {
     id: "clara",
     name: "Clara Fuentes",
     role: "Periodista invitada",
-    alibi: "Estaba presentando la transmisi�n del evento en el sal�n. Las c�maras estaban encendidas.",
-    motive: "Quer�a una entrevista sobre los trabajos de restauraci�n. No conoc�a el informe de cuentas.",
+    alibi: "Estaba presentando la transmisión del evento en el salón. Las cámaras estaban encendidas.",
+    motive: "Quería una entrevista sobre los trabajos de restauración. No conocía el informe de cuentas.",
     evidence: {
-      watch: "La grabaci�n del evento muestra mi presentaci�n a la hora que anot� el guardia.",
+      watch: "La grabación del evento muestra mi presentación a la hora que anotó el guardia.",
     },
   },
 ];
@@ -37,41 +37,41 @@ const onixEvidence = [
   {
     id: "access",
     title: "Registro de acceso",
-    detail: "A las 22:02 la puerta interna se abri� con la tarjeta de administraci�n A-17. La puerta lateral permaneci� cerrada.",
+    detail: "A las 22:02 la puerta interna se abrió con la tarjeta de administración A-17. La puerta lateral permaneció cerrada.",
   },
   {
     id: "audit",
-    title: "Informe de auditor�a",
-    detail: "Vald�s hab�a encontrado reembolsos fuera de norma. Las aprobaciones en el informe llevan la firma de Elena Rojas.",
+    title: "Informe de auditoría",
+    detail: "Valdés había encontrado reembolsos fuera de norma. Las aprobaciones en el informe llevan la firma de Elena Rojas.",
   },
   {
     id: "watch",
     title: "Libro de guardia",
-    detail: "A las 22:02 el guardia anot� que Tom�s atend�a una llamada en recepci�n. El video del evento sit�a a Clara en el sal�n a la misma hora.",
+    detail: "A las 22:02 el guardia anotó que Tomás atendía una llamada en recepción. El video del evento sitúa a Clara en el salón a la misma hora.",
   },
 ];
 
 const cases = {
   onix: {
-    title: "El silencio del �nix",
-    brief: "A las 22:10 encuentran sin vida al auditor Adri�n Vald�s en la biblioteca del Hotel �nix. Hab�a citado a alguien para revisar un informe.",
+    title: "El silencio del Ónix",
+    brief: "A las 22:10 encuentran sin vida al auditor Adrián Valdés en la biblioteca del Hotel Ónix. Había citado a alguien para revisar un informe.",
     suspects: onixSuspects, evidence: onixEvidence, culprit: "elena", keyEvidence: ["access", "audit"],
-    solution: "La tarjeta A-17 era de Elena y abri� la biblioteca a las 22:02. El informe explica su motivo y el libro de guardia respalda las coartadas de Tom�s y Clara."
+    solution: "La tarjeta A-17 era de Elena y abrió la biblioteca a las 22:02. El informe explica su motivo y el libro de guardia respalda las coartadas de Tomás y Clara."
   },
   galeria: {
-    title: "La �ltima exposici�n",
-    brief: "A las 20:15 desapareci� la pintura La Aurora de la galer�a. La sala estaba cerrada al p�blico y solo tres personas permanec�an en el edificio.",
+    title: "La última exposición",
+    brief: "A las 20:15 desapareció la pintura La Aurora de la galería. La sala estaba cerrada al público y solo tres personas permanecían en el edificio.",
     culprit: "mateo", keyEvidence: ["door", "invoice"],
-    solution: "La puerta de carga se abri� con la tarjeta de Mateo a las 20:15. La factura demuestra que hab�a contratado un transporte para esa noche; la c�mara y el registro de caja respaldan a Luc�a y a Sara.",
+    solution: "La puerta de carga se abrió con la tarjeta de Mateo a las 20:15. La factura demuestra que había contratado un transporte para esa noche; la cámara y el registro de caja respaldan a Lucía y a Sara.",
     suspects: [
-      {id:"lucia", name:"Luc�a Vera", role:"Curadora", alibi:"A las 20:15 estaba hablando por videollamada desde el despacho. La c�mara del pasillo me muestra entrando y saliendo.", motive:"Preparaba la inauguraci�n. La pintura era esencial para la muestra.", evidence:{door:"No tengo tarjeta para la puerta de carga.", camera:"El registro del pasillo puede confirmar mi coartada."}},
-      {id:"mateo", name:"Mateo Cruz", role:"Encargado de montaje", alibi:"Estaba recogiendo herramientas en el taller; no sal� hacia la puerta de carga.", motive:"Estaba molesto por un pago pendiente, pero jam�s da�ar�a la exposici�n.", evidence:{door:"Mi tarjeta abre la puerta de carga, pero debe haber un error en el registro.", invoice:"La factura del transporte est� a mi nombre. Quer�a llevar algo fuera del edificio."}, admission:"Abr� la puerta de carga y retir� La Aurora. Pensaba venderla para cubrir mis deudas."},
-      {id:"sara", name:"Sara M�ndez", role:"Recepcionista", alibi:"Cerr� la caja entre las 20:10 y las 20:20; el sistema registra cada operaci�n.", motive:"Admiraba la pintura, pero no ten�a forma de abrir la sala.", evidence:{camera:"Mi cierre de caja deja constancia de d�nde estaba."}}
+      {id:"lucia", name:"Lucía Vera", role:"Curadora", alibi:"A las 20:15 estaba hablando por videollamada desde el despacho. La cámara del pasillo me muestra entrando y saliendo.", motive:"Preparaba la inauguración. La pintura era esencial para la muestra.", evidence:{door:"No tengo tarjeta para la puerta de carga.", camera:"El registro del pasillo puede confirmar mi coartada."}},
+      {id:"mateo", name:"Mateo Cruz", role:"Encargado de montaje", alibi:"Estaba recogiendo herramientas en el taller; no salí hacia la puerta de carga.", motive:"Estaba molesto por un pago pendiente, pero jamás dañaría la exposición.", evidence:{door:"Mi tarjeta abre la puerta de carga, pero debe haber un error en el registro.", invoice:"La factura del transporte está a mi nombre. Quería llevar algo fuera del edificio."}, admission:"Abrí la puerta de carga y retiré La Aurora. Pensaba venderla para cubrir mis deudas."},
+      {id:"sara", name:"Sara Méndez", role:"Recepcionista", alibi:"Cerré la caja entre las 20:10 y las 20:20; el sistema registra cada operación.", motive:"Admiraba la pintura, pero no tenía forma de abrir la sala.", evidence:{camera:"Mi cierre de caja deja constancia de dónde estaba."}}
     ],
     evidence: [
-      {id:"door", title:"Registro de la puerta", detail:"La puerta de carga se abri� a las 20:15 con una tarjeta asignada al encargado de montaje."},
-      {id:"invoice", title:"Factura de transporte", detail:"Mateo contrat� una furgoneta para recoger un paquete en la puerta de carga esa noche."},
-      {id:"camera", title:"C�mara y caja", detail:"La c�mara sit�a a Luc�a en el despacho; las operaciones de caja sit�an a Sara en recepci�n a las 20:15."}
+      {id:"door", title:"Registro de la puerta", detail:"La puerta de carga se abrió a las 20:15 con una tarjeta asignada al encargado de montaje."},
+      {id:"invoice", title:"Factura de transporte", detail:"Mateo contrató una furgoneta para recoger un paquete en la puerta de carga esa noche."},
+      {id:"camera", title:"Cámara y caja", detail:"La cámara sitúa a Lucía en el despacho; las operaciones de caja sitúan a Sara en recepción a las 20:15."}
     ]
   }
 };
@@ -125,7 +125,7 @@ function addTestimony(suspect, prompt, answer) {
   const item = document.createElement("li"), name = document.createElement("strong"), label = document.createElement("span"), quote = document.createElement("p");
   name.textContent = suspect.name; label.textContent = prompt; quote.textContent = answer;
   item.append(name, label, quote); log.prepend(item); logEmpty.hidden = true;
-  status.textContent = `${suspect.name} respondi�. ${answer}`;
+  status.textContent = `${suspect.name} respondió. ${answer}`;
 }
 function updateSuspect() { suspectRole.textContent = currentSuspect().role; updateEvidenceAction(); }
 suspectSelect.addEventListener("change", updateSuspect);
@@ -148,7 +148,7 @@ accusationForm.addEventListener("submit", (event) => {
   const accused = activeCase.suspects.find(({id}) => id === accusationSelect.value); if (!accused) return;
   const responsible = activeCase.suspects.find(({id}) => id === activeCase.culprit);
   finished = true; const correct = accused.id === activeCase.culprit;
-  verdictTitle.textContent = correct ? "Caso resuelto" : "La acusaci�n no coincide";
+  verdictTitle.textContent = correct ? "Caso resuelto" : "La acusación no coincide";
   byId("case-verdict-notice").textContent = correct ? `${responsible.name} era responsable.` : `Acusaste a ${accused.name}. Las pruebas apuntaban a ${responsible.name}.`;
   byId("case-verdict-reason").textContent = activeCase.solution;
   status.textContent = ""; accusationPanel.hidden = true; questionForm.querySelector("button").disabled = true;

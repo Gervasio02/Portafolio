@@ -1,11 +1,11 @@
 const slides = [
   {
     id: "taskflow",
-    category: "Gesti�n de trabajo",
+    category: "Gestión de trabajo",
     name: "TaskFlow",
     image: "taskflow.png",
-    alt: "Centro de control de TaskFlow con m�tricas y distribuci�n de tarjetas",
-    note: "Crea una tarjeta, c�mbiala de columna y mira c�mo se actualiza la distribuci�n del tablero.",
+    alt: "Centro de control de TaskFlow con métricas y distribución de tarjetas",
+    note: "Crea una tarjeta, cámbiala de columna y mira cómo se actualiza la distribución del tablero.",
   },
   {
     id: "reservaya",
@@ -17,10 +17,10 @@ const slides = [
   },
   {
     id: "tiendanova",
-    category: "Comercio electr�nico",
+    category: "Comercio electrónico",
     name: "TiendaNova",
     image: "tiendanova.jpg",
-    alt: "Cat�logo de TiendaNova con productos de escritorio",
+    alt: "Catálogo de TiendaNova con productos de escritorio",
     note: "Agrega un producto, simula un pago y revisa el pedido y el stock resultante.",
   },
   {
@@ -29,16 +29,16 @@ const slides = [
     name: "Snake",
     image: "snake.svg",
     alt: "Tablero de Snake con la serpiente y el marcador",
-    note: "Elige un modo, juega con teclado o controles t�ctiles y compara tu puntaje en el ranking.",
+    note: "Elige un modo, juega con teclado o controles táctiles y compara tu puntaje en el ranking.",
     href: "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     action: "Jugar Snake",
   },
   {
     id: "interrogatorio",
-    category: "Deducci�n � Prototipo",
+    category: "Deducción · Prototipo",
     name: "Interrogatorio",
     image: "interrogatorio.png",
-    alt: "Pruebas y sala de interrogatorio del Hotel �nix",
+    alt: "Pruebas y sala de interrogatorio del Hotel Ónix",
     note: "Elige un expediente, revisa las pruebas e interroga a los sospechosos.",
   },
 ];
@@ -93,7 +93,7 @@ function syncRotation() {
   const pointerInside = matchMedia("(hover: hover)").matches && carousel.matches(":hover");
   const focusInside = carousel.contains(document.activeElement) && !resumeAfterFocus;
   const canRotate = !manualPause && !pointerInside && !focusInside && !document.hidden;
-  toggle.textContent = manualPause ? "Reanudar rotaci�n" : "Pausar rotaci�n";
+  toggle.textContent = manualPause ? "Reanudar rotación" : "Pausar rotación";
   content.setAttribute("aria-live", canRotate ? "off" : "polite");
 
   if (canRotate) {

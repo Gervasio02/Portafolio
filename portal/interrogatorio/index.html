@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Investiga el caso ficticio del Hotel �nix. Revisa las pruebas, interroga a tres sospechosos y presenta tu conclusi�n.">
+  <meta name="description" content="Investiga el caso ficticio del Hotel Ónix. Revisa las pruebas, interroga a tres sospechosos y presenta tu conclusión.">
   <meta name="theme-color" content="#131713">
-  <title>Interrogatorio � Portafolio de Gervasio Torres</title>
+  <title>Interrogatorio · Portafolio de Gervasio Torres</title>
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../proyectos.css">
   <link rel="stylesheet" href="caso.css">
   <script src="caso.js" defer></script>
 </head>
 <body class="project-page case-page">
-  <a class="skip" href="#demo">Saltar a la investigaci�n</a>
+  <a class="skip" href="#demo">Saltar a la investigación</a>
   <header class="shell top">
     <a class="brand" href="../index.html" aria-label="Inicio del portafolio">GT<span>.</span></a>
     <nav aria-label="Principal">
@@ -23,15 +23,15 @@
   <main class="shell">
     <section class="case-hero" aria-labelledby="case-title">
       <div>
-        <p class="eyebrow">Interrogatorio � Prototipo jugable</p>
+        <p class="eyebrow">Interrogatorio · Prototipo jugable</p>
         <h1 id="case-title">La verdad deja huellas.</h1>
-        <p class="project-summary">Dos expedientes. Tres sospechosos en cada uno. Examina las pruebas, contrasta los testimonios y decide qui�n dice la verdad.</p>
+        <p class="project-summary">Dos expedientes. Tres sospechosos en cada uno. Examina las pruebas, contrasta los testimonios y decide quién dice la verdad.</p>
         <a class="hero-link" href="#demo">Abrir expediente</a>
       </div>
-      <ol class="case-timeline" aria-label="C�mo jugar">
+      <ol class="case-timeline" aria-label="Cómo jugar">
         <li><span>01</span><p>Elige un expediente y revisa las pruebas.</p></li>
         <li><span>02</span><p>Interroga a los sospechosos y presenta evidencia.</p></li>
-        <li><span>03</span><p>Acusa y descubre la resoluci�n del caso.</p></li>
+        <li><span>03</span><p>Acusa y descubre la resolución del caso.</p></li>
       </ol>
     </section>
 
@@ -41,7 +41,7 @@
           <h2 id="case-play-title">Investiga el caso</h2>
           <p>Estos casos ficticios usan respuestas predefinidas. Juegas en tu navegador, sin IA, cuentas ni datos personales.</p>
         </div>
-        <div class="case-picker"><label for="case-choice">Elegir expediente</label><select id="case-choice" class="case-control"><option value="onix">El silencio del �nix</option><option value="galeria">La �ltima exposici�n</option></select><button type="button" class="quiet" id="case-reset">Reiniciar caso</button></div>
+        <div class="case-picker"><label for="case-choice">Elegir expediente</label><select id="case-choice" class="case-control"><option value="onix">El silencio del Ónix</option><option value="galeria">La última exposición</option></select><button type="button" class="quiet" id="case-reset">Reiniciar caso</button></div>
       </div>
       <div class="case-grid">
         <section class="case-panel case-evidence" aria-labelledby="evidence-title">
@@ -58,8 +58,8 @@
           <form class="case-action" id="interview-form">
             <label class="field">Pregunta
               <select id="interview-question">
-                <option value="alibi">�D�nde estaba a la hora del incidente?</option>
-                <option value="motive">�Qu� relaci�n ten�a con lo ocurrido?</option>
+                <option value="alibi">¿Dónde estaba a la hora del incidente?</option>
+                <option value="motive">¿Qué relación tenía con lo ocurrido?</option>
               </select>
             </label>
             <button type="submit" class="lab-action primary">Preguntar</button>
@@ -73,8 +73,8 @@
             <button type="submit" class="lab-action" disabled>Presentar prueba</button>
           </form>
 
-          <h4>�ltimos testimonios</h4>
-          <p class="case-muted" id="interview-empty">Todav�a no has interrogado a nadie.</p>
+          <h4>Últimos testimonios</h4>
+          <p class="case-muted" id="interview-empty">Todavía no has interrogado a nadie.</p>
           <ol class="case-log" id="interview-log" aria-label="Testimonios en orden inverso"></ol>
         </section>
       </div>
@@ -86,10 +86,10 @@
           <p class="case-muted" id="accusation-hint">Revisa dos pruebas y haz al menos una pregunta antes de acusar.</p>
         </div>
         <form class="case-action" id="accusation-form">
-          <label class="field">�A qui�n acusas?
+          <label class="field">¿A quién acusas?
             <select id="accusation-suspect" required><option value="">Elige un sospechoso</option></select>
           </label>
-          <button type="submit" class="lab-action primary" disabled aria-describedby="accusation-hint">Confirmar acusaci�n</button>
+          <button type="submit" class="lab-action primary" disabled aria-describedby="accusation-hint">Confirmar acusación</button>
         </form>
       </div>
       <section class="case-panel case-verdict" id="case-verdict" aria-labelledby="case-verdict-title" hidden>
@@ -103,12 +103,12 @@
 
     <section class="project-technical" aria-labelledby="technical-title">
       <div>
-        <h2 id="technical-title">C�mo est� hecho</h2>
+        <h2 id="technical-title">Cómo está hecho</h2>
         <p>Interfaz y reglas del caso en JavaScript</p>
       </div>
       <p>Dos expedientes breves, pistas y respuestas escritas a mano. Las reglas y el progreso viven en el navegador; esta demo no utiliza IA ni almacena datos en un servidor.</p>
     </section>
   </main>
-  <footer class="shell footer"><span>Interrogatorio � Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
+  <footer class="shell footer"><span>Interrogatorio · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
 </body>
 </html>
