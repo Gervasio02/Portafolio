@@ -330,3 +330,15 @@
 }
 
 .source-link:hover { color: var(--mint); }
+
+.portfolio-home [data-theme="snake"],
+.portfolio-home .project-snake {
+  --project-accent: #b6f188;
+  --project-surface: #264632;
+}
+
+.portfolio-home [data-theme="interrogatorio"],
+.portfolio-home .project-interrogatorio {
+  --project-accent: #aee2d9;
+  --project-surface: #284743;
+}

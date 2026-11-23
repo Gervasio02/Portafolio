@@ -23,6 +23,24 @@ const slides = [
     alt: "Catálogo de TiendaNova con productos de escritorio",
     note: "Agrega un producto, simula un pago y revisa el pedido y el stock resultante.",
   },
+  {
+    id: "snake",
+    category: "Juego interactivo",
+    name: "Snake",
+    image: "snake.svg",
+    alt: "Tablero de Snake con la serpiente y el marcador",
+    note: "Elige un modo, juega con teclado o controles táctiles y compara tu puntaje en el ranking.",
+    href: "https://snake-gervasio.salmondune-b960483d.chilecentral.azurecontainerapps.io/",
+    action: "Jugar Snake",
+  },
+  {
+    id: "interrogatorio",
+    category: "Deducción · Prototipo",
+    name: "Interrogatorio",
+    image: "interrogatorio.png",
+    alt: "Pruebas y sala de interrogatorio del Hotel Ónix",
+    note: "Revisa las pruebas, escucha los testimonios y descubre quién entró a la biblioteca.",
+  },
 ];
 
 const carousel = document.querySelector("[data-slider]");
@@ -52,8 +70,8 @@ function showSlide(index) {
   category.textContent = slide.category;
   name.textContent = slide.name;
   note.textContent = slide.note;
-  link.href = slide.id + "/index.html#demo";
-  link.textContent = "Probar " + slide.name;
+  link.href = slide.href ?? slide.id + "/index.html#demo";
+  link.textContent = slide.action ?? "Probar " + slide.name;
 
   for (const [position, button] of selectors.entries()) {
     button.setAttribute("aria-pressed", String(position === current));

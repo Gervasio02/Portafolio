@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Investiga el caso ficticio del Hotel Ónix. Revisa las pruebas, interroga a tres sospechosos y presenta tu conclusión.">
+  <meta name="theme-color" content="#131713">
+  <title>Interrogatorio · Portafolio de Gervasio Torres</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../proyectos.css">
+  <link rel="stylesheet" href="caso.css">
+  <script src="caso.js" defer></script>
+</head>
+<body class="project-page case-page">
+  <a class="skip" href="#demo">Saltar a la investigación</a>
+  <header class="shell top">
+    <a class="brand" href="../index.html" aria-label="Inicio del portafolio">GT<span>.</span></a>
+    <nav aria-label="Principal">
+      <a href="../index.html#proyectos">Proyectos</a>
+      <a href="../laboratorio.html">Demos</a>
+    </nav>
+  </header>
+  <main class="shell">
+    <section class="case-hero" aria-labelledby="case-title">
+      <div>
+        <p class="eyebrow">Interrogatorio · Prototipo jugable</p>
+        <h1 id="case-title">El silencio del Ónix.</h1>
+        <p class="project-summary">A las 22:10 encontraron sin vida al auditor Adrián Valdés en la biblioteca del Hotel Ónix. Había citado a alguien para entregar un informe de cuentas. Compara los registros con las coartadas y averigua quién entró.</p>
+        <a class="hero-link" href="#demo">Abrir expediente</a>
+      </div>
+      <ol class="case-timeline" aria-label="Cronología inicial">
+        <li><span>21:40</span><p>Valdés revisa las cuentas del hotel en la biblioteca.</p></li>
+        <li><span>22:02</span><p>El sistema registra una apertura de la puerta interior.</p></li>
+        <li><span>22:10</span><p>El guardia encuentra a Valdés.</p></li>
+      </ol>
+    </section>
+
+    <section class="case-play" aria-labelledby="case-play-title" id="demo">
+      <div class="case-section-head">
+        <div>
+          <h2 id="case-play-title">Investiga el caso</h2>
+          <p>Este caso ficticio usa respuestas predefinidas. Juegas en tu navegador, sin IA, cuentas ni datos personales.</p>
+        </div>
+        <button type="button" class="quiet" id="case-reset">Reiniciar caso</button>
+      </div>
+      <div class="case-grid">
+        <section class="case-panel case-evidence" aria-labelledby="evidence-title">
+          <h3 id="evidence-title">Pruebas del expediente</h3>
+          <p id="evidence-count" class="case-muted">0 de 3 revisadas</p>
+          <div id="case-clues"></div>
+        </section>
+        <section class="case-panel case-interview" aria-labelledby="interview-title">
+          <h3 id="interview-title">Sala de interrogatorio</h3>
+          <label class="field" for="interview-suspect">Sospechoso</label>
+          <select class="case-control" id="interview-suspect"></select>
+          <p class="case-muted" id="interview-role"></p>
+
+          <form class="case-action" id="interview-form">
+            <label class="field">Pregunta
+              <select id="interview-question">
+                <option value="alibi">¿Dónde estaba a las 22:02?</option>
+                <option value="motive">¿Por qué hablaría con Valdés?</option>
+              </select>
+            </label>
+            <button type="submit" class="lab-action primary">Preguntar</button>
+          </form>
+          <form class="case-action" id="evidence-form">
+            <label class="field">Prueba para presentar
+              <select id="interview-evidence">
+                <option value="">Revisa una prueba primero</option>
+              </select>
+            </label>
+            <button type="submit" class="lab-action" disabled>Presentar prueba</button>
+          </form>
+
+          <h4>Últimos testimonios</h4>
+          <p class="case-muted" id="interview-empty">Todavía no has interrogado a nadie.</p>
+          <ol class="case-log" id="interview-log" aria-label="Testimonios en orden inverso"></ol>
+        </section>
+      </div>
+      <p class="case-status" id="case-status" role="status" aria-live="polite"></p>
+      <div class="case-panel case-accusation" id="accusation-panel">
+        <div>
+          <h3>Cierra el expediente</h3>
+          <p class="case-muted" id="accusation-hint">Revisa dos pruebas y haz al menos una pregunta antes de acusar.</p>
+        </div>
+        <form class="case-action" id="accusation-form">
+          <label class="field">¿A quién acusas?
+            <select id="accusation-suspect" required><option value="">Elige un sospechoso</option></select>
+          </label>
+          <button type="submit" class="lab-action primary" disabled aria-describedby="accusation-hint">Confirmar acusación</button>
+        </form>
+      </div>
+      <section class="case-panel case-verdict" id="case-verdict" aria-labelledby="case-verdict-title" hidden>
+        <h3 id="case-verdict-title" tabindex="-1"></h3>
+        <p id="case-verdict-notice"></p>
+        <p id="case-verdict-reason"></p>
+        <button type="button" class="lab-action" id="case-retry">Jugar de nuevo</button>
+      </section>
+      <noscript><p>Activa JavaScript para jugar este caso.</p></noscript>
+    </section>
+
+    <section class="project-technical" aria-labelledby="technical-title">
+      <div>
+        <h2 id="technical-title">Cómo está hecho</h2>
+        <p>Interfaz y reglas del caso en JavaScript</p>
+      </div>
+      <p>El prototipo muestra cómo se registran pruebas y cómo cambian los testimonios al presentar evidencia. La versión full stack del proyecto se desarrolla por separado con React, FastAPI y SQLAlchemy.</p>
+    </section>
+  </main>
+  <footer class="shell footer"><span>Interrogatorio · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
+</body>
+</html>
