@@ -220,7 +220,7 @@ export function boardRoutes(db) {
       const column = await columnOnBoard(tx, data.columnId, id);
       await checkCapacity(tx, column);
       await checkAssignee(tx, id, data.assigneeId);
-      return tx.card.create({
+      const created = await tx.card.create({
         data: {
           ...properties(data),
           slaDueAt: data.slaHours ? new Date(Date.now() + data.slaHours * 3600000) : null,
@@ -228,6 +228,8 @@ export function boardRoutes(db) {
           position: await nextPosition(tx, data.columnId),
         },
       });
+      await tx.activity.create({ data: { boardId: id, cardId: created.id, actorId: req.userId, action: "CREATED", body: "Se creó la tarjeta." } });
+      return created;
     });
     res.status(201).json(card);
   });

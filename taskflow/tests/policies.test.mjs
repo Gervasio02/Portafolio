@@ -14,7 +14,7 @@ function fixture({role='OWNER',count=1,limit=1,assignee=true}={}) {
     membership:{findUnique:async({where})=>where.boardId_userId.userId===user?(role?{role}:null):(assignee?{role:'EDITOR'}:null)},
     activity:{create:async({data})=>data,findMany:async()=>[]},
     column:{findFirst:async()=>({id:column,wipLimit:limit}),update:async({data})=>data},
-    card:{findFirst:async()=>({id:column}),count:async()=>count,aggregate:async()=>({_max:{position:0}}),create:async({data})=>{created=true;return data;}},
+    card:{findFirst:async()=>({id:column}),count:async()=>count,aggregate:async()=>({_max:{position:0}}),create:async({data})=>{created=true;return {id: column,...data};}},
   };
   const app=express();app.use(express.json());app.use((req,res,next)=>{req.userId=user;next();});
   app.use(boardRoutes({$transaction:async action=>action(tx)}));

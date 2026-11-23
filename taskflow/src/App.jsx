@@ -299,7 +299,7 @@ function Column({
       <header className="column-head">
         <span className="column-dot" />
         <h2>{column.title}</h2>
-        <span className="count">{visible.length}{column.wipLimit ? ` / ${column.wipLimit}` : ""}</span>
+        <span className="count">{column.cards.length}{column.wipLimit ? ` / ${column.wipLimit}` : ""}</span>
         {editable && (
           <button
             className="icon"

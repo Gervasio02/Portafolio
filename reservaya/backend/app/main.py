@@ -226,6 +226,46 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def list_admin_bookings(user: AdminDep, session: DB) -> list[BookingOut]:
         return select_bookings(session)
 
+    @app.get("/api/admin/occupancy", tags=["Administración"])
+    def occupancy(day: date, user: AdminDep, session: DB, court_id: int | None = None) -> dict:
+        # A snapshot using today's configured schedule; later schedule changes can
+        # alter historical reports, so this is not a historical capacity ledger.
+        query = select(Schedule).where(Schedule.weekday == day.weekday())
+        if court_id is not None:
+            if session.get(Court, court_id) is None:
+                raise HTTPException(404, "Cancha no encontrada.")
+            query = query.where(Schedule.court_id == court_id)
+        schedule = session.scalars(query).all()
+        slots = {(item.court_id, slot_time(day, item.hour)) for item in schedule}
+        times = {start for _, start in slots}
+        court_ids = {court for court, _ in slots}
+        blocked = {
+            (item.court_id, db_utc(item.starts_at))
+            for item in session.scalars(
+                select(Block).where(Block.court_id.in_(court_ids), Block.starts_at.in_(times))
+            )
+        }
+        reserved = {
+            (item.court_id, db_utc(item.starts_at))
+            for item in session.scalars(
+                select(Booking).where(
+                    Booking.court_id.in_(court_ids),
+                    Booking.starts_at.in_(times),
+                    Booking.status == "confirmed",
+                )
+            )
+        }
+        usable = slots - blocked
+        occupied = len(usable & reserved)
+        return {
+            "day": day.isoformat(),
+            "scheduled": len(slots),
+            "blocked": len(slots & blocked),
+            "bookable": len(usable),
+            "occupied": occupied,
+            "percentage": round(100 * occupied / len(usable), 1) if usable else None,
+        }
+
     @app.get("/api/admin/courts", tags=["Administración"])
     def courts(user: AdminDep, session: DB) -> list[dict]:
         return [

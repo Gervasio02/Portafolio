@@ -108,7 +108,7 @@ test("card comments respect membership and changes are recorded transactionally"
   await request(app).patch(route).set(access(owner)).send({title:"Revisado"}).expect(200);
   await request(app).post(`${route}/move`).set(access(owner)).send({columnId:board.columns[1].id}).expect(204);
   const response = await request(app).get(`${route}/activity`).set(access(owner)).expect(200);
-  expect(response.body.map(row=>row.action)).toEqual(expect.arrayContaining(["COMMENT","UPDATED","MOVED"]));
+  expect(response.body.map(row=>row.action)).toEqual(expect.arrayContaining(["CREATED","COMMENT","UPDATED","MOVED"]));
   expect(response.body.find(row=>row.action==="COMMENT").body).toBe("Validado");
 });
 

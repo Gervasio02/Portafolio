@@ -90,6 +90,29 @@ def test_auth_protects_client_and_admin(app):
         assert client.get("/api/auth/me").status_code == 401
 
 
+def test_admin_occupancy_excludes_blocked_slots_and_cancelled_bookings(app):
+    with TestClient(app) as client, TestClient(app) as admin:
+        assert login(client).status_code == 200
+        assert client.get(f"/api/admin/occupancy?day={DAY}").status_code == 403
+        assert login(admin, ADMIN_EMAIL).status_code == 200
+        route = f"/api/admin/occupancy?day={DAY}&court_id=1"
+        before = admin.get(route).json()
+        booking = reserve(client, hour=9).json()
+        after = admin.get(route).json()
+        assert after["occupied"] == before["occupied"] + 1
+        assert after["bookable"] == before["bookable"]
+        assert client.delete(f"/api/bookings/{booking['id']}").status_code == 200
+        assert admin.get(route).json()["occupied"] == before["occupied"]
+        block = admin.post(
+            "/api/admin/courts/1/blocks", json={"day": DAY, "hour": 9, "reason": "Mantenimiento"}
+        )
+        assert block.status_code == 201
+        blocked = admin.get(route).json()
+        assert blocked["blocked"] == before["blocked"] + 1
+        assert blocked["bookable"] == before["bookable"] - 1
+        assert admin.get(f"/api/admin/occupancy?day={DAY}&court_id=9999").status_code == 404
+
+
 def test_booking_cancellation_releases_slot_and_preserves_history(app):
     with TestClient(app) as client, TestClient(app) as other:
         assert login(client).status_code == 200

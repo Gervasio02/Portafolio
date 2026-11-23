@@ -416,6 +416,15 @@ function AdminTools() {
     queryFn: () => api<Booking[]>("/admin/bookings"),
     refetchInterval: 30000,
   });
+  const selectedCourtId = courts.data?.find((item) => item.name === bookingCourt)?.id;
+  const occupancy = useQuery({
+    queryKey: ["occupancy", day, selectedCourtId],
+    enabled: Boolean(day) && (!bookingCourt || selectedCourtId !== undefined),
+    refetchInterval: 30000,
+    queryFn: () => api<{ scheduled: number; blocked: number; bookable: number; occupied: number; percentage: number | null }>(
+      `/admin/occupancy?day=${day}${selectedCourtId === undefined ? "" : `&court_id=${selectedCourtId}`}`,
+    ),
+  });
   const courtId = court ?? courts.data?.[0]?.id;
   const visible = (bookings.data ?? []).filter(
     (booking) =>
@@ -482,6 +491,13 @@ function AdminTools() {
                 <dd>{price(confirmedAmount)}</dd>
               </div>
             </dl>
+            {occupancy.isFetching && !occupancy.data && <p>Cargando ocupación…</p>}
+            {occupancy.error && <p role="alert" className="error">No se pudo cargar la ocupación: {occupancy.error.message}</p>}
+            {occupancy.data && <p>
+              Ocupación: {occupancy.data.percentage === null ? "sin turnos reservables" : `${occupancy.data.percentage}%`}
+              {` (${occupancy.data.occupied} de ${occupancy.data.bookable} turnos; ${occupancy.data.blocked} bloqueados).`}
+              {" "}Calculada con el horario configurado actualmente; los cambios de horario pueden modificar el cálculo de fechas anteriores.
+            </p>}
             <BookingList admin bookings={visible} />
           </>
         )}

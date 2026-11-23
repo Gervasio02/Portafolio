@@ -8,6 +8,8 @@ En Mis reservas puede descargarse un comprobante JSON con referencia, instalaci�
 
 Sistema de reservas para un centro deportivo ficticio de Rancagua, Chile. Permite encontrar canchas de fútbol, pádel y tenis, confirmar un turno de 60 minutos, consultar el historial y cancelar antes de que comience. El objetivo es reducir la coordinación manual de turnos y evitar que una cancha se venda dos veces. La administración controla servicios, disponibilidad y bloqueos. El calendario visual anuncia el próximo turno libre, distingue reservas, bloqueos y horas pasadas, y refleja los cambios de disponibilidad al volver a la página o cada 30 segundos mientras está visible. El panel administrativo desglosa las reservas y su monto por fecha y cancha.
 
+El panel también calcula la ocupación del día y la cancha seleccionados como reservas confirmadas divididas por turnos programados sin bloqueo. Es una vista basada en el horario configurado actualmente: si se modifica ese horario, los cálculos de fechas anteriores pueden cambiar. No representa ingresos cobrados ni un registro histórico inmutable.
+
 **Tecnologías:** React, TypeScript, Vite, React Router, TanStack Query, Tailwind CSS, FastAPI, SQLAlchemy, PostgreSQL y Alembic.
 
 ## Demo local
@@ -83,6 +85,7 @@ npm run build
 | GET / POST `/api/bookings` | Historial y creación |
 | DELETE `/api/bookings/{id}` | Cancelación |
 | GET `/api/admin/bookings`, `/api/admin/courts` | Calendario y canchas |
+| GET `/api/admin/occupancy?day=YYYY-MM-DD&court_id=1` | Ocupación sobre horarios actuales; la cancha es opcional |
 | GET / POST `/api/admin/services`, PUT `/api/admin/services/{id}` | Servicios |
 | GET / PUT `/api/admin/courts/{id}/schedule` | Horario semanal |
 | GET / POST `/api/admin/courts/{id}/blocks`, DELETE `/api/admin/blocks/{id}` | Bloqueos puntuales |
