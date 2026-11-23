@@ -112,6 +112,17 @@ test("card comments respect membership and changes are recorded transactionally"
   expect(response.body.find(row=>row.action==="COMMENT").body).toBe("Validado");
 });
 
+test("PostgreSQL serializes competing creates at the WIP limit", async () => {
+  const board = await createBoard(owner);
+  const columnId = board.columns[0].id;
+  await request(app).patch(`/api/boards/${board.id}/columns/${columnId}`).set(access(owner)).send({wipLimit:1}).expect(200);
+  const attempts = await Promise.all(["A","B","C"].map(title => request(app).post(`/api/boards/${board.id}/cards`).set(access(owner)).send({title,columnId,assigneeId:owner.user.id})));
+  expect(attempts.map(result=>result.status).sort()).toEqual([201,409,409]);
+  const persisted = await boardDetail(board.id, owner);
+  expect(persisted.columns[0].cards).toHaveLength(1);
+  expect(persisted.columns[0].cards[0].assigneeId).toBe(owner.user.id);
+});
+
 test("health, sesión protegida, registro, login, refresh rotatorio y logout", async () => {
   const guest = request.agent(app);
   await guest.get("/api/health").expect(200, { status: "ok" });

@@ -34,3 +34,17 @@ Consulta [PUBLICACION.md](PUBLICACION.md) para preparar GitHub y Azure.
 ## Catálogo y laboratorios
 
 El catálogo en `portal/proyectos/` permite buscar por nombre, tipo y tecnologías y consultar arquitectura y aprendizajes. DataLab, DocFlow y CloudOps se ejecutan localmente desde [labs/README.md](labs/README.md); sus enlaces indican esa condición. No se han publicado esos laboratorios. El estado verificable de las fases está en [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Pruebas con PostgreSQL local en Windows
+
+Usa PowerShell 7, Node 24, las dependencias npm instaladas y el entorno Python de ReservaYa en `reservaya/backend/.venv` con `requirements-dev.txt`. Los [binarios oficiales de PostgreSQL para Windows](https://www.enterprisedb.com/download-postgresql-binaries) pueden extraerse fuera del repositorio, sin instalar un servicio del sistema. En este equipo se verificó PostgreSQL 16.15.
+
+```powershell
+.\scripts\Test-LocalDatabases.ps1 -PgBin 'C:\ruta\pgsql\bin'
+# Repetir solo una aplicación:
+.\scripts\Test-LocalDatabases.ps1 -Application taskflow
+```
+
+El valor predeterminado de `PgBin` es `%LOCALAPPDATA%/CodexTools/postgresql-test/pgsql/bin`. El script crea su propio clúster bajo `%LOCALAPPDATA%/CodexTools/postgresql-test/server`, escucha en `127.0.0.1:55432` y mantiene tres bases cuyos nombres terminan en `_test`. Aplica migraciones, genera clientes y ejecuta pruebas de API, interfaz y cobertura existentes. ReservaYa prueba además migraciones de ida y vuelta y operaciones concurrentes.
+
+La contraseña se genera aleatoriamente y se conserva cifrada con la cuenta Windows mediante Export-Clixml. No se guarda en el repositorio ni se imprime. El servidor se detiene al terminar si lo inició el script y las variables de entorno se restauran. El script no descarga dependencias ni modifica bases productivas. Las pruebas de ReservaYa reinician su esquema de pruebas; utiliza exclusivamente el clúster aislado indicado.
