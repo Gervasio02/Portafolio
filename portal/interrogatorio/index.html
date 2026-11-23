@@ -24,14 +24,14 @@
     <section class="case-hero" aria-labelledby="case-title">
       <div>
         <p class="eyebrow">Interrogatorio · Prototipo jugable</p>
-        <h1 id="case-title">El silencio del Ónix.</h1>
-        <p class="project-summary">A las 22:10 encontraron sin vida al auditor Adrián Valdés en la biblioteca del Hotel Ónix. Había citado a alguien para entregar un informe de cuentas. Compara los registros con las coartadas y averigua quién entró.</p>
+        <h1 id="case-title">La verdad deja huellas.</h1>
+        <p class="project-summary">Dos expedientes. Tres sospechosos en cada uno. Examina las pruebas, contrasta los testimonios y decide quién dice la verdad.</p>
         <a class="hero-link" href="#demo">Abrir expediente</a>
       </div>
-      <ol class="case-timeline" aria-label="Cronología inicial">
-        <li><span>21:40</span><p>Valdés revisa las cuentas del hotel en la biblioteca.</p></li>
-        <li><span>22:02</span><p>El sistema registra una apertura de la puerta interior.</p></li>
-        <li><span>22:10</span><p>El guardia encuentra a Valdés.</p></li>
+      <ol class="case-timeline" aria-label="Cómo jugar">
+        <li><span>01</span><p>Elige un expediente y revisa las pruebas.</p></li>
+        <li><span>02</span><p>Interroga a los sospechosos y presenta evidencia.</p></li>
+        <li><span>03</span><p>Acusa y descubre la resolución del caso.</p></li>
       </ol>
     </section>
 
@@ -39,14 +39,14 @@
       <div class="case-section-head">
         <div>
           <h2 id="case-play-title">Investiga el caso</h2>
-          <p>Este caso ficticio usa respuestas predefinidas. Juegas en tu navegador, sin IA, cuentas ni datos personales.</p>
+          <p>Estos casos ficticios usan respuestas predefinidas. Juegas en tu navegador, sin IA, cuentas ni datos personales.</p>
         </div>
-        <button type="button" class="quiet" id="case-reset">Reiniciar caso</button>
+        <div class="case-picker"><label for="case-choice">Elegir expediente</label><select id="case-choice" class="case-control"><option value="onix">El silencio del Ónix</option><option value="galeria">La última exposición</option></select><button type="button" class="quiet" id="case-reset">Reiniciar caso</button></div>
       </div>
       <div class="case-grid">
         <section class="case-panel case-evidence" aria-labelledby="evidence-title">
           <h3 id="evidence-title">Pruebas del expediente</h3>
-          <p id="evidence-count" class="case-muted">0 de 3 revisadas</p>
+          <p id="evidence-count" class="case-muted">0 de 3 revisadas</p><p id="case-brief" class="case-muted"></p>
           <div id="case-clues"></div>
         </section>
         <section class="case-panel case-interview" aria-labelledby="interview-title">
@@ -58,8 +58,8 @@
           <form class="case-action" id="interview-form">
             <label class="field">Pregunta
               <select id="interview-question">
-                <option value="alibi">¿Dónde estaba a las 22:02?</option>
-                <option value="motive">¿Por qué hablaría con Valdés?</option>
+                <option value="alibi">¿Dónde estaba a la hora del incidente?</option>
+                <option value="motive">¿Qué relación tenía con lo ocurrido?</option>
               </select>
             </label>
             <button type="submit" class="lab-action primary">Preguntar</button>
@@ -78,6 +78,7 @@
           <ol class="case-log" id="interview-log" aria-label="Testimonios en orden inverso"></ol>
         </section>
       </div>
+      <div class="case-panel"><label for="detective-notes"><strong>Cuaderno del detective</strong></label><p class="case-muted">Anota lo que quieras recordar durante esta partida.</p><textarea id="detective-notes" class="case-control" rows="3" maxlength="1500" placeholder="Mis deducciones..."></textarea></div>
       <p class="case-status" id="case-status" role="status" aria-live="polite"></p>
       <div class="case-panel case-accusation" id="accusation-panel">
         <div>
@@ -105,7 +106,7 @@
         <h2 id="technical-title">Cómo está hecho</h2>
         <p>Interfaz y reglas del caso en JavaScript</p>
       </div>
-      <p>El prototipo muestra cómo se registran pruebas y cómo cambian los testimonios al presentar evidencia. La versión full stack del proyecto se desarrolla por separado con React, FastAPI y SQLAlchemy.</p>
+      <p>Dos expedientes breves, pistas y respuestas escritas a mano. Las reglas y el progreso viven en el navegador; esta demo no utiliza IA ni almacena datos en un servidor.</p>
     </section>
   </main>
   <footer class="shell footer"><span>Interrogatorio · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>

@@ -39,7 +39,7 @@ const slides = [
     name: "Interrogatorio",
     image: "interrogatorio.png",
     alt: "Pruebas y sala de interrogatorio del Hotel Ónix",
-    note: "Revisa las pruebas, escucha los testimonios y descubre quién entró a la biblioteca.",
+    note: "Elige un expediente, revisa las pruebas e interroga a los sospechosos.",
   },
 ];
 
