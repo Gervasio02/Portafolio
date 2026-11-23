@@ -27,7 +27,7 @@ from .schemas import (
     SlotOut,
 )
 from .settings import Settings
-from .time_slots import available_day, db_utc, future_slot, now_utc, slot_time
+from .time_slots import available_day, db_utc, future_slot, now_utc, slot_price, slot_time
 
 log = logging.getLogger("uvicorn.error")
 
@@ -143,7 +143,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             else:
                 status = "available"
             slots.append(SlotOut(hour=hour, available=status == "available", status=status))
-        return AvailabilityOut(day=day, slots=slots)
+        return AvailabilityOut(
+            day=day, slots=slots, rates={hour: slot_price(service.price, hour) for hour in hours}
+        )
 
     @app.post(
         "/api/bookings",
@@ -175,12 +177,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             court_id=court.id,
             starts_at=starts_at,
             created_at=now_utc(),
-            price=service.price,
+            price=slot_price(service.price, data.hour),
         )
         session.add(reservation)
         commit(session, "Otra persona ya reservó este horario.")
         log.info("confirmación de reserva simulada: reserva=%d", reservation.id)
         return as_booking(reservation, service.name, court.name)
+
+    @app.get("/api/bookings/{booking_id}/receipt", tags=["Reservas"])
+    def receipt(booking_id: int, user: AccountDep, session: DB) -> dict:
+        query = select(Booking).where(Booking.id == booking_id)
+        if user.role != "admin":
+            query = query.where(Booking.user_id == user.id)
+        reservation = session.scalar(query)
+        if reservation is None:
+            raise HTTPException(404, "Reserva no encontrada.")
+        service = session.get(Service, reservation.service_id)
+        court = session.get(Court, reservation.court_id)
+        return {
+            "reference": f"RY-{reservation.id}",
+            "simulated": True,
+            "booking": as_booking(reservation, service.name, court.name).model_dump(),
+            "note": "Comprobante de reserva simulada, sin validez tributaria. El estado refleja la consulta actual.",
+        }
 
     @app.get("/api/bookings", response_model=list[BookingOut], tags=["Reservas"])
     def bookings(user: AccountDep, session: DB) -> list[BookingOut]:

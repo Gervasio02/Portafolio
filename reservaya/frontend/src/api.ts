@@ -25,7 +25,7 @@ export type Booking = {
 };
 export type SlotStatus = "available" | "booked" | "blocked" | "elapsed";
 export type Slot = { hour: number; available: boolean; status: SlotStatus };
-export type Availability = { day: string; slots: Slot[] };
+export type Availability = { day: string; slots: Slot[]; rates?: Record<number, number> };
 export type Court = { id: number; name: string };
 export type Schedule = { weekday: number; hours: number[] };
 export type Block = { id: number; starts_at: string; reason: string };

@@ -1,5 +1,11 @@
 # ReservaYa
 
+## Tarifas y comprobantes de demostración
+
+Los turnos que comienzan a las 18, 19, 20 o 21 horas de Santiago tienen un recargo del 20 % sobre el precio base administrado para el servicio. Los demás mantienen el precio base. La API publica las tarifas por hora en `rates` de la disponibilidad y calcula nuevamente el precio dentro de la transacción de reserva. El total confirmado se conserva en la reserva aunque después cambie el precio del servicio. No hay pagos reales.
+
+En Mis reservas puede descargarse un comprobante JSON con referencia, instalación, fecha, precio confirmado y estado actual. La ruta `/api/bookings/{id}/receipt` exige sesión y permite acceso únicamente al titular o administración. Es un documento de demostración sin validez tributaria; después de cancelar, el comprobante refleja la cancelación. No se utiliza un QR público porque las reservas requieren sesión.
+
 Sistema de reservas para un centro deportivo ficticio de Rancagua, Chile. Permite encontrar canchas de fútbol, pádel y tenis, confirmar un turno de 60 minutos, consultar el historial y cancelar antes de que comience. El objetivo es reducir la coordinación manual de turnos y evitar que una cancha se venda dos veces. La administración controla servicios, disponibilidad y bloqueos. El calendario visual anuncia el próximo turno libre, distingue reservas, bloqueos y horas pasadas, y refleja los cambios de disponibilidad al volver a la página o cada 30 segundos mientras está visible. El panel administrativo desglosa las reservas y su monto por fecha y cancha.
 
 **Tecnologías:** React, TypeScript, Vite, React Router, TanStack Query, Tailwind CSS, FastAPI, SQLAlchemy, PostgreSQL y Alembic.

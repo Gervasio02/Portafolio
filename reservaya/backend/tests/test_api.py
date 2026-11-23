@@ -227,3 +227,33 @@ def test_chile_summer_and_winter_offset_and_serializer():
     assert slot_time(date(2027, 7, 5), 18).hour == 22
     assert db_utc(datetime(2027, 1, 5, 21)).tzinfo is UTC
     assert normalise_database_url("postgres://hi") == "postgresql+psycopg://hi"
+
+
+def test_peak_tariffs_and_private_receipt_keep_the_confirmed_price(app):
+    with TestClient(app) as client, TestClient(app) as other, TestClient(app) as admin:
+        assert login(client).status_code == 200
+        assert signup(other).status_code == 201
+        assert login(admin, ADMIN_EMAIL).status_code == 200
+        rates = client.get(f"/api/services/1/availability?day={DAY}").json()["rates"]
+        assert rates["9"] == 24000
+        assert rates["18"] == 28800
+        booking = reserve(client, hour=18).json()
+        assert booking["price"] == 28800
+        route = f"/api/bookings/{booking['id']}/receipt"
+        assert other.get(route).status_code == 404
+        assert TestClient(app).get(route).status_code == 401
+        service = admin.get("/api/admin/services").json()[0]
+        service["price"] = 50000
+        assert admin.put("/api/admin/services/1", json=service).status_code == 200
+        receipt = client.get(route).json()
+        assert receipt["simulated"] is True
+        assert receipt["booking"]["price"] == 28800
+        assert admin.get(route).status_code == 200
+        assert client.delete(f"/api/bookings/{booking['id']}").status_code == 200
+        assert client.get(route).json()["booking"]["status"] == "cancelled"
+
+
+def test_peak_tariff_boundaries():
+    from app.time_slots import slot_price
+
+    assert [slot_price(24000, hour) for hour in [17, 18, 21, 22]] == [24000, 28800, 28800, 24000]

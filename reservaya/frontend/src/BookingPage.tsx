@@ -225,8 +225,9 @@ export function BookingPage() {
               </p>
               <div className="total">
                 <span>Total</span>
-                <strong>{price(service.price)}</strong>
+                <strong>{price(hour === null ? service.price : (availability.data?.rates?.[hour] ?? service.price))}</strong>
               </div>
+              <p className="small muted">Tarifa base fuera de punta. Turnos de 18:00 a 21:00: recargo del 20 %. El precio confirmado queda guardado en tu reserva.</p>
               {session.error && (
                 <p className="error" role="alert">
                   {session.error.message}

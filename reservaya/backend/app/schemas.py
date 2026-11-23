@@ -70,6 +70,7 @@ class SlotOut(BaseModel):
 class AvailabilityOut(BaseModel):
     day: date
     slots: list[SlotOut]
+    rates: dict[int, int] = Field(default_factory=dict)
 
 
 class BookingCreate(Slot):

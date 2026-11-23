@@ -31,3 +31,8 @@ def future_slot(day: date, hour: int) -> datetime:
     if starts_at <= now_utc():
         raise HTTPException(422, "El horario ya pasó.")
     return starts_at
+
+
+def slot_price(base_price: int, hour: int) -> int:
+    """Demonstration tariff: 20% peak surcharge for starts between 18 and 21."""
+    return (base_price * 120 + 50) // 100 if 18 <= hour <= 21 else base_price

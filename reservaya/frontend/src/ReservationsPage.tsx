@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock3 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +13,17 @@ export function BookingList({
   admin?: boolean;
 }) {
   const cache = useQueryClient();
+  const [receiptError, setReceiptError] = useState("");
+  const [receiptBusy, setReceiptBusy] = useState(false);
+  async function downloadReceipt(id: number) {
+    setReceiptBusy(true); setReceiptError("");
+    try {
+      const data = await api<object>(`/bookings/${id}/receipt`);
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:"application/json"}));
+      const link = document.createElement("a"); link.href=url; link.download=`reserva-RY-${id}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    } catch(error) { setReceiptError(error instanceof Error ? error.message : "No se pudo obtener el comprobante."); }
+    finally { setReceiptBusy(false); }
+  }
   const cancel = useMutation({
     mutationFn: (id: number) => api<Booking>(`/bookings/${id}`, "DELETE"),
     onSuccess: () =>
@@ -24,6 +36,7 @@ export function BookingList({
 
   return (
     <>
+      {receiptError && <p role="alert" className="error">{receiptError}</p>}
       {cancel.error && (
         <p className="error" role="alert">
           {cancel.error.message}
@@ -51,6 +64,7 @@ export function BookingList({
                 <p>{price(booking.price)}</p>
               </div>
               <div className="booking-status">
+                <button className="btn-text" disabled={receiptBusy} onClick={()=>void downloadReceipt(booking.id)}>Descargar comprobante</button>
                 <span className={`status ${booking.status}`}>
                   {booking.status === "confirmed" ? "Confirmada" : "Cancelada"}
                 </span>
