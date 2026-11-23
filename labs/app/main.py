@@ -1,6 +1,8 @@
 """Local demonstration workbench. No external paid services."""
 import hashlib
 import json
+import os
+import secrets
 import sqlite3
 import time
 from contextlib import contextmanager
@@ -23,7 +25,19 @@ class Review(BaseModel):
     decision: str = Field(pattern="^(approved|rejected)$")
     reason: str = Field(min_length=1, max_length=500)
 
+class Incident(BaseModel):
+    service: str = Field(min_length=1, max_length=40)
+    description: str = Field(min_length=5, max_length=1000)
+
+class AlertRule(BaseModel):
+    enabled: bool = False
+    consecutive_failures: int = Field(default=2, ge=1, le=10)
+
 def create_app(database="data/labs.db", targets=None):
+    access_token = os.getenv("LABS_ACCESS_TOKEN", "")
+    production = os.getenv("APP_ENV", "development").lower() == "production"
+    if production and len(access_token) < 32:
+        raise RuntimeError("Configura LABS_ACCESS_TOKEN con al menos 32 caracteres en producción")
     Path(database).parent.mkdir(parents=True, exist_ok=True)
     app = FastAPI(title="Laboratorios de ingeniería", version="0.1.0")
     services = targets or {
@@ -48,9 +62,16 @@ def create_app(database="data/labs.db", targets=None):
         CREATE TABLE IF NOT EXISTS documents(id INTEGER PRIMARY KEY, digest TEXT UNIQUE, payload TEXT, state TEXT);
         CREATE TABLE IF NOT EXISTS decisions(id INTEGER PRIMARY KEY, document_id INTEGER, payload TEXT);
         CREATE TABLE IF NOT EXISTS checks(id INTEGER PRIMARY KEY, service TEXT, checked_at TEXT, success INTEGER, latency REAL, code INTEGER);
+        CREATE TABLE IF NOT EXISTS check_runs(id INTEGER PRIMARY KEY, started_at TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS incidents(id INTEGER PRIMARY KEY, service TEXT NOT NULL, description TEXT NOT NULL, source TEXT NOT NULL, created_at TEXT NOT NULL, resolved_at TEXT);
+        CREATE TABLE IF NOT EXISTS alerts(service TEXT PRIMARY KEY, enabled INTEGER NOT NULL DEFAULT 0, consecutive_failures INTEGER NOT NULL DEFAULT 2);
         ''')
+        connection.executemany("INSERT OR IGNORE INTO alerts(service) VALUES(?)", [(name,) for name in services])
     @app.middleware("http")
     async def boundaries(request: Request, call_next):
+        if request.url.path.startswith('/api/') and access_token:
+            if not secrets.compare_digest(request.headers.get('authorization', ''), 'Bearer ' + access_token):
+                return Response('Acceso requerido', status_code=401, headers={'WWW-Authenticate': 'Bearer'})
         if request.method not in ("GET", "HEAD", "OPTIONS"):
             origin = request.headers.get("origin")
             if origin and urlsplit(origin).netloc != request.headers.get("host"):
@@ -149,22 +170,69 @@ def create_app(database="data/labs.db", targets=None):
         with db() as connection:
             rows = [dict(row) for row in connection.execute("SELECT * FROM checks ORDER BY id DESC LIMIT 200")]
         return {"services": services, "history": rows, "deployment": None, "version": None, "note": "Comprobaciones manuales; sin uptime continuo ni datos de despliegue disponibles"}
+
+    @app.get('/api/cloudops/incidents')
+    def incidents():
+        with db() as connection:
+            return [dict(row) for row in connection.execute('SELECT * FROM incidents ORDER BY id DESC LIMIT 100')]
+
+    @app.post('/api/cloudops/incidents', status_code=201)
+    def create_incident(data: Incident):
+        if data.service not in services:
+            raise HTTPException(422, 'Servicio no configurado')
+        with db() as connection:
+            ident = connection.execute('INSERT INTO incidents(service,description,source,created_at) VALUES(?,?,?,?)',
+                (data.service, data.description, 'manual', datetime.now(timezone.utc).isoformat())).lastrowid
+        return {'id': ident}
+
+    @app.post('/api/cloudops/incidents/{ident}/resolve')
+    def resolve_incident(ident: int):
+        with db() as connection:
+            cursor = connection.execute('UPDATE incidents SET resolved_at=? WHERE id=? AND resolved_at IS NULL',
+                (datetime.now(timezone.utc).isoformat(), ident))
+            if not cursor.rowcount:
+                raise HTTPException(409, 'Incidente inexistente o ya resuelto')
+        return {'state': 'resolved'}
+
+    @app.get('/api/cloudops/alerts')
+    def alert_rules():
+        with db() as connection:
+            return [dict(row) for row in connection.execute('SELECT * FROM alerts ORDER BY service')]
+
+    @app.put('/api/cloudops/alerts/{service}')
+    def set_alert(service: str, data: AlertRule):
+        if service not in services:
+            raise HTTPException(422, 'Servicio no configurado')
+        with db() as connection:
+            connection.execute('UPDATE alerts SET enabled=?,consecutive_failures=? WHERE service=?', (int(data.enabled), data.consecutive_failures, service))
+        return {'service': service, **data.model_dump()}
     @app.post("/api/cloudops/check")
     def check():
         with db() as connection:
             connection.execute("BEGIN IMMEDIATE")
-            previous = connection.execute("SELECT checked_at FROM checks ORDER BY id DESC LIMIT 1").fetchone()
+            previous = connection.execute("SELECT started_at FROM check_runs ORDER BY id DESC LIMIT 1").fetchone()
             if previous and (datetime.now(timezone.utc) - datetime.fromisoformat(previous[0])).total_seconds() < 60:
                 raise HTTPException(429, "Espera 60 segundos entre comprobaciones")
-            for name, url in services.items():
-                start = time.perf_counter()
-                code = None
-                try:
-                    result = httpx.get(url, timeout=3, follow_redirects=False)
-                    code = result.status_code
-                except httpx.HTTPError:
-                    pass
+            connection.execute('INSERT INTO check_runs(started_at) VALUES(?)', (datetime.now(timezone.utc).isoformat(),))
+            connection.execute('DELETE FROM check_runs WHERE id NOT IN (SELECT id FROM check_runs ORDER BY id DESC LIMIT 100)')
+        for name, url in services.items():
+            start = time.perf_counter()
+            code = None
+            try:
+                result = httpx.get(url, timeout=3, follow_redirects=False)
+                code = result.status_code
+            except httpx.HTTPError:
+                pass
+            with db() as connection:
                 connection.execute("INSERT INTO checks(service,checked_at,success,latency,code) VALUES(?,?,?,?,?)", (name, datetime.now(timezone.utc).isoformat(), int(code is not None and 200 <= code < 300), round((time.perf_counter()-start)*1000, 2), code))
+                rule = connection.execute('SELECT * FROM alerts WHERE service=? AND enabled=1', (name,)).fetchone()
+                if rule:
+                    samples = connection.execute('SELECT success FROM checks WHERE service=? ORDER BY id DESC LIMIT ?', (name, rule['consecutive_failures'])).fetchall()
+                    open_incident = connection.execute("SELECT id FROM incidents WHERE service=? AND source='alert' AND resolved_at IS NULL", (name,)).fetchone()
+                    if len(samples) == rule['consecutive_failures'] and not any(row[0] for row in samples) and not open_incident:
+                        connection.execute('INSERT INTO incidents(service,description,source,created_at) VALUES(?,?,?,?)',
+                            (name, f"Alerta local: {len(samples)} comprobaciones consecutivas fallidas. Causa sin determinar.", 'alert', datetime.now(timezone.utc).isoformat()))
+                connection.execute('DELETE FROM checks WHERE id NOT IN (SELECT id FROM checks ORDER BY id DESC LIMIT 5000)')
         return cloudops()
     site = Path(__file__).parent.parent / "web"
     @app.get("/workbench.js", include_in_schema=False)
