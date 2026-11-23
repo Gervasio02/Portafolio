@@ -15,6 +15,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
+    command: ["sh", "-c", "npx prisma migrate deploy && npx tsx server/index.ts"]
     environment:
       DATABASE_URL: postgresql://snake:snake@db:5432/snake?schema=public
       ACCESS_SECRET: local-development-only-change-this-secret-123456
