@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/session";
 import { db } from "@/lib/db";
 import { money } from "@/lib/commerce";
 import { addressSchema } from "@/lib/validation";
+import { cancelMyOrder } from "@/app/actions";
 import { OrderTimeline } from "@/components/order-timeline";
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default async function OrderPage({
       <p className="eyebrow">Pedido</p>
       <h1>{order.id.slice(-8).toUpperCase()}</h1>
       <OrderTimeline status={order.status} />
+      {order.status === "PAID" && <form action={cancelMyOrder}><input type="hidden" name="id" value={order.id}/><button type="submit">Cancelar pedido de prueba</button></form>}
       <div className="panel">
         <h2>Resumen de compra</h2>
         <ul className="clean-list order-items">

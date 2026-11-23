@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
-import { placeOrder } from "../src/lib/commerce";
+import { cancelOrder, placeOrder } from "../src/lib/commerce";
 
 const hasTestDatabase =
   process.env.DATABASE_URL &&
@@ -144,5 +144,14 @@ describe.skipIf(!hasTestDatabase)("orders in PostgreSQL", () => {
         payment: "approve",
       }),
     ).rejects.toThrow("carrito está vacío");
+  });
+
+  it("cancels exactly once and restores stock under concurrent requests", async () => {
+    const order = await db.order.findFirstOrThrow({where:{items:{some:{productId:ids.product}}}});
+    const outsider = order.userId === ids.actor ? ids.competitor! : ids.actor!;
+    await expect(cancelOrder(db,outsider,order.id)).rejects.toThrow("Pedido no encontrado");
+    const results=await Promise.all([cancelOrder(db,order.userId,order.id),cancelOrder(db,order.userId,order.id)]);
+    expect(results.every(result=>result.status === "CANCELLED")).toBe(true);
+    expect((await db.product.findUniqueOrThrow({where:{id:ids.product}})).stock).toBe(1);
   });
 });

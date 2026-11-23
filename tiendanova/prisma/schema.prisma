@@ -23,6 +23,7 @@ enum Status {
   PAID
   SHIPPED
   DELIVERED
+  CANCELLED
 }
 
 model User {

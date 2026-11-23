@@ -10,6 +10,7 @@ export const statusNames = {
   PAID: "Pagado",
   SHIPPED: "Enviado",
   DELIVERED: "Entregado",
+  CANCELLED: "Cancelado",
 };
 
 export const email = z.email().max(254).trim().toLowerCase();

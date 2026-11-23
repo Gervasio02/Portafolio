@@ -23,6 +23,7 @@ const steps = [
 ] as const;
 
 export function OrderTimeline({ status }: { status: Status }) {
+  if (status === "CANCELLED") return <section className="panel"><h2>Pedido cancelado</h2><p>Las unidades volvieron al inventario. La compra era simulada.</p></section>;
   const current = steps.findIndex((step) => step.status === status);
   return (
     <section className="panel timeline-panel" aria-labelledby="follow-title">

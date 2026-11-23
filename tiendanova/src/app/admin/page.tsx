@@ -47,9 +47,9 @@ export default async function AdminPage({
         take: 50,
         include: { user: { select: { name: true } } },
       }),
-      db.order.aggregate({ _sum: { total: true }, _count: true }),
+      db.order.aggregate({ _sum: { total: true }, _count: true, where: { status: { not: "CANCELLED" } } }),
       db.order.findMany({
-        where: { createdAt: { gte: since } },
+        where: { createdAt: { gte: since }, status: { not: "CANCELLED" } },
         select: { createdAt: true, total: true },
       }),
       db.order.groupBy({ by: ["status"], _count: true }),
@@ -58,6 +58,7 @@ export default async function AdminPage({
   const counts = new Map(
     byStatus.map(({ status, _count }) => [status, _count]),
   );
+  const orderCount = byStatus.reduce((sum, row) => sum + row._count, 0);
   const sales = new Map<string, number>();
   for (const order of recentSales) {
     const key = dateKey.format(order.createdAt);
@@ -86,7 +87,7 @@ export default async function AdminPage({
         </div>
         <div className="panel stat">
           <span>Pedidos</span>
-          <strong>{stats._count}</strong>
+          <strong>{orderCount}</strong>
         </div>
         <div className="panel stat">
           <span>Por despachar</span>
@@ -132,7 +133,7 @@ export default async function AdminPage({
             href="/admin#pedidos"
             aria-current={!selected ? "page" : undefined}
           >
-            Todos ({stats._count})
+            Todos ({orderCount})
           </Link>
           {Object.values(Status).map((status) => (
             <Link

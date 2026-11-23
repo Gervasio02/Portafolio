@@ -9,6 +9,7 @@ import { db } from "@/lib/db";
 import { currentUser, requireAdmin, requireUser } from "@/lib/session";
 import {
   CommerceError,
+  cancelOrder,
   isPrismaError,
   nextStatus,
   placeOrder,
@@ -307,4 +308,13 @@ export async function progressOrder(form: FormData) {
   });
   revalidatePath("/admin");
   revalidatePath("/cuenta", "layout");
+}
+
+export async function cancelMyOrder(form: FormData) {
+  const user = await requireUser();
+  const id = form.get("id");
+  if (typeof id !== "string" || id.length > 40) return;
+  try { await cancelOrder(db, user.id, id); }
+  catch (error) { if (!(error instanceof CommerceError)) throw error; }
+  revalidatePath("/admin"); revalidatePath("/cuenta", "layout"); revalidatePath(`/cuenta/pedidos/${id}`); revalidatePath("/");
 }

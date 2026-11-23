@@ -14,7 +14,7 @@ export function calculateTotal(lines: { price: number; quantity: number }[]) {
   return lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
 }
 
-export function nextStatus(status: "PAID" | "SHIPPED" | "DELIVERED") {
+export function nextStatus(status: "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED") {
   if (status === "PAID") return "SHIPPED";
   if (status === "SHIPPED") return "DELIVERED";
   return null;
@@ -123,4 +123,21 @@ export async function placeOrder(
     }
     throw error;
   }
+}
+
+
+/** Cancel a paid simulated order exactly once, restoring inventory atomically. */
+export async function cancelOrder(db: PrismaClient, userId: string, orderId: string) {
+  return db.$transaction(async (tx) => {
+    const order = await tx.order.findFirst({where:{id:orderId,userId},include:{items:{orderBy:{productId:"asc"}}}});
+    if (!order) throw new CommerceError("Pedido no encontrado.");
+    const changed = await tx.order.updateMany({where:{id:orderId,userId,status:"PAID"},data:{status:"CANCELLED"}});
+    if (!changed.count) {
+      const current=await tx.order.findUniqueOrThrow({where:{id:orderId}});
+      if (current.status === "CANCELLED") return current;
+      throw new CommerceError("Solo se puede cancelar antes del despacho.");
+    }
+    for (const item of order.items) await tx.product.update({where:{id:item.productId},data:{stock:{increment:item.quantity}}});
+    return tx.order.findUniqueOrThrow({where:{id:orderId}});
+  });
 }

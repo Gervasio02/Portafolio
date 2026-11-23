@@ -82,3 +82,7 @@ Vercel: <https://vercel.com/docs/deployments> · PostgreSQL: <https://www.postgr
 Más detalles en [arquitectura, historias y rutas](docs/arquitectura.md). Fotos ilustrativas de Unsplash: [licencia](https://unsplash.com/license) y [fuentes de imágenes](docs/imagenes.md).
 
 Mensajes de commit propuestos por fase: `docs: define historias y arquitectura`, `feat: implementa cuentas, catálogo y compra`, `test: verifica concurrencia y navegación`, `ci: agrega compilación y pruebas`, `docs: documenta ejecución y despliegue`.
+
+## Cancelación simulada
+
+El titular puede cancelar un pedido pagado antes del despacho. La operación cambia el estado y restituye las unidades en una sola transacción; los reintentos simultáneos no duplican el stock. Una cancelación en carrera con el despacho solo puede ganar si el pedido sigue pagado. Los pedidos cancelados quedan en el historial y se excluyen de las ventas simuladas. No hay cobros ni reembolsos reales. Aplicar las migraciones antes de iniciar la versión nueva.
