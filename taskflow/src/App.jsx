@@ -375,7 +375,43 @@ function Modal({ title, close, error, children }) {
   );
 }
 
+export function CardActivity({ boardId, cardId, editable, client = api }) {
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [version, setVersion] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    const load = async () => {
+      try {
+        const result = await client.request(`/boards/${boardId}/cards/${cardId}/activity`, { signal: controller.signal });
+        if (!controller.signal.aborted) { setEntries(result); setError(""); }
+      } catch (e) { if (!controller.signal.aborted) setError(e.message); }
+      finally { if (!controller.signal.aborted) setLoading(false); }
+    };
+    void load();
+    const timer = setInterval(load, 15000);
+    return () => { controller.abort(); clearInterval(timer); };
+  }, [boardId, cardId, client, version]);
+  return <section aria-label="Actividad de la tarjeta"><h3>Comentarios y actividad</h3>
+    {loading && <p role="status">Cargando actividad…</p>}
+    {error && <p role="alert">{error}</p>}
+    {!loading && !entries.length && <p>Aún no hay actividad.</p>}
+    <ol>{entries.map(entry => <li key={entry.id}><strong>{entry.actor?.name || "Usuario eliminado"}</strong> · {new Date(entry.createdAt).toLocaleString("es-CL")}<p>{entry.body}</p></li>)}</ol>
+    <p>Se muestran los 100 eventos más recientes. Se actualiza cada 15 segundos.</p>
+    {editable && <form onSubmit={async event => {
+      event.preventDefault(); const form = event.currentTarget;
+      const body = new FormData(form).get("comment"); setBusy(true); setError("");
+      try { await client.request(`/boards/${boardId}/cards/${cardId}/comments`, { method: "POST", body: { body } }); form.reset(); setVersion(v => v + 1); }
+      catch (e) { setError(e.message); }
+      finally { setBusy(false); }
+    }}><label>Nuevo comentario<textarea name="comment" required maxLength={2000} rows={3} /></label><button disabled={busy} type="submit">{busy ? "Guardando…" : "Publicar comentario"}</button></form>}
+  </section>;
+}
+
 function CardForm({
+  boardId,
   card,
   columnId,
   columns,
@@ -488,6 +524,7 @@ function CardForm({
           </div>
         </fieldset>
       </form>
+      {card && <CardActivity key={card.id} boardId={boardId} cardId={card.id} editable={editable} />}
     </Modal>
   );
 }
@@ -1066,6 +1103,7 @@ export function App() {
       </main>
       {dialog?.type === "card" && (
         <CardForm
+          boardId={selected}
           members={board.members}
           {...dialog}
           columns={board.columns}

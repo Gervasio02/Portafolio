@@ -11,9 +11,10 @@ function fixture({role='OWNER',count=1,limit=1,assignee=true}={}) {
   let created=false;
   const tx={
     $queryRaw:async()=>[],
-    membership:{findUnique:async({where})=>where.boardId_userId.userId===user?{role}:(assignee?{role:'EDITOR'}:null)},
+    membership:{findUnique:async({where})=>where.boardId_userId.userId===user?(role?{role}:null):(assignee?{role:'EDITOR'}:null)},
+    activity:{create:async({data})=>data,findMany:async()=>[]},
     column:{findFirst:async()=>({id:column,wipLimit:limit}),update:async({data})=>data},
-    card:{count:async()=>count,aggregate:async()=>({_max:{position:0}}),create:async({data})=>{created=true;return data;}},
+    card:{findFirst:async()=>({id:column}),count:async()=>count,aggregate:async()=>({_max:{position:0}}),create:async({data})=>{created=true;return data;}},
   };
   const app=express();app.use(express.json());app.use((req,res,next)=>{req.userId=user;next();});
   app.use(boardRoutes({$transaction:async action=>action(tx)}));
@@ -34,4 +35,23 @@ test('an assignee must belong to the board',async()=>{
 });
 test('a valid assignment with available capacity can be created',async()=>{
   const f=fixture({count:0});const response=await request(f.app).post(`/boards/${board}/cards`).send({title:'Task',columnId:column,assigneeId:user}).expect(201);assert.equal(response.body.assigneeId,user);assert.equal(f.created(),true);
+});
+test('viewers can read activity but cannot comment',async()=>{
+  const f=fixture({role:'VIEWER'});
+  await request(f.app).get(`/boards/${board}/cards/${column}/activity`).expect(200,[]);
+  await request(f.app).post(`/boards/${board}/cards/${column}/comments`).send({body:'Hello'}).expect(403);
+});
+test('non-members cannot read private activity',async()=>{
+  const f=fixture({role:null});
+  await request(f.app).get(`/boards/${board}/cards/${column}/activity`).expect(404);
+});
+test('comments are trimmed and empty or oversized input rejected',async()=>{
+  const f=fixture({role:'EDITOR'});
+  const route=`/boards/${board}/cards/${column}/comments`;
+  const result=await request(f.app).post(route).send({body:'  Actualización  '}).expect(201);
+  assert.equal(result.body.body,'Actualización');assert.equal(result.body.actorId,user);
+  for(const body of ['   ','x'.repeat(2001)]) {
+    const response=await request(f.app).post(route).send({body});
+    assert.notEqual(response.status,201);
+  }
 });

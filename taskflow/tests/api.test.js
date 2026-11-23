@@ -98,6 +98,20 @@ async function addCard(board, user, title, fields) {
   ).body;
 }
 
+test("card comments respect membership and changes are recorded transactionally", async () => {
+  const board = await createBoard(owner);
+  const card = await addCard(board, owner, "Seguimiento");
+  const route = `/api/boards/${board.id}/cards/${card.id}`;
+  await request(app).get(`${route}/activity`).set(access(other)).expect(404);
+  await request(app).post(`${route}/comments`).set(access(other)).send({body:"No autorizado"}).expect(404);
+  await request(app).post(`${route}/comments`).set(access(owner)).send({body:"  Validado  "}).expect(201);
+  await request(app).patch(route).set(access(owner)).send({title:"Revisado"}).expect(200);
+  await request(app).post(`${route}/move`).set(access(owner)).send({columnId:board.columns[1].id}).expect(204);
+  const response = await request(app).get(`${route}/activity`).set(access(owner)).expect(200);
+  expect(response.body.map(row=>row.action)).toEqual(expect.arrayContaining(["COMMENT","UPDATED","MOVED"]));
+  expect(response.body.find(row=>row.action==="COMMENT").body).toBe("Validado");
+});
+
 test("health, sesión protegida, registro, login, refresh rotatorio y logout", async () => {
   const guest = request.agent(app);
   await guest.get("/api/health").expect(200, { status: "ok" });

@@ -189,6 +189,28 @@ export function boardRoutes(db) {
     res.json(column);
   });
 
+  router.get("/boards/:id/cards/:cardId/activity", async (req, res) => {
+    const boardId = uuid.parse(req.params.id);
+    const cardId = uuid.parse(req.params.cardId);
+    const rows = await locked(db, boardId, req.userId, null, async tx => {
+      await cardOnBoard(tx, cardId, boardId);
+      return tx.activity.findMany({ where: { boardId, cardId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 100,
+        include: { actor: { select: { name: true } } } });
+    });
+    res.set("Cache-Control", "no-store").json(rows);
+  });
+
+  router.post("/boards/:id/cards/:cardId/comments", async (req, res) => {
+    const boardId = uuid.parse(req.params.id);
+    const cardId = uuid.parse(req.params.cardId);
+    const { body } = z.object({ body: z.string().trim().min(1).max(2000) }).parse(req.body);
+    const result = await locked(db, boardId, req.userId, editors, async tx => {
+      await cardOnBoard(tx, cardId, boardId);
+      return tx.activity.create({ data: { boardId, cardId, actorId: req.userId, action: "COMMENT", body } });
+    });
+    res.status(201).json(result);
+  });
+
   router.post("/boards/:id/cards", async (req, res) => {
     const id = uuid.parse(req.params.id);
     const data = cardBody.parse(req.body);
@@ -225,7 +247,9 @@ export function boardRoutes(db) {
             position: await nextPosition(tx, columnId),
           });
         }
-        return tx.card.update({ where: { id }, data: fields });
+        const updated = await tx.card.update({ where: { id }, data: fields });
+        await tx.activity.create({ data: { boardId, cardId: id, actorId: req.userId, action: "UPDATED", body: "Se actualizaron los campos de la tarjeta." } });
+        return updated;
       }),
     );
   });
@@ -257,6 +281,7 @@ export function boardRoutes(db) {
       });
       // Use parameterized SQL to persist the reorder in one round trip.
       const order = JSON.stringify(cardOrder(cards, id, beforeId));
+      await tx.activity.create({ data: { boardId, cardId: id, actorId: req.userId, action: "MOVED", body: `Se movió la tarjeta a ${destination.title}.` } });
       await tx.$executeRaw`
         UPDATE "Card" AS card
         SET "position" = sequence.position, "columnId" = ${columnId}::uuid
