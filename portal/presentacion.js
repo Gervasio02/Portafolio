@@ -30,7 +30,7 @@ const slides = [
     image: "snake.svg",
     alt: "Tablero de Snake con la serpiente y el marcador",
     note: "Elige un modo, juega con teclado o controles táctiles y compara tu puntaje en el ranking.",
-    href: "https://snake-gervasio.salmondune-b960483d.chilecentral.azurecontainerapps.io/",
+    href: "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     action: "Jugar Snake",
   },
   {
