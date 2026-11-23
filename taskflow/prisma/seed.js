@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-const db = new PrismaClient();
+const db = new PrismaClient({ transactionOptions: { timeout: 30_000 } });
 const email = "demo@taskflow.example";
 const defaultBoard = "d27caeb2-1add-4fcf-afe8-c8ca2b3749c4";
 const supportBoard = "2175743f-1785-40ca-ad2e-f71dc5c3aba0";
