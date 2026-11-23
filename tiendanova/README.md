@@ -86,3 +86,5 @@ Mensajes de commit propuestos por fase: `docs: define historias y arquitectura`,
 ## Cancelación simulada
 
 El titular puede cancelar un pedido pagado antes del despacho. La operación cambia el estado y restituye las unidades en una sola transacción; los reintentos simultáneos no duplican el stock. Una cancelación en carrera con el despacho solo puede ganar si el pedido sigue pagado. Los pedidos cancelados quedan en el historial y se excluyen de las ventas simuladas. No hay cobros ni reembolsos reales. Aplicar las migraciones antes de iniciar la versión nueva.
+
+El cupón ficticio `DEMO10` descuenta 10 % del subtotal, sin límite de usos. El descuento y el código se guardan en el pedido; se aplican en el servidor y respetan la clave de idempotencia.

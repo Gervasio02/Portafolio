@@ -44,6 +44,7 @@ export const checkoutSchema = z.object({
   key: z.uuid(),
   addressId: z.string().min(1).max(40),
   payment: z.enum(["approve", "decline"]),
+  coupon: z.string().trim().max(30).optional().default(""),
 });
 export const productSchema = z.object({
   name: z.string().trim().min(2).max(80),

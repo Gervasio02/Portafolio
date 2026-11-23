@@ -81,6 +81,8 @@ model Order {
   userId         String
   checkoutKey    String
   total          Int
+  discount       Int         @default(0)
+  coupon         String?
   status         Status      @default(PAID)
   address        Json
   createdAt      DateTime    @default(now())

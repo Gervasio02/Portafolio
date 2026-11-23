@@ -58,6 +58,7 @@ export default async function OrderPage({
             </li>
           ))}
         </ul>
+        {order.discount > 0 && <p>Descuento {order.coupon}: −{money(order.discount)}</p>}
         <p className="summary-line">
           <strong>Total</strong>
           <strong>{money(order.total)}</strong>

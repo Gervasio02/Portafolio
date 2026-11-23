@@ -165,6 +165,8 @@ export function CheckoutForm({
   return (
     <form action={action} className="form-stack">
       <input type="hidden" name="key" value={checkoutKey} />
+      <label>Cupón de prueba (opcional)<input name="coupon" maxLength={30} placeholder="DEMO10" /></label>
+      <p>DEMO10 descuenta un 10 % del subtotal. El total definitivo se confirma al finalizar la compra simulada.</p>
       <label className="field">
         <span>Dirección de entrega</span>
         <select name="addressId" required defaultValue="">

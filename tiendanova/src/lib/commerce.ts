@@ -35,9 +35,11 @@ export async function placeOrder(
   if (!request.success)
     throw new CommerceError("Revisa la dirección y el método de pago.");
   const { key, addressId, payment } = request.data;
+  const coupon = request.data.coupon.toUpperCase();
   const where = { userId_checkoutKey: { userId, checkoutKey: key } };
   const previous = await db.order.findUnique({ where });
   if (previous) return previous;
+  if (coupon && coupon !== "DEMO10") throw new CommerceError("Cupón de prueba no válido.");
   if (payment === "decline")
     throw new CommerceError(
       "El pago simulado fue rechazado. El carrito sigue disponible.",
@@ -104,11 +106,15 @@ export async function placeOrder(
         city: saved.city,
         region: saved.region,
       };
+      const subtotal = calculateTotal(items);
+      const discount = coupon === "DEMO10" ? Math.floor(subtotal / 10) : 0;
       const order = await tx.order.create({
         data: {
           userId,
           checkoutKey: key,
-          total: calculateTotal(items),
+          total: subtotal - discount,
+          discount,
+          coupon: coupon || null,
           address,
           items: { create: items },
         },

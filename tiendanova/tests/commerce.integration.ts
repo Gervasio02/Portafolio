@@ -154,4 +154,15 @@ describe.skipIf(!hasTestDatabase)("orders in PostgreSQL", () => {
     expect(results.every(result=>result.status === "CANCELLED")).toBe(true);
     expect((await db.product.findUniqueOrThrow({where:{id:ids.product}})).stock).toBe(1);
   });
+
+  it("validates and persists the simulated coupon without duplicating checkout", async () => {
+    const order = await db.order.findFirstOrThrow({where:{items:{some:{productId:ids.product}}}});
+    await db.cartItem.upsert({where:{userId_productId:{userId:order.userId,productId:ids.product!}},create:{userId:order.userId,productId:ids.product!,quantity:1},update:{quantity:1}});
+    const addressId=order.userId===ids.actor?ids.actorAddress:ids.competitorAddress;
+    const checkout={key:randomUUID(),addressId,payment:'approve',coupon:'demo10'};
+    await expect(placeOrder(db,order.userId,{...checkout,coupon:'bad'})).rejects.toThrow('Cupón');
+    const result=await placeOrder(db,order.userId,checkout);
+    expect(result.total).toBe(8910);expect(result.discount).toBe(990);expect(result.coupon).toBe('DEMO10');
+    expect((await placeOrder(db,order.userId,checkout)).id).toBe(result.id);
+  });
 });
