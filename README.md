@@ -12,7 +12,7 @@ Tres aplicaciones full stack de ingeniería informática, con datos ficticios y 
 
 Instala Git y Docker con Compose. Descomprime el proyecto y sigue el README de cada aplicación para configurar su `.env.example` y ejecutar `docker compose up --build` desde la carpeta correspondiente. Cada README indica los puertos, la migración y las credenciales de demostración si aplica. Para la portada, abre `portal/index.html` o ejecuta `python -m http.server 8080 --directory portal` desde esta carpeta.
 
-Puedes mantener las tres carpetas en un repositorio privado llamado `Portafolio` o importar cada una a un repositorio independiente. En el primer caso conserva los flujos de CI de la raíz. En el segundo, usa el flujo incluido en cada aplicación. Publica el código desde tu cuenta personal cuando esté autorizada.
+El repositorio público [Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio) reúne la portada y las tres aplicaciones. Sus flujos de GitHub Actions están en `.github/workflows/`.
 
 ## Cuenta personal de GitHub
 

@@ -6,17 +6,15 @@
 
 ## GitHub
 
-El destino solicitado es un repositorio público nuevo llamado `Portafolio` bajo `Gervasio02`. Si `gh auth status` muestra esa cuenta como activa, desde la raíz del proyecto ejecuta:
+El código de las tres aplicaciones y de la portada está en [Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio). La carpeta `Portafolio` del Escritorio está vinculada a la rama `main` de ese repositorio. Para ver qué cambios tienes pendientes, abre esa carpeta en GitHub Desktop o ejecuta `git status` desde ella.
+
+Para obtener una copia en otro equipo, abre una terminal en la carpeta donde quieras guardar el proyecto y ejecuta este comando.
 
 ```powershell
-git init -b main
-git add .
-git status --short
-git commit -m "feat: publicar portafolio y demos"
-gh repo create Gervasio02/Portafolio --public --source . --remote origin --push
+git clone https://github.com/Gervasio02/Portafolio.git
 ```
 
-Si el repositorio ya existe, abre y revisa su contenido antes de usarlo. No ejecutes el comando de creación ni reemplaces historial en ese caso. Usa los flujos que están en `.github/workflows/` para verificar las aplicaciones.
+Para subir cambios desde el PC, autentícate en GitHub Desktop o en Git con tu cuenta personal `Gervasio02`, revisa los archivos modificados y envía el commit. Los flujos de `.github/workflows/` verifican las aplicaciones en GitHub Actions.
 
 ## Azure Static Web Apps
 
@@ -30,4 +28,4 @@ Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/
 
 ## Copia en el Escritorio de Windows
 
-Descarga y descomprime el ZIP en el Escritorio. La carpeta extraída se llama **Portafolio**. Abre `portal/index.html` para la portada o la carpeta Portafolio en Visual Studio Code para continuar. Esta copia se puede actualizar descargando una nueva versión o, cuando exista el repositorio, clonándolo y trabajando con Git.
+Abre `portal/index.html` para revisar la portada o la carpeta `Portafolio` del Escritorio en Visual Studio Code para continuar. Usa la rama `main` para sincronizar los cambios con GitHub.
