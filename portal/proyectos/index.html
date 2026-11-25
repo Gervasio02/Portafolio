@@ -1,32 +1,77 @@
 <!doctype html>
 <html lang="es-CL">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explora los proyectos de Gervasio Torres: aplicaciones web, juegos y laboratorios de ingeniería.">
-  <meta name="theme-color" content="#131713">
-  <title>Proyectos · Gervasio Torres</title>
-  <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="catalogo.css">
-  <script src="catalogo.js" defer></script>
-</head>
-<body>
-  <a class="skip" href="#catalogo">Saltar al catálogo</a>
-  <header class="shell top">
-    <a class="brand" href="../index.html" aria-label="Gervasio Torres, inicio">GT<span>.</span></a>
-    <nav aria-label="Principal"><a href="../index.html">Inicio</a><a aria-current="page" href="./">Proyectos</a><a href="../laboratorio.html">Demos</a></nav>
-  </header>
-  <main class="shell catalog-main" id="catalogo">
-    <div class="catalog-intro"><p class="eyebrow">Ingeniería en práctica</p><h1>Proyectos<span>.</span></h1><p>Aplicaciones y experimentos que conectan interfaces, reglas de negocio y datos. Explora sus decisiones técnicas y prueba las experiencias disponibles.</p></div>
-    <div class="catalog-filters" role="search" aria-label="Buscar proyectos">
-      <label>Buscar <input id="search" type="search" placeholder="Nombre, problema o tecnología" autocomplete="off"></label>
-      <label>Tipo <select id="type"><option value="">Todos los tipos</option></select></label>
-      <label>Tecnología <select id="technology"><option value="">Todas las tecnologías</option></select></label>
-    </div>
-    <p id="count" class="catalog-count" aria-live="polite"></p>
-    <div id="projects" class="catalog-grid"></div>
-    <noscript><p>Activa JavaScript para buscar y explorar el catálogo. También puedes acceder a <a href="../index.html#proyectos">los proyectos destacados</a>.</p></noscript>
-  </main>
-  <footer class="shell footer"><span>Gervasio Torres</span><a href="../index.html">Volver al inicio</a></footer>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explora los proyectos de Gervasio Torres: aplicaciones web, juegos y laboratorios de ingeniería."
+    />
+    <meta name="theme-color" content="#131713" />
+    <title>Proyectos · Gervasio Torres</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="catalogo.css" />
+    <script src="../projects-data.js" defer></script>
+    <script src="catalogo.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#catalogo">Saltar al catálogo</a>
+    <header class="shell top">
+      <a class="brand" href="../index.html" aria-label="Gervasio Torres, inicio"
+        >GT<span>.</span></a
+      >
+      <nav aria-label="Principal">
+        <a href="../index.html">Inicio</a
+        ><a aria-current="page" href="./">Proyectos</a
+        ><a href="../laboratorio.html">Demos</a>
+      </nav>
+    </header>
+    <main class="shell catalog-main" id="catalogo">
+      <div class="catalog-intro">
+        <p class="eyebrow">Ingeniería en práctica</p>
+        <h1>Proyectos<span>.</span></h1>
+        <p>
+          Aplicaciones y experimentos que conectan interfaces, reglas de negocio
+          y datos. Explora sus decisiones técnicas y prueba las experiencias
+          disponibles.
+        </p>
+      </div>
+      <div class="catalog-filters" role="search" aria-label="Buscar proyectos">
+        <label
+          >Buscar
+          <input
+            id="search"
+            type="search"
+            placeholder="Nombre, problema o tecnología"
+            autocomplete="off"
+        /></label>
+        <label
+          >Tipo
+          <select id="type">
+            <option value="">Todos los tipos</option>
+          </select></label
+        >
+        <label
+          >Tecnología
+          <select id="technology">
+            <option value="">Todas las tecnologías</option>
+          </select></label
+        >
+      </div>
+      <p id="count" class="catalog-count" aria-live="polite"></p>
+      <div id="projects" class="catalog-grid"></div>
+      <noscript
+        ><p>
+          Activa JavaScript para buscar y explorar el catálogo. También puedes
+          acceder a
+          <a href="../index.html#proyectos">los proyectos destacados</a>.
+        </p></noscript
+      >
+    </main>
+    <footer class="shell footer">
+      <span>Gervasio Torres</span
+      ><a href="https://github.com/Gervasio02" rel="me">Contacto en GitHub</a
+      ><a href="../index.html">Volver al inicio</a>
+    </footer>
+  </body>
 </html>

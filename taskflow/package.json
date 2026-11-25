@@ -54,5 +54,9 @@
     "supertest": "^7.1.4",
     "vite": "^7.2.2",
     "vitest": "^4.0.5"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "effect": "3.22.2"
   }
 }

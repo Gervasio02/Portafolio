@@ -103,21 +103,70 @@ test("card comments respect membership and changes are recorded transactionally"
   const card = await addCard(board, owner, "Seguimiento");
   const route = `/api/boards/${board.id}/cards/${card.id}`;
   await request(app).get(`${route}/activity`).set(access(other)).expect(404);
-  await request(app).post(`${route}/comments`).set(access(other)).send({body:"No autorizado"}).expect(404);
-  await request(app).post(`${route}/comments`).set(access(owner)).send({body:"  Validado  "}).expect(201);
-  await request(app).patch(route).set(access(owner)).send({title:"Revisado"}).expect(200);
-  await request(app).post(`${route}/move`).set(access(owner)).send({columnId:board.columns[1].id}).expect(204);
-  const response = await request(app).get(`${route}/activity`).set(access(owner)).expect(200);
-  expect(response.body.map(row=>row.action)).toEqual(expect.arrayContaining(["CREATED","COMMENT","UPDATED","MOVED"]));
-  expect(response.body.find(row=>row.action==="COMMENT").body).toBe("Validado");
+  await request(app)
+    .post(`${route}/comments`)
+    .set(access(other))
+    .send({ body: "No autorizado" })
+    .expect(404);
+  await request(app)
+    .post(`${route}/comments`)
+    .set(access(owner))
+    .send({ body: "  Validado  " })
+    .expect(201);
+  await request(app)
+    .patch(route)
+    .set(access(owner))
+    .send({ title: "Revisado" })
+    .expect(200);
+  await request(app)
+    .post(`${route}/move`)
+    .set(access(owner))
+    .send({ columnId: board.columns[1].id })
+    .expect(204);
+  const response = await request(app)
+    .get(`${route}/activity`)
+    .set(access(owner))
+    .expect(200);
+  expect(response.body.map((row) => row.action)).toEqual(
+    expect.arrayContaining(["CREATED", "COMMENT", "UPDATED", "MOVED"]),
+  );
+  expect(response.body.find((row) => row.action === "COMMENT").body).toBe(
+    "Validado",
+  );
+  await request(app)
+    .get(`/api/boards/${board.id}/activity`)
+    .set(access(other))
+    .expect(404);
+  const history = await request(app)
+    .get(`/api/boards/${board.id}/activity`)
+    .set(access(owner))
+    .expect(200);
+  expect(history.headers["cache-control"]).toBe("no-store");
+  expect(history.body.find((row) => row.action === "COMMENT")).toMatchObject({
+    cardTitle: "Revisado",
+    body: "Validado",
+  });
 });
 
 test("PostgreSQL serializes competing creates at the WIP limit", async () => {
   const board = await createBoard(owner);
   const columnId = board.columns[0].id;
-  await request(app).patch(`/api/boards/${board.id}/columns/${columnId}`).set(access(owner)).send({wipLimit:1}).expect(200);
-  const attempts = await Promise.all(["A","B","C"].map(title => request(app).post(`/api/boards/${board.id}/cards`).set(access(owner)).send({title,columnId,assigneeId:owner.user.id})));
-  expect(attempts.map(result=>result.status).sort()).toEqual([201,409,409]);
+  await request(app)
+    .patch(`/api/boards/${board.id}/columns/${columnId}`)
+    .set(access(owner))
+    .send({ wipLimit: 1 })
+    .expect(200);
+  const attempts = await Promise.all(
+    ["A", "B", "C"].map((title) =>
+      request(app)
+        .post(`/api/boards/${board.id}/cards`)
+        .set(access(owner))
+        .send({ title, columnId, assigneeId: owner.user.id }),
+    ),
+  );
+  expect(attempts.map((result) => result.status).sort()).toEqual([
+    201, 409, 409,
+  ]);
   const persisted = await boardDetail(board.id, owner);
   expect(persisted.columns[0].cards).toHaveLength(1);
   expect(persisted.columns[0].cards[0].assigneeId).toBe(owner.user.id);
@@ -125,25 +174,59 @@ test("PostgreSQL serializes competing creates at the WIP limit", async () => {
 
 test("SLA alerts are private, read receipts persist, and closing tracks compliance", async () => {
   const board = await createBoard(owner);
-  const card = await addCard(board, owner, "SLA verificado", {slaHours:1,assigneeId:owner.user.id});
+  const card = await addCard(board, owner, "SLA verificado", {
+    slaHours: 1,
+    assigneeId: owner.user.id,
+  });
   expect(new Date(card.slaDueAt).getTime()).toBeGreaterThan(Date.now());
-  const deadline = new Date(Date.now()-3600000);
-  await db.card.update({where:{id:card.id},data:{slaDueAt:deadline}});
-  const read = async who => (await request(app).get('/api/operations').set(access(who)).expect(200)).body;
+  const deadline = new Date(Date.now() - 3600000);
+  await db.card.update({
+    where: { id: card.id },
+    data: { slaDueAt: deadline },
+  });
+  const read = async (who) =>
+    (await request(app).get("/api/operations").set(access(who)).expect(200))
+      .body;
   const snapshot = await read(owner);
-  const notification = snapshot.notifications.find(n=>n.cardId===card.id);
+  const notification = snapshot.notifications.find((n) => n.cardId === card.id);
   expect(notification.read).toBe(false);
-  expect(snapshot.people.find(p=>p.id===owner.user.id).overdue).toBeGreaterThan(0);
-  expect((await read(other)).notifications.some(n=>n.cardId===card.id)).toBe(false);
-  await request(app).post('/api/notifications/read').set(access(other)).send({key:notification.key}).expect(404);
-  await request(app).post('/api/notifications/read').set(access(owner)).send({key:notification.key}).expect(204);
-  expect((await read(owner)).notifications.find(n=>n.cardId===card.id).read).toBe(true);
-  await request(app).post(`/api/boards/${board.id}/cards/${card.id}/move`).set(access(owner)).send({columnId:board.columns[2].id}).expect(204);
-  const completed=await db.card.findUniqueOrThrow({where:{id:card.id}});
+  expect(
+    snapshot.people.find((p) => p.id === owner.user.id).overdue,
+  ).toBeGreaterThan(0);
+  expect(
+    (await read(other)).notifications.some((n) => n.cardId === card.id),
+  ).toBe(false);
+  await request(app)
+    .post("/api/notifications/read")
+    .set(access(other))
+    .send({ key: notification.key })
+    .expect(404);
+  await request(app)
+    .post("/api/notifications/read")
+    .set(access(owner))
+    .send({ key: notification.key })
+    .expect(204);
+  expect(
+    (await read(owner)).notifications.find((n) => n.cardId === card.id).read,
+  ).toBe(true);
+  await request(app)
+    .post(`/api/boards/${board.id}/cards/${card.id}/move`)
+    .set(access(owner))
+    .send({ columnId: board.columns[2].id })
+    .expect(204);
+  const completed = await db.card.findUniqueOrThrow({ where: { id: card.id } });
   expect(completed.completedAt).not.toBeNull();
-  expect((await read(owner)).notifications.some(n=>n.cardId===card.id)).toBe(false);
-  await request(app).patch(`/api/boards/${board.id}/cards/${card.id}`).set(access(owner)).send({title:card.title,columnId:board.columns[0].id}).expect(200);
-  expect((await db.card.findUniqueOrThrow({where:{id:card.id}})).completedAt).toBeNull();
+  expect(
+    (await read(owner)).notifications.some((n) => n.cardId === card.id),
+  ).toBe(false);
+  await request(app)
+    .patch(`/api/boards/${board.id}/cards/${card.id}`)
+    .set(access(owner))
+    .send({ title: card.title, columnId: board.columns[0].id })
+    .expect(200);
+  expect(
+    (await db.card.findUniqueOrThrow({ where: { id: card.id } })).completedAt,
+  ).toBeNull();
 });
 
 test("health, sesión protegida, registro, login, refresh rotatorio y logout", async () => {

@@ -746,6 +746,38 @@ textarea {
 .members select {
   width: auto;
 }
+.board-activity {
+  width: min(42rem, 82vw);
+}
+.board-activity > p {
+  color: var(--muted);
+}
+.board-activity ol {
+  display: grid;
+  gap: 8px;
+  max-height: 58vh;
+  overflow: auto;
+  padding: 0;
+  list-style: none;
+}
+.board-activity li {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.board-activity li div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.board-activity li span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.board-activity li p {
+  margin: 6px 0 0;
+}
 @media (max-width: 1050px) {
   .dashboard {
     grid-template-columns: 190px minmax(0, 1fr);

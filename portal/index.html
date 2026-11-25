@@ -1,176 +1,425 @@
 <!doctype html>
 <html lang="es-CL">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Portafolio de ingeniería informática de Gervasio Torres. Explora aplicaciones web, juegos y proyectos de ingeniería, y descubre cómo se diseñaron y construyeron.">
-  <meta name="theme-color" content="#131713">
-  <title>Gervasio Torres · Portafolio</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="portada.css">
-  <script src="presentacion.js" defer></script>
-</head>
-<body class="portfolio-home">
-  <a class="skip" href="#proyectos">Saltar a los proyectos</a>
-  <header class="shell top">
-    <a class="brand" href="#" aria-label="Gervasio Torres, inicio">GT<span>.</span></a>
-    <nav aria-label="Principal">
-      <a href="proyectos/">Proyectos</a>
-      <a href="laboratorio.html">Demos</a>
-      <a href="#perfil">Habilidades</a>
-    </nav>
-  </header>
-  <main class="shell">
-    <section class="hero" aria-labelledby="nombre">
-      <div class="hero-main">
-        <p class="eyebrow">Ingeniería informática</p>
-        <h1 id="nombre">Gervasio<br>Torres<span>.</span></h1>
-        <p class="intro">Desarrollo aplicaciones web de principio a fin, desde lo que el usuario ve hasta las reglas que protegen sus datos.</p>
-        <div class="hero-actions">
-          <a class="hero-link" href="proyectos/">Explorar proyectos</a>
-          <a class="source-link" href="https://github.com/Gervasio02/Portafolio">Ver código en GitHub</a>
-        </div>
-      </div>
-      <aside class="hero-workflow" aria-labelledby="capas-titulo">
-        <h2 id="capas-titulo">De la interfaz a los datos</h2>
-        <ol>
-          <li><strong>Interfaz</strong><span>React y TypeScript</span></li>
-          <li><strong>Servicios</strong><span>Node.js y Python</span></li>
-          <li><strong>Datos</strong><span>SQL y PostgreSQL</span></li>
-        </ol>
-      </aside>
-    </section>
-
-    <section class="featured" aria-labelledby="destacado-titulo">
-      <div class="section-title">
-        <h2 id="destacado-titulo">Así funcionan</h2>
-        <p>Capturas y acceso a cada demo</p>
-      </div>
-      <div class="slider" data-slider data-theme="taskflow" role="region" aria-roledescription="carrusel" aria-label="Capturas de los proyectos">
-        <div class="slider-media">
-          <img id="slide-image" src="capturas/taskflow.png" width="1440" height="1068" alt="Centro de control de TaskFlow con métricas y distribución de tarjetas">
-        </div>
-        <div class="slide-copy">
-          <div class="slide-content" role="group" aria-live="off" aria-atomic="true">
-            <p class="eyebrow" id="slide-category">Gestión de trabajo</p>
-            <h3 id="slide-name">TaskFlow</h3>
-            <p id="slide-note">Crea una tarjeta, cámbiala de columna y mira cómo se actualiza la distribución del tablero.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Portafolio de ingeniería informática de Gervasio Torres. Explora aplicaciones web, juegos y proyectos de ingeniería, y descubre cómo se diseñaron y construyeron."
+    />
+    <meta name="theme-color" content="#131713" />
+    <title>Gervasio Torres · Portafolio</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="portada.css" />
+    <script src="projects-data.js" defer></script>
+    <script src="presentacion.js" defer></script>
+  </head>
+  <body class="portfolio-home">
+    <a class="skip" href="#proyectos">Saltar a los proyectos</a>
+    <header class="shell top">
+      <a class="brand" href="#" aria-label="Gervasio Torres, inicio"
+        >GT<span>.</span></a
+      >
+      <nav aria-label="Principal">
+        <a href="proyectos/">Proyectos</a>
+        <a href="laboratorio.html">Demos</a>
+        <a href="#perfil">Habilidades</a>
+      </nav>
+    </header>
+    <main class="shell">
+      <section class="hero" aria-labelledby="nombre">
+        <div class="hero-main">
+          <p class="eyebrow">Ingeniería informática</p>
+          <h1 id="nombre">Gervasio<br />Torres<span>.</span></h1>
+          <p class="intro">
+            Desarrollo aplicaciones web de principio a fin, desde lo que el
+            usuario ve hasta las reglas que protegen sus datos.
+          </p>
+          <div class="hero-actions">
+            <a class="hero-link" href="proyectos/">Explorar proyectos</a>
+            <a
+              class="source-link"
+              href="https://github.com/Gervasio02/Portafolio"
+              >Ver código en GitHub</a
+            >
           </div>
-          <a id="slide-link" class="hero-link" href="taskflow/index.html#demo">Probar TaskFlow</a>
-          <div class="slider-controls" role="group" aria-label="Controles del carrusel" hidden>
-            <button type="button" id="slide-toggle">Pausar rotación</button>
-            <button type="button" id="slide-prev" aria-label="Proyecto anterior">Anterior</button>
-            <button type="button" id="slide-next" aria-label="Proyecto siguiente">Siguiente</button>
-            <div class="slider-steps" role="group" aria-label="Seleccionar proyecto">
-              <button type="button" data-slide="0" aria-label="TaskFlow" aria-pressed="true"></button>
-              <button type="button" data-slide="1" aria-label="ReservaYa" aria-pressed="false"></button>
-              <button type="button" data-slide="2" aria-label="TiendaNova" aria-pressed="false"></button>
-              <button type="button" data-slide="3" aria-label="Snake" aria-pressed="false"></button>
-              <button type="button" data-slide="4" aria-label="Interrogatorio" aria-pressed="false"></button>
+        </div>
+        <aside class="hero-workflow" aria-labelledby="capas-titulo">
+          <h2 id="capas-titulo">De la interfaz a los datos</h2>
+          <ol>
+            <li><strong>Interfaz</strong><span>React y TypeScript</span></li>
+            <li><strong>Servicios</strong><span>Node.js y Python</span></li>
+            <li><strong>Datos</strong><span>SQL y PostgreSQL</span></li>
+          </ol>
+        </aside>
+      </section>
+
+      <section class="featured" aria-labelledby="destacado-titulo">
+        <div class="section-title">
+          <h2 id="destacado-titulo">Así funcionan</h2>
+          <p>Capturas y acceso a cada demo</p>
+        </div>
+        <div
+          class="slider"
+          data-slider
+          data-theme="taskflow"
+          role="region"
+          aria-roledescription="carrusel"
+          aria-label="Capturas de los proyectos"
+        >
+          <div class="slider-media">
+            <img
+              id="slide-image"
+              src="capturas/taskflow.png"
+              width="1440"
+              height="1068"
+              alt="Centro de control de TaskFlow con métricas y distribución de tarjetas"
+            />
+          </div>
+          <div class="slide-copy">
+            <div
+              class="slide-content"
+              role="group"
+              aria-live="off"
+              aria-atomic="true"
+            >
+              <p class="eyebrow" id="slide-category">Gestión de trabajo</p>
+              <h3 id="slide-name">TaskFlow</h3>
+              <p id="slide-note">
+                Crea una tarjeta, cámbiala de columna y mira cómo se actualiza
+                la distribución del tablero.
+              </p>
+            </div>
+            <a id="slide-link" class="hero-link" href="taskflow/index.html#demo"
+              >Probar TaskFlow</a
+            >
+            <div
+              class="slider-controls"
+              role="group"
+              aria-label="Controles del carrusel"
+              hidden
+            >
+              <button type="button" id="slide-toggle">Pausar rotación</button>
+              <button
+                type="button"
+                id="slide-prev"
+                aria-label="Proyecto anterior"
+              >
+                Anterior
+              </button>
+              <button
+                type="button"
+                id="slide-next"
+                aria-label="Proyecto siguiente"
+              >
+                Siguiente
+              </button>
+              <div
+                class="slider-steps"
+                role="group"
+                aria-label="Seleccionar proyecto"
+              >
+                <button
+                  type="button"
+                  data-slide="0"
+                  aria-label="TaskFlow"
+                  aria-pressed="true"
+                ></button>
+                <button
+                  type="button"
+                  data-slide="1"
+                  aria-label="ReservaYa"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  data-slide="2"
+                  aria-label="TiendaNova"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  data-slide="3"
+                  aria-label="Snake"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  type="button"
+                  data-slide="4"
+                  aria-label="Interrogatorio"
+                  aria-pressed="false"
+                ></button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="proyectos" aria-labelledby="titulo-proyectos">
-      <div class="section-title">
-        <h2 id="titulo-proyectos">Proyectos</h2>
-        <p>Cinco proyectos con experiencias interactivas · <a href="proyectos/">Ver catálogo completo</a></p>
-      </div>
-      <div class="work">
-        <article class="project project-taskflow">
-          <div class="project-preview">
-            <img src="capturas/taskflow.png" width="1440" height="1068" loading="lazy" alt="">
-          </div>
-          <div class="description">
-            <p class="category">Colaboración</p>
-            <h3>TaskFlow</h3>
-            <p>Coordina entregas e incidentes en un tablero Kanban. El sistema completo diferencia permisos de dueño, editor y lector.</p>
-            <ul class="stack" aria-label="Tecnologías de TaskFlow"><li>React</li><li>Express</li><li>Prisma</li></ul>
-            <a class="capture" href="taskflow/index.html#demo">Probar demo <span class="visually-hidden">de TaskFlow</span></a>
-          </div>
-        </article>
-        <article class="project project-reservaya">
-          <div class="project-preview">
-            <img src="capturas/reservaya-cancha.png" width="1440" height="1117" loading="lazy" alt="">
-          </div>
-          <div class="description">
-            <p class="category">Disponibilidad</p>
-            <h3>ReservaYa</h3>
-            <p>Elige una cancha, reserva un turno y libéralo si cambian tus planes. El sistema completo evita reservas simultáneas para la misma hora.</p>
-            <ul class="stack" aria-label="Tecnologías de ReservaYa"><li>React</li><li>FastAPI</li><li>SQLAlchemy</li></ul>
-            <a class="capture" href="reservaya/index.html#demo">Probar demo <span class="visually-hidden">de ReservaYa</span></a>
-          </div>
-        </article>
-        <article class="project project-tiendanova">
-          <div class="project-preview">
-            <img src="capturas/tiendanova.jpg" width="1420" height="1160" loading="lazy" alt="">
-          </div>
-          <div class="description">
-            <p class="category">Comercio</p>
-            <h3>TiendaNova</h3>
-            <p>Compara un pago aprobado con uno rechazado. Explora el historial de pedidos y comprueba cuándo baja el stock.</p>
-            <ul class="stack" aria-label="Tecnologías de TiendaNova"><li>Next.js</li><li>TypeScript</li><li>Auth.js</li></ul>
-            <a class="capture" href="tiendanova/index.html#demo">Probar demo <span class="visually-hidden">de TiendaNova</span></a>
-          </div>
-        </article>
-        <article class="project project-snake">
-          <div class="project-preview">
-            <img src="capturas/snake.svg" width="960" height="720" loading="lazy" alt="">
-          </div>
-          <div class="description">
-            <p class="category">Juego interactivo</p>
-            <h3>Snake</h3>
-            <p>Juega al clásico de la serpiente, elige entre tres modos y compite por un lugar en el ranking.</p>
-            <ul class="stack" aria-label="Tecnologías de Snake"><li>React</li><li>TypeScript</li><li>PostgreSQL</li></ul>
-            <a class="capture" href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/">Jugar Snake <span class="visually-hidden">en línea</span></a>
-          </div>
-        </article>
-        <article class="project project-interrogatorio">
-          <div class="project-preview">
-            <img src="capturas/interrogatorio.png" width="1180" height="780" loading="lazy" alt="">
-          </div>
-          <div class="description">
-            <p class="category">Deducción · Prototipo</p>
-            <h3>Interrogatorio</h3>
-            <p>Elige entre dos expedientes, interroga a los sospechosos y contrasta las pruebas. Una demo de deducción que funciona directamente en tu navegador.</p>
-            <ul class="stack" aria-label="Tecnologías de Interrogatorio"><li>JavaScript</li><li>HTML</li><li>CSS</li></ul>
-            <a class="capture" href="interrogatorio/index.html#demo">Probar Interrogatorio</a>
-          </div>
-        </article>
-      </div>
-    </section>
+      <section id="proyectos" aria-labelledby="titulo-proyectos">
+        <div class="section-title">
+          <h2 id="titulo-proyectos">Proyectos</h2>
+          <p>
+            Cinco proyectos con experiencias interactivas ·
+            <a href="proyectos/">Ver catálogo completo</a>
+          </p>
+        </div>
+        <div class="work">
+          <article class="project project-taskflow">
+            <div class="project-preview">
+              <img
+                src="capturas/taskflow.png"
+                width="1440"
+                height="1068"
+                loading="lazy"
+                alt=""
+              />
+            </div>
+            <div class="description">
+              <p class="category">Colaboración</p>
+              <h3>TaskFlow</h3>
+              <p>
+                Coordina entregas e incidentes en un tablero Kanban. El sistema
+                completo diferencia permisos de dueño, editor y lector.
+              </p>
+              <ul class="stack" aria-label="Tecnologías de TaskFlow">
+                <li>React</li>
+                <li>Express</li>
+                <li>Prisma</li>
+              </ul>
+              <a class="capture" href="taskflow/index.html#demo"
+                >Probar demo <span class="visually-hidden">de TaskFlow</span></a
+              >
+            </div>
+          </article>
+          <article class="project project-reservaya">
+            <div class="project-preview">
+              <img
+                src="capturas/reservaya-cancha.png"
+                width="1440"
+                height="1117"
+                loading="lazy"
+                alt=""
+              />
+            </div>
+            <div class="description">
+              <p class="category">Disponibilidad</p>
+              <h3>ReservaYa</h3>
+              <p>
+                Elige una cancha, reserva un turno y libéralo si cambian tus
+                planes. El sistema completo evita reservas simultáneas para la
+                misma hora.
+              </p>
+              <ul class="stack" aria-label="Tecnologías de ReservaYa">
+                <li>React</li>
+                <li>FastAPI</li>
+                <li>SQLAlchemy</li>
+              </ul>
+              <a class="capture" href="reservaya/index.html#demo"
+                >Probar demo
+                <span class="visually-hidden">de ReservaYa</span></a
+              >
+            </div>
+          </article>
+          <article class="project project-tiendanova">
+            <div class="project-preview">
+              <img
+                src="capturas/tiendanova.jpg"
+                width="1420"
+                height="1160"
+                loading="lazy"
+                alt=""
+              />
+            </div>
+            <div class="description">
+              <p class="category">Comercio</p>
+              <h3>TiendaNova</h3>
+              <p>
+                Compara un pago aprobado con uno rechazado. Explora el historial
+                de pedidos y comprueba cuándo baja el stock.
+              </p>
+              <ul class="stack" aria-label="Tecnologías de TiendaNova">
+                <li>Next.js</li>
+                <li>TypeScript</li>
+                <li>Auth.js</li>
+              </ul>
+              <a class="capture" href="tiendanova/index.html#demo"
+                >Probar demo
+                <span class="visually-hidden">de TiendaNova</span></a
+              >
+            </div>
+          </article>
+          <article class="project project-snake">
+            <div class="project-preview">
+              <img
+                src="capturas/snake.svg"
+                width="960"
+                height="720"
+                loading="lazy"
+                alt=""
+              />
+            </div>
+            <div class="description">
+              <p class="category">Juego interactivo</p>
+              <h3>Snake</h3>
+              <p>
+                Juega al clásico de la serpiente, elige entre tres modos y
+                compite por un lugar en el ranking.
+              </p>
+              <ul class="stack" aria-label="Tecnologías de Snake">
+                <li>React</li>
+                <li>TypeScript</li>
+                <li>PostgreSQL</li>
+              </ul>
+              <a
+                class="capture"
+                href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
+                >Jugar Snake <span class="visually-hidden">en línea</span></a
+              >
+            </div>
+          </article>
+          <article class="project project-interrogatorio">
+            <div class="project-preview">
+              <img
+                src="capturas/interrogatorio.png"
+                width="1180"
+                height="780"
+                loading="lazy"
+                alt=""
+              />
+            </div>
+            <div class="description">
+              <p class="category">Deducción · Prototipo</p>
+              <h3>Interrogatorio</h3>
+              <p>
+                Elige entre dos expedientes, interroga a los sospechosos y
+                contrasta las pruebas. Una demo de deducción que funciona
+                directamente en tu navegador.
+              </p>
+              <ul class="stack" aria-label="Tecnologías de Interrogatorio">
+                <li>JavaScript</li>
+                <li>HTML</li>
+                <li>CSS</li>
+              </ul>
+              <a class="capture" href="interrogatorio/index.html#demo"
+                >Probar Interrogatorio</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
 
-    <section class="profile" id="perfil" aria-labelledby="titulo-perfil">
-      <div class="section-title">
-        <h2 id="titulo-perfil">Habilidades aplicadas</h2>
-        <p>Lenguajes y herramientas utilizados en los proyectos</p>
-      </div>
-      <div class="skills">
-        <article class="skill">
-          <h3>Interfaces web</h3>
-          <p>Construcción de formularios, tableros y flujos de compra con componentes reutilizables.</p>
-          <ul class="stack" aria-label="Tecnologías para interfaces"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>TypeScript</li><li>React</li><li>Next.js</li></ul>
-        </article>
-        <article class="skill">
-          <h3>APIs y autenticación</h3>
-          <p>Diseño de APIs REST, manejo de sesiones y control de acceso según el rol de cada usuario.</p>
-          <ul class="stack" aria-label="Tecnologías para servicios"><li>Node.js</li><li>Express</li><li>Python</li><li>FastAPI</li><li>Auth.js</li></ul>
-        </article>
-        <article class="skill">
-          <h3>Modelado de datos</h3>
-          <p>Uso de restricciones y transacciones para proteger turnos, pedidos e inventario cuando hay operaciones simultáneas.</p>
-          <ul class="stack" aria-label="Tecnologías para datos"><li>SQL</li><li>PostgreSQL</li><li>Prisma</li><li>SQLAlchemy</li></ul>
-        </article>
-        <article class="skill">
-          <h3>Pruebas y despliegue</h3>
-          <p>Pruebas de interfaz, API y flujos completos, con configuraciones reproducibles para desarrollo e integración continua.</p>
-          <ul class="stack" aria-label="Herramientas de pruebas y despliegue"><li>Jest</li><li>Vitest</li><li>pytest</li><li>Playwright</li><li>Docker</li><li>GitHub Actions</li></ul>
-        </article>
-      </div>
-    </section>
-  </main>
-  <footer class="shell footer"><span>Gervasio Torres</span><a href="proyectos/">Todos los proyectos</a><a href="#">Volver al inicio</a></footer>
-</body>
+      <section class="architecture" aria-labelledby="arquitectura-titulo">
+        <div class="section-title">
+          <h2 id="arquitectura-titulo">Arquitectura y calidad</h2>
+          <p>Decisiones comprobables detrás de las demos</p>
+        </div>
+        <div class="architecture-grid">
+          <article>
+            <span aria-hidden="true">01</span>
+            <h3>Interfaces accesibles</h3>
+            <p>
+              Navegación por teclado, estados de carga y error, diseño adaptable
+              y movimiento reducido según la preferencia del sistema.
+            </p>
+          </article>
+          <article>
+            <span aria-hidden="true">02</span>
+            <h3>Reglas en el servidor</h3>
+            <p>
+              Autorización, validación y operaciones idempotentes protegen
+              reservas, tarjetas, pedidos e inventario.
+            </p>
+          </article>
+          <article>
+            <span aria-hidden="true">03</span>
+            <h3>Datos consistentes</h3>
+            <p>
+              Restricciones y transacciones PostgreSQL resuelven operaciones
+              simultáneas sin depender de números decorativos.
+            </p>
+          </article>
+          <article>
+            <span aria-hidden="true">04</span>
+            <h3>Verificación reproducible</h3>
+            <p>
+              Pruebas de interfaz, API y concurrencia acompañan las migraciones
+              y compilaciones de cada aplicación.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="profile" id="perfil" aria-labelledby="titulo-perfil">
+        <div class="section-title">
+          <h2 id="titulo-perfil">Habilidades aplicadas</h2>
+          <p>Lenguajes y herramientas utilizados en los proyectos</p>
+        </div>
+        <div class="skills">
+          <article class="skill">
+            <h3>Interfaces web</h3>
+            <p>
+              Construcción de formularios, tableros y flujos de compra con
+              componentes reutilizables.
+            </p>
+            <ul class="stack" aria-label="Tecnologías para interfaces">
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>JavaScript</li>
+              <li>TypeScript</li>
+              <li>React</li>
+              <li>Next.js</li>
+            </ul>
+          </article>
+          <article class="skill">
+            <h3>APIs y autenticación</h3>
+            <p>
+              Diseño de APIs REST, manejo de sesiones y control de acceso según
+              el rol de cada usuario.
+            </p>
+            <ul class="stack" aria-label="Tecnologías para servicios">
+              <li>Node.js</li>
+              <li>Express</li>
+              <li>Python</li>
+              <li>FastAPI</li>
+              <li>Auth.js</li>
+            </ul>
+          </article>
+          <article class="skill">
+            <h3>Modelado de datos</h3>
+            <p>
+              Uso de restricciones y transacciones para proteger turnos, pedidos
+              e inventario cuando hay operaciones simultáneas.
+            </p>
+            <ul class="stack" aria-label="Tecnologías para datos">
+              <li>SQL</li>
+              <li>PostgreSQL</li>
+              <li>Prisma</li>
+              <li>SQLAlchemy</li>
+            </ul>
+          </article>
+          <article class="skill">
+            <h3>Pruebas y despliegue</h3>
+            <p>
+              Pruebas de interfaz, API y flujos completos, con configuraciones
+              reproducibles para desarrollo e integración continua.
+            </p>
+            <ul class="stack" aria-label="Herramientas de pruebas y despliegue">
+              <li>Jest</li>
+              <li>Vitest</li>
+              <li>pytest</li>
+              <li>Playwright</li>
+              <li>Docker</li>
+              <li>GitHub Actions</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="shell footer">
+      <span>Gervasio Torres</span
+      ><a href="https://github.com/Gervasio02" rel="me">Contacto en GitHub</a
+      ><a href="proyectos/">Todos los proyectos</a
+      ><a href="#">Volver al inicio</a>
+    </footer>
+  </body>
 </html>

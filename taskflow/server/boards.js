@@ -65,7 +65,8 @@ async function checkAssignee(tx, boardId, assigneeId) {
 async function checkCapacity(tx, column) {
   if (column.wipLimit !== null) {
     const count = await tx.card.count({ where: { columnId: column.id } });
-    if (count >= column.wipLimit) fail(409, "La columna alcanzó su límite de trabajo en curso.");
+    if (count >= column.wipLimit)
+      fail(409, "La columna alcanzó su límite de trabajo en curso.");
   }
 }
 
@@ -181,11 +182,19 @@ export function boardRoutes(db) {
   router.patch("/boards/:id/columns/:columnId", async (req, res) => {
     const boardId = uuid.parse(req.params.id);
     const columnId = uuid.parse(req.params.columnId);
-    const { wipLimit } = z.object({ wipLimit: z.number().int().min(1).max(10000).nullable() }).parse(req.body);
+    const { wipLimit } = z
+      .object({ wipLimit: z.number().int().min(1).max(10000).nullable() })
+      .parse(req.body);
     const column = await locked(db, boardId, req.userId, owner, async (tx) => {
       await columnOnBoard(tx, columnId, boardId);
-      if (wipLimit !== null && await tx.card.count({ where: { columnId } }) > wipLimit)
-        fail(409, "El límite no puede ser inferior al número actual de tarjetas.");
+      if (
+        wipLimit !== null &&
+        (await tx.card.count({ where: { columnId } })) > wipLimit
+      )
+        fail(
+          409,
+          "El límite no puede ser inferior al número actual de tarjetas.",
+        );
       return tx.column.update({ where: { id: columnId }, data: { wipLimit } });
     });
     res.json(column);
@@ -194,10 +203,38 @@ export function boardRoutes(db) {
   router.get("/boards/:id/cards/:cardId/activity", async (req, res) => {
     const boardId = uuid.parse(req.params.id);
     const cardId = uuid.parse(req.params.cardId);
-    const rows = await locked(db, boardId, req.userId, null, async tx => {
+    const rows = await locked(db, boardId, req.userId, null, async (tx) => {
       await cardOnBoard(tx, cardId, boardId);
-      return tx.activity.findMany({ where: { boardId, cardId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 100,
-        include: { actor: { select: { name: true } } } });
+      return tx.activity.findMany({
+        where: { boardId, cardId },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        take: 100,
+        include: { actor: { select: { name: true } } },
+      });
+    });
+    res.set("Cache-Control", "no-store").json(rows);
+  });
+
+  router.get("/boards/:id/activity", async (req, res) => {
+    const boardId = uuid.parse(req.params.id);
+    const rows = await locked(db, boardId, req.userId, null, async (tx) => {
+      const activity = await tx.activity.findMany({
+        where: { boardId },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        take: 200,
+        include: { actor: { select: { name: true } } },
+      });
+      const cards = await tx.card.findMany({
+        where: {
+          id: { in: [...new Set(activity.map((item) => item.cardId))] },
+        },
+        select: { id: true, title: true },
+      });
+      const titles = new Map(cards.map((card) => [card.id, card.title]));
+      return activity.map((item) => ({
+        ...item,
+        cardTitle: titles.get(item.cardId) || "Tarjeta eliminada",
+      }));
     });
     res.set("Cache-Control", "no-store").json(rows);
   });
@@ -205,11 +242,27 @@ export function boardRoutes(db) {
   router.post("/boards/:id/cards/:cardId/comments", async (req, res) => {
     const boardId = uuid.parse(req.params.id);
     const cardId = uuid.parse(req.params.cardId);
-    const { body } = z.object({ body: z.string().trim().min(1).max(2000) }).parse(req.body);
-    const result = await locked(db, boardId, req.userId, editors, async tx => {
-      await cardOnBoard(tx, cardId, boardId);
-      return tx.activity.create({ data: { boardId, cardId, actorId: req.userId, action: "COMMENT", body } });
-    });
+    const { body } = z
+      .object({ body: z.string().trim().min(1).max(2000) })
+      .parse(req.body);
+    const result = await locked(
+      db,
+      boardId,
+      req.userId,
+      editors,
+      async (tx) => {
+        await cardOnBoard(tx, cardId, boardId);
+        return tx.activity.create({
+          data: {
+            boardId,
+            cardId,
+            actorId: req.userId,
+            action: "COMMENT",
+            body,
+          },
+        });
+      },
+    );
     res.status(201).json(result);
   });
 
@@ -223,12 +276,22 @@ export function boardRoutes(db) {
       const created = await tx.card.create({
         data: {
           ...properties(data),
-          slaDueAt: data.slaHours ? new Date(Date.now() + data.slaHours * 3600000) : null,
+          slaDueAt: data.slaHours
+            ? new Date(Date.now() + data.slaHours * 3600000)
+            : null,
           completedAt: column.position === 2 ? new Date() : null,
           position: await nextPosition(tx, data.columnId),
         },
       });
-      await tx.activity.create({ data: { boardId: id, cardId: created.id, actorId: req.userId, action: "CREATED", body: "Se creó la tarjeta." } });
+      await tx.activity.create({
+        data: {
+          boardId: id,
+          cardId: created.id,
+          actorId: req.userId,
+          action: "CREATED",
+          body: "Se creó la tarjeta.",
+        },
+      });
       return created;
     });
     res.status(201).json(card);
@@ -244,7 +307,11 @@ export function boardRoutes(db) {
       await locked(db, boardId, req.userId, editors, async (tx) => {
         const card = await cardOnBoard(tx, id, boardId);
         const fields = properties(data);
-        if (data.slaHours !== undefined) fields.slaDueAt = data.slaHours === null ? null : new Date(card.createdAt.getTime() + data.slaHours * 3600000);
+        if (data.slaHours !== undefined)
+          fields.slaDueAt =
+            data.slaHours === null
+              ? null
+              : new Date(card.createdAt.getTime() + data.slaHours * 3600000);
         await checkAssignee(tx, boardId, data.assigneeId);
         if (columnId && card.columnId !== columnId) {
           const destination = await columnOnBoard(tx, columnId, boardId);
@@ -256,7 +323,15 @@ export function boardRoutes(db) {
           });
         }
         const updated = await tx.card.update({ where: { id }, data: fields });
-        await tx.activity.create({ data: { boardId, cardId: id, actorId: req.userId, action: "UPDATED", body: "Se actualizaron los campos de la tarjeta." } });
+        await tx.activity.create({
+          data: {
+            boardId,
+            cardId: id,
+            actorId: req.userId,
+            action: "UPDATED",
+            body: "Se actualizaron los campos de la tarjeta.",
+          },
+        });
         return updated;
       }),
     );
@@ -282,7 +357,11 @@ export function boardRoutes(db) {
       const card = await cardOnBoard(tx, id, boardId);
       const destination = await columnOnBoard(tx, columnId, boardId);
       if (card.columnId !== columnId) await checkCapacity(tx, destination);
-      if (card.columnId !== columnId) await tx.card.update({ where: { id }, data: { completedAt: destination.position === 2 ? new Date() : null } });
+      if (card.columnId !== columnId)
+        await tx.card.update({
+          where: { id },
+          data: { completedAt: destination.position === 2 ? new Date() : null },
+        });
       const cards = await tx.card.findMany({
         where: { columnId, id: { not: id } },
         orderBy: [{ position: "asc" }, { id: "asc" }],
@@ -290,7 +369,15 @@ export function boardRoutes(db) {
       });
       // Use parameterized SQL to persist the reorder in one round trip.
       const order = JSON.stringify(cardOrder(cards, id, beforeId));
-      await tx.activity.create({ data: { boardId, cardId: id, actorId: req.userId, action: "MOVED", body: `Se movió la tarjeta a ${destination.title}.` } });
+      await tx.activity.create({
+        data: {
+          boardId,
+          cardId: id,
+          actorId: req.userId,
+          action: "MOVED",
+          body: `Se movió la tarjeta a ${destination.title}.`,
+        },
+      });
       await tx.$executeRaw`
         UPDATE "Card" AS card
         SET "position" = sequence.position, "columnId" = ${columnId}::uuid
@@ -393,7 +480,10 @@ export function boardRoutes(db) {
       const member = await membership(tx, boardId, userId);
       if (member.role === "OWNER")
         fail(403, "El dueño conserva acceso al tablero.");
-      await tx.card.updateMany({ where: { column: { boardId }, assigneeId: userId }, data: { assigneeId: null } });
+      await tx.card.updateMany({
+        where: { column: { boardId }, assigneeId: userId },
+        data: { assigneeId: null },
+      });
       await tx.membership.delete({
         where: { boardId_userId: { boardId, userId } },
       });

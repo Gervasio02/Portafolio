@@ -1,47 +1,4 @@
-const slides = [
-  {
-    id: "taskflow",
-    category: "Gestión de trabajo",
-    name: "TaskFlow",
-    image: "taskflow.png",
-    alt: "Centro de control de TaskFlow con métricas y distribución de tarjetas",
-    note: "Crea una tarjeta, cámbiala de columna y mira cómo se actualiza la distribución del tablero.",
-  },
-  {
-    id: "reservaya",
-    category: "Agenda deportiva",
-    name: "ReservaYa",
-    image: "reservaya-cancha.png",
-    alt: "Cancha de ReservaYa junto a su selector de horarios",
-    note: "Cambia de cancha para ver sus turnos, confirma una reserva y vuelve a liberar el horario.",
-  },
-  {
-    id: "tiendanova",
-    category: "Comercio electrónico",
-    name: "TiendaNova",
-    image: "tiendanova.jpg",
-    alt: "Catálogo de TiendaNova con productos de escritorio",
-    note: "Agrega un producto, simula un pago y revisa el pedido y el stock resultante.",
-  },
-  {
-    id: "snake",
-    category: "Juego interactivo",
-    name: "Snake",
-    image: "snake.svg",
-    alt: "Tablero de Snake con la serpiente y el marcador",
-    note: "Elige un modo, juega con teclado o controles táctiles y compara tu puntaje en el ranking.",
-    href: "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
-    action: "Jugar Snake",
-  },
-  {
-    id: "interrogatorio",
-    category: "Deducción · Prototipo",
-    name: "Interrogatorio",
-    image: "interrogatorio.png",
-    alt: "Pruebas y sala de interrogatorio del Hotel Ónix",
-    note: "Elige un expediente, revisa las pruebas e interroga a los sospechosos.",
-  },
-];
+const slides = window.PORTFOLIO_PROJECTS.filter((project) => project.featured);
 
 const carousel = document.querySelector("[data-slider]");
 const image = carousel.querySelector("#slide-image");
@@ -65,12 +22,12 @@ function showSlide(index) {
   const slide = slides[current];
 
   carousel.dataset.theme = slide.id;
-  image.src = "capturas/" + slide.image;
+  image.src = "capturas/" + (slide.homeImage ?? slide.image);
   image.alt = slide.alt;
   category.textContent = slide.category;
   name.textContent = slide.name;
   note.textContent = slide.note;
-  link.href = slide.href ?? slide.id + "/index.html#demo";
+  link.href = slide.homeDemo;
   link.textContent = slide.action ?? "Probar " + slide.name;
 
   for (const [position, button] of selectors.entries()) {
@@ -81,7 +38,10 @@ function showSlide(index) {
     for (const element of [image, content]) {
       element.getAnimations().forEach((animation) => animation.cancel());
       element.animate(
-        [{ opacity: 0.4, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }],
+        [
+          { opacity: 0.4, transform: "translateY(8px)" },
+          { opacity: 1, transform: "none" },
+        ],
         { duration: 330, easing: "ease-out" },
       );
     }
@@ -90,9 +50,12 @@ function showSlide(index) {
 
 function syncRotation() {
   clearTimeout(timeout);
-  const pointerInside = matchMedia("(hover: hover)").matches && carousel.matches(":hover");
-  const focusInside = carousel.contains(document.activeElement) && !resumeAfterFocus;
-  const canRotate = !manualPause && !pointerInside && !focusInside && !document.hidden;
+  const pointerInside =
+    matchMedia("(hover: hover)").matches && carousel.matches(":hover");
+  const focusInside =
+    carousel.contains(document.activeElement) && !resumeAfterFocus;
+  const canRotate =
+    !manualPause && !pointerInside && !focusInside && !document.hidden;
   toggle.textContent = manualPause ? "Reanudar rotación" : "Pausar rotación";
   content.setAttribute("aria-live", canRotate ? "off" : "polite");
 

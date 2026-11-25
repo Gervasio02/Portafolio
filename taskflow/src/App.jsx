@@ -6,6 +6,7 @@ import {
   ChevronDown,
   CircleHelp,
   GripVertical,
+  History,
   LayoutDashboard,
   LayoutGrid,
   LogOut,
@@ -299,7 +300,10 @@ function Column({
       <header className="column-head">
         <span className="column-dot" />
         <h2>{column.title}</h2>
-        <span className="count">{column.cards.length}{column.wipLimit ? ` / ${column.wipLimit}` : ""}</span>
+        <span className="count">
+          {column.cards.length}
+          {column.wipLimit ? ` / ${column.wipLimit}` : ""}
+        </span>
         {editable && (
           <button
             className="icon"
@@ -310,11 +314,28 @@ function Column({
           </button>
         )}
       </header>
-      {configureWip && <form onSubmit={event => {
-        event.preventDefault();
-        const value = new FormData(event.currentTarget).get("wip");
-        void configureWip(value ? Number(value) : null);
-      }}><label>Límite de trabajo en curso<input name="wip" type="number" min="1" max="10000" defaultValue={column.wipLimit || ""} placeholder="Sin límite" /></label><button type="submit">Guardar límite</button></form>}
+      {configureWip && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            const value = new FormData(event.currentTarget).get("wip");
+            void configureWip(value ? Number(value) : null);
+          }}
+        >
+          <label>
+            Límite de trabajo en curso
+            <input
+              name="wip"
+              type="number"
+              min="1"
+              max="10000"
+              defaultValue={column.wipLimit || ""}
+              placeholder="Sin límite"
+            />
+          </label>
+          <button type="submit">Guardar límite</button>
+        </form>
+      )}
       <SortableContext
         items={visible.map(({ id }) => id)}
         strategy={verticalListSortingStrategy}
@@ -349,7 +370,10 @@ function Column({
 function Modal({ title, close, error, children }) {
   const dialog = useRef(null);
   useEffect(() => {
-    dialog.current?.showModal();
+    const current = dialog.current;
+    if (!current) return;
+    if (typeof current.showModal === "function") current.showModal();
+    else current.setAttribute("open", "");
   }, []);
   return (
     <dialog
@@ -386,29 +410,124 @@ export function CardActivity({ boardId, cardId, editable, client = api }) {
     const controller = new AbortController();
     const load = async () => {
       try {
-        const result = await client.request(`/boards/${boardId}/cards/${cardId}/activity`, { signal: controller.signal });
-        if (!controller.signal.aborted) { setEntries(result); setError(""); }
-      } catch (e) { if (!controller.signal.aborted) setError(e.message); }
-      finally { if (!controller.signal.aborted) setLoading(false); }
+        const result = await client.request(
+          `/boards/${boardId}/cards/${cardId}/activity`,
+          { signal: controller.signal },
+        );
+        if (!controller.signal.aborted) {
+          setEntries(result);
+          setError("");
+        }
+      } catch (e) {
+        if (!controller.signal.aborted) setError(e.message);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     };
     void load();
     const timer = setInterval(load, 15000);
-    return () => { controller.abort(); clearInterval(timer); };
+    return () => {
+      controller.abort();
+      clearInterval(timer);
+    };
   }, [boardId, cardId, client, version]);
-  return <section aria-label="Actividad de la tarjeta"><h3>Comentarios y actividad</h3>
-    {loading && <p role="status">Cargando actividad…</p>}
-    {error && <p role="alert">{error}</p>}
-    {!loading && !entries.length && <p>Aún no hay actividad.</p>}
-    <ol>{entries.map(entry => <li key={entry.id}><strong>{entry.actor?.name || "Usuario eliminado"}</strong> · {new Date(entry.createdAt).toLocaleString("es-CL")}<p>{entry.body}</p></li>)}</ol>
-    <p>Se muestran los 100 eventos más recientes. Se actualiza cada 15 segundos.</p>
-    {editable && <form onSubmit={async event => {
-      event.preventDefault(); const form = event.currentTarget;
-      const body = new FormData(form).get("comment"); setBusy(true); setError("");
-      try { await client.request(`/boards/${boardId}/cards/${cardId}/comments`, { method: "POST", body: { body } }); form.reset(); setVersion(v => v + 1); }
-      catch (e) { setError(e.message); }
-      finally { setBusy(false); }
-    }}><label>Nuevo comentario<textarea name="comment" required maxLength={2000} rows={3} /></label><button disabled={busy} type="submit">{busy ? "Guardando…" : "Publicar comentario"}</button></form>}
-  </section>;
+  return (
+    <section aria-label="Actividad de la tarjeta">
+      <h3>Comentarios y actividad</h3>
+      {loading && <p role="status">Cargando actividad…</p>}
+      {error && <p role="alert">{error}</p>}
+      {!loading && !entries.length && <p>Aún no hay actividad.</p>}
+      <ol>
+        {entries.map((entry) => (
+          <li key={entry.id}>
+            <strong>{entry.actor?.name || "Usuario eliminado"}</strong> ·{" "}
+            {new Date(entry.createdAt).toLocaleString("es-CL")}
+            <p>{entry.body}</p>
+          </li>
+        ))}
+      </ol>
+      <p>
+        Se muestran los 100 eventos más recientes. Se actualiza cada 15
+        segundos.
+      </p>
+      {editable && (
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const body = new FormData(form).get("comment");
+            setBusy(true);
+            setError("");
+            try {
+              await client.request(
+                `/boards/${boardId}/cards/${cardId}/comments`,
+                { method: "POST", body: { body } },
+              );
+              form.reset();
+              setVersion((v) => v + 1);
+            } catch (e) {
+              setError(e.message);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <label>
+            Nuevo comentario
+            <textarea name="comment" required maxLength={2000} rows={3} />
+          </label>
+          <button disabled={busy} type="submit">
+            {busy ? "Guardando…" : "Publicar comentario"}
+          </button>
+        </form>
+      )}
+    </section>
+  );
+}
+
+export function BoardActivity({ boardId, close, client = api }) {
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const controller = new AbortController();
+    client
+      .request(`/boards/${boardId}/activity`, { signal: controller.signal })
+      .then(setEntries)
+      .catch((failure) => {
+        if (!controller.signal.aborted) setError(failure.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [boardId, client]);
+  return (
+    <Modal title="Actividad del tablero" close={close} error={error}>
+      <section
+        className="board-activity"
+        aria-label="Historial global del tablero"
+      >
+        <p>Se muestran los 200 eventos más recientes de todas las tarjetas.</p>
+        {loading && <p role="status">Cargando historial…</p>}
+        {!loading && !entries.length && <p>Aún no hay actividad.</p>}
+        <ol>
+          {entries.map((entry) => (
+            <li key={entry.id}>
+              <div>
+                <strong>{entry.cardTitle}</strong>
+                <span>
+                  {entry.actor?.name || "Usuario eliminado"} ·{" "}
+                  {new Date(entry.createdAt).toLocaleString("es-CL")}
+                </span>
+              </div>
+              <p>{entry.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </Modal>
+  );
 }
 
 function CardForm({
@@ -498,8 +617,35 @@ function CardForm({
               ))}
             </select>
           </label>
-          <label>SLA en horas desde la creación<input name="slaHours" type="number" min="1" max="8760" defaultValue={card?.slaDueAt ? Math.round((new Date(card.slaDueAt)-new Date(card.createdAt))/3600000) : ""} placeholder="Sin SLA" /></label>
-          <label>Responsable<select name="assigneeId" defaultValue={card?.assigneeId || ""}><option value="">Sin responsable</option>{members.map(member => <option key={member.id} value={member.id}>{member.name}</option>)}</select></label>
+          <label>
+            SLA en horas desde la creación
+            <input
+              name="slaHours"
+              type="number"
+              min="1"
+              max="8760"
+              defaultValue={
+                card?.slaDueAt
+                  ? Math.round(
+                      (new Date(card.slaDueAt) - new Date(card.createdAt)) /
+                        3600000,
+                    )
+                  : ""
+              }
+              placeholder="Sin SLA"
+            />
+          </label>
+          <label>
+            Responsable
+            <select name="assigneeId" defaultValue={card?.assigneeId || ""}>
+              <option value="">Sin responsable</option>
+              {members.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <label>
             Etiquetas
             <input
@@ -527,7 +673,14 @@ function CardForm({
           </div>
         </fieldset>
       </form>
-      {card && <CardActivity key={card.id} boardId={boardId} cardId={card.id} editable={editable} />}
+      {card && (
+        <CardActivity
+          key={card.id}
+          boardId={boardId}
+          cardId={card.id}
+          editable={editable}
+        />
+      )}
     </Modal>
   );
 }
@@ -982,6 +1135,12 @@ export function App() {
               <div className="header-actions">
                 <button
                   className="button secondary"
+                  onClick={() => setDialog({ type: "boardActivity" })}
+                >
+                  <History size={17} /> Actividad
+                </button>
+                <button
+                  className="button secondary"
                   onClick={() => setDialog({ type: "members" })}
                 >
                   <UserPlus size={17} />{" "}
@@ -1037,56 +1196,95 @@ export function App() {
                 <strong>{progress}%</strong>
               </div>
             </div>
-            <div role="group" aria-label="Vista de tareas"><button type="button" aria-pressed={view==="board"} onClick={()=>setView("board")}>Tablero</button><button type="button" aria-pressed={view==="calendar"} onClick={()=>setView("calendar")}>Calendario</button></div>
-            {view === "calendar" ? <TaskCalendar cards={filterCards(board.columns.flatMap(column=>column.cards),search,priority)} openCard={card=>setDialog({type:"card",card})}/> : <DndContext
-              sensors={sensors}
-              collisionDetection={closestCorners}
-              onDragStart={() => setDragging(true)}
-              onDragCancel={() => setDragging(false)}
-              onDragEnd={({ active, over }) => {
-                setDragging(false);
-                const columnId = over?.data.current?.columnId;
-                if (!columnId || active.id === over.id || busy) return;
-                const destination = board.columns.find(
-                  (column) => column.id === columnId,
-                ).cards;
-                const from = destination.findIndex(
-                  (card) => card.id === active.id,
-                );
-                const to = destination.findIndex((card) => card.id === over.id);
-                const beforeId =
-                  to < 0
-                    ? null
-                    : from >= 0 && from < to
-                      ? (destination[to + 1]?.id ?? null)
-                      : over.id;
-                void perform(async () => {
-                  await move(active.id, columnId, beforeId);
-                  await reload();
-                });
-              }}
-            >
-              <div className="board-columns">
-                {board.columns.map((column, index) => (
-                  <Column
-                    key={column.id}
-                    column={column}
-                    index={index}
-                    search={search}
-                    priority={priority}
-                    editable={editable}
-                    newCard={() =>
-                      setDialog({ type: "card", columnId: column.id })
-                    }
-                    configureWip={board.role === "OWNER" ? limit => perform(async () => {
-                      await api.request(`/boards/${selected}/columns/${column.id}`, { method: "PATCH", body: { wipLimit: limit } });
-                      await reload();
-                    }) : null}
-                    editCard={(card) => setDialog({ type: "card", card })}
-                  />
-                ))}
-              </div>
-            </DndContext>}
+            <div role="group" aria-label="Vista de tareas">
+              <button
+                type="button"
+                aria-pressed={view === "board"}
+                onClick={() => setView("board")}
+              >
+                Tablero
+              </button>
+              <button
+                type="button"
+                aria-pressed={view === "calendar"}
+                onClick={() => setView("calendar")}
+              >
+                Calendario
+              </button>
+            </div>
+            {view === "calendar" ? (
+              <TaskCalendar
+                cards={filterCards(
+                  board.columns.flatMap((column) => column.cards),
+                  search,
+                  priority,
+                )}
+                openCard={(card) => setDialog({ type: "card", card })}
+              />
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCorners}
+                onDragStart={() => setDragging(true)}
+                onDragCancel={() => setDragging(false)}
+                onDragEnd={({ active, over }) => {
+                  setDragging(false);
+                  const columnId = over?.data.current?.columnId;
+                  if (!columnId || active.id === over.id || busy) return;
+                  const destination = board.columns.find(
+                    (column) => column.id === columnId,
+                  ).cards;
+                  const from = destination.findIndex(
+                    (card) => card.id === active.id,
+                  );
+                  const to = destination.findIndex(
+                    (card) => card.id === over.id,
+                  );
+                  const beforeId =
+                    to < 0
+                      ? null
+                      : from >= 0 && from < to
+                        ? (destination[to + 1]?.id ?? null)
+                        : over.id;
+                  void perform(async () => {
+                    await move(active.id, columnId, beforeId);
+                    await reload();
+                  });
+                }}
+              >
+                <div className="board-columns">
+                  {board.columns.map((column, index) => (
+                    <Column
+                      key={column.id}
+                      column={column}
+                      index={index}
+                      search={search}
+                      priority={priority}
+                      editable={editable}
+                      newCard={() =>
+                        setDialog({ type: "card", columnId: column.id })
+                      }
+                      configureWip={
+                        board.role === "OWNER"
+                          ? (limit) =>
+                              perform(async () => {
+                                await api.request(
+                                  `/boards/${selected}/columns/${column.id}`,
+                                  {
+                                    method: "PATCH",
+                                    body: { wipLimit: limit },
+                                  },
+                                );
+                                await reload();
+                              })
+                          : null
+                      }
+                      editCard={(card) => setDialog({ type: "card", card })}
+                    />
+                  ))}
+                </div>
+              </DndContext>
+            )}
           </>
         ) : selected && !error ? (
           <p className="empty-board" aria-busy="true">
@@ -1145,6 +1343,9 @@ export function App() {
             })
           }
         />
+      )}
+      {dialog?.type === "boardActivity" && (
+        <BoardActivity boardId={selected} close={() => setDialog(null)} />
       )}
       {dialog?.type === "board" && (
         <BoardForm
