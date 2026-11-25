@@ -1,71 +1,70 @@
-/* Tema gamer oscuro para las páginas interiores.
-   Se carga después de styles.css / proyectos.css / catalogo.css y
-   reutiliza sus variables para alinear el aspecto con la portada. */
+/* Tema de las páginas interiores (catálogo, demos, proyectos, laboratorio).
+   Se carga después de styles.css / proyectos.css / catalogo.css y reutiliza
+   sus variables para que todo coincida con la portada: carbón cálido, texto
+   crema, acento ámbar y tipografía IBM Plex. */
 
 :root {
   color-scheme: dark;
-  --bg: #07070d;
-  --panel: #12121f;
-  --text: #ecebff;
-  --muted: #a3a3c2;
-  --line: #2a2a47;
-  --mint: #8b5cf6; /* acento principal (morado) */
-  --azul: #2f8cff;
-  --azul-claro: #6cc4ff;
-  --morado-claro: #b69cff;
-  --rojo: #ff2d55;
-  --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
-  --corte: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  --bg: #151413;
+  --panel: #1c1b19;
+  --panel-2: #24221f;
+  --text: #ece7df;
+  --muted: #a8a196;
+  --line: #34312c;
+  --line-soft: #2a2825;
+  --mint: #e3a13b; /* acento principal (ámbar) */
+  --accent: #e3a13b;
+  --acento-fuerte: #f0b456;
+  --acento-tinta: #1a1408;
+  --ok: #8fbf8a;
+  --aviso: #d9b45a;
+  --error: #e07a64;
+  --sans: "Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Plex Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+  --radio: 6px;
 }
 
 body {
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
-  background:
-    radial-gradient(60rem 30rem at 85% -5%, #8b5cf626, transparent 70%),
-    radial-gradient(50rem 30rem at -10% 30%, #2f8cff1f, transparent 70%),
-    var(--bg);
-  background-attachment: fixed;
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
 }
 
 h1,
 h2,
 h3 {
-  font-weight: 800;
+  font-weight: 600;
+  letter-spacing: -0.01em !important;
 }
 
 a {
-  color: var(--azul-claro);
+  color: var(--text);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.25em;
 }
 
 a:hover {
-  color: #fff;
+  color: var(--acento-fuerte);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* cabecera común */
 .top {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   min-height: 44px;
-  gap: 0.7rem;
-  font: 700 1rem/1 "Segoe UI", system-ui, sans-serif;
+  font: 600 1.05rem/1.2 var(--sans);
   letter-spacing: 0;
   color: var(--text);
-}
-
-.brand::before {
-  content: "GT";
-  display: grid;
-  place-items: center;
-  width: 2.3rem;
-  height: 2.3rem;
-  font: 800 0.95rem var(--mono);
-  color: #fff;
-  background: linear-gradient(135deg, var(--azul), var(--mint) 55%, var(--rojo));
-  clip-path: polygon(0 0, 75% 0, 100% 25%, 100% 100%, 25% 100%, 0 75%);
+  text-decoration: none;
 }
 
 .brand span {
@@ -76,86 +75,104 @@ nav a,
 .footer a {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
   min-height: 44px;
-  padding: 0.35rem 0.15rem;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  min-width: 44px;
+  padding: 0 0.6rem;
+  font: 0.95rem var(--sans);
   color: var(--muted);
+  text-decoration: none;
+  border-radius: var(--radio);
 }
 
 nav a:hover,
 .footer a:hover {
   color: var(--text);
+  background: var(--panel);
 }
 
 .top nav [aria-current] {
-  color: var(--azul-claro);
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
 }
 
 .eyebrow,
 .category,
 .catalog-meta {
   font-family: var(--mono);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--azul-claro);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--accent);
 }
 
 .eyebrow span {
-  border-radius: 0;
-  rotate: 45deg;
-  background: var(--rojo) !important;
+  border-radius: 50%;
+  background: var(--accent) !important;
 }
 
 .catalog-intro h1 span,
 .lab h1 span {
-  color: var(--rojo);
+  color: var(--accent);
 }
 
 .catalog-intro h1,
 .lab h1,
 .project-lead h1 {
-  text-transform: uppercase;
-  letter-spacing: -0.03em !important;
+  text-transform: none;
+  letter-spacing: -0.02em !important;
+  overflow-wrap: break-word;
+}
+
+.catalog-intro h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+
+.project-lead h1 {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
 }
 
 /* botones */
 .hero-link,
 .lab-action.primary,
 .catalog-actions .hero-link {
-  color: #fff !important;
-  background: linear-gradient(135deg, var(--azul), var(--mint)) !important;
-  border: 0 !important;
-  border-radius: 0;
-  font-family: var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--acento-tinta) !important;
+  background: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: var(--radio);
+  font: 500 0.98rem var(--sans);
+  text-transform: none;
+  text-decoration: none;
 }
 
 .hero-link:hover,
 .lab-action.primary:hover {
-  filter: brightness(1.2);
+  background: var(--acento-fuerte) !important;
 }
 
 .slider-controls button,
 .quiet,
 .lab-action,
 .lab-nav a {
-  background: #191930;
+  background: transparent;
   color: var(--text);
-  border-color: var(--line);
-  border-radius: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+}
+
+.quiet:hover,
+.lab-action:hover,
+.lab-nav a:hover {
+  border-color: var(--muted);
 }
 
 .lab-nav [aria-current="page"] {
-  color: #fff;
-  background: linear-gradient(135deg, var(--azul), var(--mint));
-  border-color: transparent;
+  color: var(--acento-tinta);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 /* paneles */
@@ -163,11 +180,10 @@ nav a:hover,
 .catalog-filters,
 .catalog-card,
 .project-lead figure {
-  background: linear-gradient(180deg, #191930, #12121f) !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: inset 0 0 0 1px var(--line);
-  clip-path: var(--corte);
+  background: var(--panel) !important;
+  border: 1px solid var(--line-soft) !important;
+  border-radius: var(--radio) !important;
+  box-shadow: none;
 }
 
 .lab-cell,
@@ -177,43 +193,57 @@ nav a:hover,
 .field select,
 .catalog-filters input,
 .catalog-filters select {
-  background: #0b0b14 !important;
+  background: var(--bg) !important;
   color: var(--text);
   border-color: var(--line) !important;
-  border-radius: 0 !important;
+  border-radius: var(--radio) !important;
 }
 
 .catalog-card:target {
-  box-shadow: inset 0 0 0 1px var(--mint);
+  border-color: var(--accent) !important;
 }
 
 .catalog-card img {
-  background: #191930;
-  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .catalog-card summary {
-  color: var(--morado-claro);
+  color: var(--accent);
 }
 
-/* acentos por proyecto */
-.project-page {
-  --accent: #6cc4ff;
-  --wash: #11203a;
+.stack li {
+  border-color: var(--line);
+  border-radius: 999px;
+  font-family: var(--mono);
+  color: var(--muted);
 }
 
-.project-page.taskflow {
-  --accent: #b69cff;
-  --wash: #1d1638;
-}
-
+/* acentos por proyecto: el mismo ámbar, con fondos de figura sobrios */
+.project-page,
+.project-page.taskflow,
 .project-page.tiendanova {
-  --accent: #ff7a93;
-  --wash: #2c1220;
+  --accent: #e3a13b;
+  --wash: #1c1b19;
 }
 
 .project-page .eyebrow {
   color: var(--accent);
+}
+
+.demo-tag[data-tone="alta"] {
+  border-color: #8a4a3c;
+  color: #f0a08e;
+}
+
+.demo-tag[data-tone="media"] {
+  border-color: #7d6a35;
+  color: #e6c878;
+}
+
+.demo-tag[data-tone="baja"] {
+  border-color: #4e6650;
+  color: #b4d4ad;
 }
 
 .footer {
@@ -222,7 +252,7 @@ nav a:hover,
 
 /* aviso de arranque en frío para enlaces a apps en vivo */
 .nota-vivo {
-  font: 0.8rem var(--mono);
+  font: 0.82rem var(--mono);
   color: var(--muted);
   margin: 0.6rem 0 0;
 }
@@ -236,64 +266,70 @@ nav a:hover,
   font: 0.8rem var(--mono);
 }
 
-@media (max-width: 480px) {
-  .top {
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1rem;
-    padding: 0.9rem 0;
-  }
-
-  .top nav {
-    gap: 0.3rem 1rem;
-    justify-content: flex-start;
-  }
-}
-
 /* indicador de estado de servidores (despertar.js) */
 .estado {
-  font: 600 0.875rem var(--mono);
+  font: 0.82rem var(--mono);
   color: var(--muted);
 }
 
 .estado::before {
-  content: "◌ ";
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--muted);
 }
 
 .estado[data-estado="despertando"] {
-  color: #fbbf24;
+  color: var(--aviso);
+}
+
+.estado[data-estado="despertando"]::before {
+  background: var(--aviso);
 }
 
 .estado[data-estado="lista"] {
-  color: #4ade80;
+  color: var(--ok);
 }
 
 .estado[data-estado="lista"]::before {
-  content: "● ";
+  background: var(--ok);
 }
 
 .estado[data-estado="error"] {
-  color: #ff7a93;
+  color: var(--error);
+}
+
+.estado[data-estado="error"]::before {
+  background: var(--error);
 }
 
 .estado:empty {
   display: none;
 }
 
-/* Títulos grandes: evitan desbordes en pantallas de 320 px con fuentes anchas. */
-.catalog-intro h1,
-.lab h1,
-.project-lead h1 {
-  overflow-wrap: break-word;
-}
-
 @media (max-width: 480px) {
+  .top {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .top nav {
+    gap: 0 0.25rem;
+    justify-content: flex-start;
+    margin-left: -0.6rem;
+  }
+
   .catalog-intro h1 {
-    font-size: clamp(2.2rem, 12vw, 3.4rem);
+    font-size: clamp(2.1rem, 11vw, 3rem);
   }
 
   .lab h1,
   .project-lead h1 {
-    font-size: clamp(2rem, 10vw, 3rem);
+    font-size: clamp(1.9rem, 9vw, 2.6rem);
   }
 }
