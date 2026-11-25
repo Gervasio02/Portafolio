@@ -1,18 +1,26 @@
 # Portafolio de Gervasio Torres
 
-Cinco aplicaciones y un conjunto de laboratorios de ingeniería informática, con datos ficticios y bases PostgreSQL separadas. La portada en `portal/` incluye un carrusel y una página y demo interactiva para cada aplicación. Las demos públicas usan datos ficticios en el navegador. Abre `portal/index.html` para probarlas.
+Cinco aplicaciones y tres laboratorios de ingeniería informática, con datos
+ficticios y almacenamiento aislado. La portada en `portal/` incluye un carrusel,
+un catálogo común de ocho proyectos y demos interactivas. Abre
+`portal/index.html` para probarlas.
 
-| Aplicación | Stack | Decisión que conviene explicar en una entrevista |
-| --- | --- | --- |
-| [TaskFlow](taskflow/README.md) | React, Express, Prisma y PostgreSQL | Supervisa entregas e incidentes por tablero. El panel resume la distribución y usa los permisos de cada miembro. |
-| [ReservaYa](reservaya/README.md) | React, FastAPI, SQLAlchemy y PostgreSQL | Consulta la cancha, elige un turno y controla su ocupación. La base impide las reservas duplicadas. |
-| [TiendaNova](tiendanova/README.md) | Next.js, Auth.js, Prisma y PostgreSQL | Recorre la compra y sigue el pedido hasta la entrega. La confirmación descuenta el inventario dentro de una transacción. |
+| Aplicación                                 | Stack                                           | Decisión que conviene explicar en una entrevista                                                                         |
+| ------------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [TaskFlow](taskflow/README.md)             | React, Express, Prisma y PostgreSQL             | Supervisa entregas e incidentes por tablero. El panel resume la distribución y usa los permisos de cada miembro.         |
+| [ReservaYa](reservaya/README.md)           | React, FastAPI, SQLAlchemy y PostgreSQL         | Consulta la cancha, elige un turno y controla su ocupación. La base impide las reservas duplicadas.                      |
+| [TiendaNova](tiendanova/README.md)         | Next.js, Auth.js, Prisma y PostgreSQL           | Recorre la compra y sigue el pedido hasta la entrega. La confirmación descuenta el inventario dentro de una transacción. |
+| [Snake](snake/README.md)                   | React, TypeScript, Express, Prisma y PostgreSQL | Reproduce la partida en el servidor para validar puntajes y conserva desafíos, logros e historial.                       |
+| [Interrogatorio](interrogatorio/README.md) | React, FastAPI, SQLAlchemy y PostgreSQL/SQLite  | Genera expedientes deterministas con cronología y conexiones de evidencias sin depender de un modelo externo.            |
+| [Laboratorios](labs/README.md)             | FastAPI, Python y SQLite                        | DataLab, DocFlow y CloudOps mantienen resultados, auditoría e identidad aislada sin inventar telemetría.                 |
 
 ## Ejecutar en el computador
 
 Instala Git y Docker con Compose. Descomprime el proyecto y sigue el README de cada aplicación para configurar su `.env.example` y ejecutar `docker compose up --build` desde la carpeta correspondiente. Cada README indica los puertos, la migración y las credenciales de demostración si aplica. Para la portada, abre `portal/index.html` o ejecuta `python -m http.server 8080 --directory portal` desde esta carpeta.
 
-El repositorio público [Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio) reúne la portada y las tres aplicaciones. Sus flujos de GitHub Actions están en `.github/workflows/`.
+El repositorio público [Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio)
+reúne la portada, las aplicaciones y los laboratorios. Sus flujos de GitHub
+Actions están en `.github/workflows/`.
 
 ## Cuenta personal de GitHub
 
@@ -23,7 +31,10 @@ Para dar acceso a ChatGPT, abre Configuración → Complementos → GitHub y aut
 ## Operación y costos
 
 - **Portada**: alojamiento estático. [Vista publicada](https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site). Su código es portable.
-- **TaskFlow y ReservaYa**: un servicio HTTPS por aplicación que ejecute el Dockerfile y un PostgreSQL administrado. Si el proveedor pausa servicios por inactividad, la primera solicitud puede demorar. Consulta los límites y las condiciones vigentes antes de contratar recursos.
+- **TaskFlow, ReservaYa, Snake e Interrogatorio**: un servicio HTTPS por
+  aplicación que ejecute su contenedor y una base autorizada cuando corresponda.
+  Si el proveedor pausa servicios por inactividad, la primera solicitud puede
+  demorar.
 - **TiendaNova**: Vercel Hobby para el proyecto personal y un PostgreSQL administrado, por ejemplo una base dedicada en Supabase. Las compras son simuladas.
 - Mantén las credenciales en las variables de entorno de cada proveedor. Crea los datos de demo según el README respectivo. Antes de enlazar una demo pública desde la portada, prueba su flujo principal desde la URL publicada.
 
@@ -33,7 +44,11 @@ Consulta [PUBLICACION.md](PUBLICACION.md) para preparar GitHub y Azure.
 
 ## Catálogo y laboratorios
 
-El catálogo en `portal/proyectos/` permite buscar por nombre, tipo y tecnologías y consultar arquitectura y aprendizajes. DataLab, DocFlow y CloudOps se ejecutan localmente desde [labs/README.md](labs/README.md); sus enlaces indican esa condición. No se han publicado esos laboratorios. El estado verificable de las fases está en [docs/ROADMAP.md](docs/ROADMAP.md).
+El catálogo en `portal/proyectos/` permite buscar por nombre, tipo y tecnologías
+y consultar arquitectura y aprendizajes. DataLab, DocFlow y CloudOps se ejecutan
+localmente desde [labs/README.md](labs/README.md); sus enlaces indican esa
+condición. La certificación de las once fases, pruebas y límites de publicación
+está en [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Pruebas con PostgreSQL local en Windows
 

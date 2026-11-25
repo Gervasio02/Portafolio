@@ -2,7 +2,7 @@ name: Snake - verificar y publicar imagen
 on:
   push:
     branches: [main]
-    paths: ['snake/**', '.github/workflows/snake-azure.yml']
+    paths: ["snake/**", ".github/workflows/snake-azure.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,6 +18,8 @@ jobs:
           cache: npm
           cache-dependency-path: snake/package-lock.json
       - run: npm ci
+        working-directory: snake
+      - run: npm audit --omit=dev --audit-level=high
         working-directory: snake
       - run: npx prisma generate
         working-directory: snake

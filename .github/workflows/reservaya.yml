@@ -30,6 +30,8 @@ jobs:
           cache: pip
           cache-dependency-path: reservaya/backend/requirements-dev.txt
       - run: pip install -r requirements-dev.txt
+      - run: python -m pip install pip-audit==2.10.1
+      - run: python -m pip_audit -r requirements.txt
       - run: ruff check app alembic tests && ruff format --check app alembic tests
       - run: pytest --cov=app --cov-report=term-missing --cov-fail-under=70
   frontend:
@@ -46,4 +48,5 @@ jobs:
           cache: npm
           cache-dependency-path: reservaya/frontend/package-lock.json
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint && npm test && npm run build

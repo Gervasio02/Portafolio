@@ -32,6 +32,7 @@ jobs:
           cache: npm
           cache-dependency-path: taskflow/package-lock.json
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run db:generate
       - run: npm run db:migrate
       - run: npm run lint
