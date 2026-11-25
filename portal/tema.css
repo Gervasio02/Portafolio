@@ -279,3 +279,21 @@ nav a:hover,
 .estado:empty {
   display: none;
 }
+
+/* Títulos grandes: evitan desbordes en pantallas de 320 px con fuentes anchas. */
+.catalog-intro h1,
+.lab h1,
+.project-lead h1 {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  .catalog-intro h1 {
+    font-size: clamp(2.2rem, 12vw, 3.4rem);
+  }
+
+  .lab h1,
+  .project-lead h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+}
