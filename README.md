@@ -1,9 +1,11 @@
 # Portafolio de Gervasio Torres
 
 Cinco aplicaciones y tres laboratorios de ingeniería informática, con datos
-ficticios y almacenamiento aislado. La portada en `portal/` incluye un carrusel,
-un catálogo común de ocho proyectos y demos interactivas. Abre
-`portal/index.html` para probarlas.
+ficticios y almacenamiento aislado. La portada en `portal/` presenta los
+proyectos en primera persona, con capturas, demos interactivas, un catálogo de
+ocho proyectos y una bitácora del repositorio. Abre `portal/index.html` para
+verla; se publica en <https://gervasio02.github.io/Portafolio/> (ver
+[PUBLICACION.md](PUBLICACION.md)).
 
 | Aplicación                                 | Stack                                           | Decisión que conviene explicar en una entrevista                                                                         |
 | ------------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -26,11 +28,17 @@ Actions están en `.github/workflows/`.
 
 La sesión de GitHub abierta en el navegador y la sesión de Git en la terminal se comprueban por separado. En el PC, usa `gh auth status` para verificar qué cuenta está activa. Si la personal no aparece, ejecuta `gh auth login --hostname github.com --web` y selecciona tu perfil personal en la pantalla de GitHub. Si ambas aparecen, usa `gh auth switch --hostname github.com` para seleccionar la personal. No uses la cuenta de empresa como destino de este código.
 
-Para dar acceso a ChatGPT, abre Configuración → Complementos → GitHub y autoriza el perfil personal. Si necesitas el proyecto local desde el teléfono, abre Configuración → Conexiones en la aplicación de escritorio del PC y selecciona el equipo desde Codex o Remote en el teléfono después de emparejarlo.
+## Trabajar con Codex y Claude
+
+Ambos asistentes siguen las mismas reglas, escritas en [AGENTS.md](AGENTS.md)
+(Claude las carga desde `CLAUDE.md`). En resumen: actualizar antes de empezar,
+trabajar en una rama `codex/…` o `claude/…`, abrir un pull request y no subir
+secretos. Para que cada uno acceda al repositorio, autoriza la cuenta personal
+`Gervasio02` en la integración de GitHub de cada herramienta.
 
 ## Operación y costos
 
-- **Portada**: alojamiento estático. [Vista publicada](https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site). Su código es portable.
+- **Portada**: sitio estático publicado con GitHub Pages desde `portal/` (gratis). También funciona en Azure Static Web Apps, Netlify o Cloudflare Pages.
 - **TaskFlow, ReservaYa, Snake e Interrogatorio**: un servicio HTTPS por
   aplicación que ejecute su contenedor y una base autorizada cuando corresponda.
   Si el proveedor pausa servicios por inactividad, la primera solicitud puede

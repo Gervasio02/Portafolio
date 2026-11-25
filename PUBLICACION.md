@@ -1,60 +1,76 @@
-# Publicación y seguimiento de Portafolio
+# Publicación del portafolio
 
-## Qué está incluido
+La portada (`portal/`) es un sitio estático: HTML, CSS y JavaScript sin build.
+Se puede alojar en cualquier servidor de archivos. Las aplicaciones completas
+(TaskFlow, ReservaYa, TiendaNova y Snake) ya se despliegan solas en Azure
+Container Apps; ver `GESTION_PORTAFOLIO.md`.
 
-`portal/` contiene una portada estática, un catálogo de ocho proyectos y demos
-didácticas con datos ficticios. Las demos estáticas son independientes y no se
-conectan a PostgreSQL; los enlaces indican cuándo una experiencia completa es
-local o externa. Para ejecutar las aplicaciones completas, sigue el README de
-cada carpeta.
+## Opción recomendada: GitHub Pages (gratis, automático)
 
-## GitHub
+Con esta opción editas la portada desde cualquier lugar (GitHub web, el
+teléfono, Codex o Claude) y se publica sola al llegar a `main`.
 
-El código de las cinco aplicaciones, los tres laboratorios y la portada está en
-[Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio). Para ver qué
-cambios tienes pendientes, abre la carpeta en GitHub Desktop o ejecuta
-`git status` desde ella.
+**Configuración (una sola vez):**
 
-Para obtener una copia en otro equipo, abre una terminal en la carpeta donde quieras guardar el proyecto y ejecuta este comando.
+1. Abre <https://github.com/Gervasio02/Portafolio/settings/pages>.
+2. En **Build and deployment → Source**, elige **GitHub Actions**.
+3. Ve a **Actions → Publicar portada → Run workflow** (rama `main`).
+4. Cuando termine, la portada queda en
+   **<https://gervasio02.github.io/Portafolio/>**.
 
-```powershell
-git clone https://github.com/Gervasio02/Portafolio.git
-```
+**Después:** cada push a `main` que toque `portal/` ejecuta las pruebas de
+Playwright y, si pasan, publica la nueva versión en 1–2 minutos.
 
-Para subir cambios desde el PC, autentícate en GitHub Desktop o en Git con tu cuenta personal `Gervasio02`, revisa los archivos modificados y envía el commit. Los flujos de `.github/workflows/` verifican las aplicaciones en GitHub Actions.
+**Editar desde cualquier lugar:**
 
-## Azure Static Web Apps
+- En el navegador: abre el repositorio y pulsa la tecla `.` para abrir
+  `github.dev` (VS Code en la web). Edita `portal/index.html`, haz commit en una
+  rama y abre un pull request; al hacer merge se publica.
+- Desde Codex o Claude: pídeles el cambio; siguen las reglas de `AGENTS.md`
+  (rama + PR).
+- En el PC: GitHub Desktop → *Pull* → editar → *Commit* → *Push*.
 
-1. En [Azure Portal](https://portal.azure.com/) crea un recurso **Static Web Apps**, selecciona la suscripción y el plan **Free**. Si usarás el flujo incluido, selecciona **Other / Otro** como origen para evitar crear dos flujos.
-2. En el recurso abre **Overview / Información general → Manage deployment token**. Copia el token directamente a **Settings → Secrets and variables → Actions → Secrets** en el repositorio. El nombre es `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-3. En **Actions → Variables** del repositorio crea `AZURE_STATIC_WEB_APPS_READY` con valor `true`. Inicia el flujo **Publicar portada en Azure** con **Run workflow**, o sube un cambio de la carpeta `portal/` a `main`.
-4. Cuando el flujo termine, abre la URL del recurso desde otro equipo. Prueba el
-   carrusel, la búsqueda, los filtros y cada enlace.
-5. Las aplicaciones completas necesitan alojamientos para sus servidores y
-   bases cuando corresponda. Usa sus README antes de enlazar URLs de ejecución.
-   DataLab, DocFlow y CloudOps permanecen locales hasta disponer de HTTPS,
-   identidades y una política de retención autorizada.
+**Dominio propio (opcional):** en la misma página de Pages, escribe tu dominio
+en **Custom domain** y crea en tu proveedor DNS un registro `CNAME` hacia
+`gervasio02.github.io`. Activa **Enforce HTTPS** cuando aparezca.
 
-## Estado comprobado
+## Opción alternativa: Azure Static Web Apps (plan Free)
 
-La certificación local está en [docs/ROADMAP.md](docs/ROADMAP.md). El 25 de
-noviembre de 2026 se publicó automáticamente la revisión `33ad30f` de TaskFlow,
-ReservaYa, TiendaNova y Snake en `rg-portafolio-gervasio`. GitHub Actions y
-Azure confirmaron las cuatro revisiones en ejecución; sus comprobaciones de
-salud respondieron HTTP 200. La portada pública también respondió HTTP 200 y
-conserva la URL indicada en el repositorio.
+Útil si quieres tener todo en Azure. El mismo flujo publica en ambos sitios si
+lo configuras:
 
-GitHub quedó como gestor de archivos con la cuenta personal `Gervasio02`. Los
-flujos de publicación usan directamente el grupo de recursos de producción,
-con la variable opcional `AZURE_RESOURCE_GROUP` y el valor seguro predeterminado
-`rg-portafolio-gervasio`; ya no dependen de enumerar toda la suscripción.
-La identidad `id-portafolio-github-push` tiene el rol integrado
-`Container Apps Contributor` únicamente en ese grupo de recursos, de modo que
-los flujos pueden actualizar las aplicaciones sin administrar permisos ni la
-facturación de la suscripción.
+1. En [Azure Portal](https://portal.azure.com/) crea un recurso
+   **Static Web Apps**, plan **Free**, origen **Other / Otro**.
+2. En el recurso: **Overview → Manage deployment token**. Copia el token a
+   GitHub: **Settings → Secrets and variables → Actions → Secrets**, con el
+   nombre `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+3. En **Actions → Variables**, crea `AZURE_STATIC_WEB_APPS_READY` = `true`.
+4. Ejecuta **Publicar portada** con *Run workflow*. Azure aplica además los
+   encabezados de seguridad de `portal/staticwebapp.config.json`.
 
-Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-portal) · [Token de despliegue](https://learn.microsoft.com/en-us/azure/static-web-apps/deployment-token-management).
+Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-portal) ·
+[Token de despliegue](https://learn.microsoft.com/en-us/azure/static-web-apps/deployment-token-management).
 
-## Copia en el Escritorio de Windows
+## Otras opciones compatibles
 
-Abre `portal/index.html` para revisar la portada o la carpeta `Portafolio` del Escritorio en Visual Studio Code para continuar. Usa la rama `main` para sincronizar los cambios con GitHub.
+Como `portal/` no necesita build, también sirve en Netlify, Cloudflare Pages o
+Vercel: conecta el repositorio y define **`portal`** como directorio de
+publicación, sin comando de build.
+
+## Después de cambiar de dirección
+
+Cuando la portada tenga su URL definitiva:
+
+- Actualiza la fila **Portada** de `GESTION_PORTAFOLIO.md`.
+- Si usas CloudOps, define `PORTAL_URL` con la nueva dirección (ver
+  `labs/README.md`).
+- La dirección anterior en ChatGPT Sites deja de ser necesaria.
+
+## Aplicaciones completas
+
+Siguen en Azure Container Apps (`rg-portafolio-gervasio`) y se actualizan solas
+con cada push a `main` en su carpeta. Se apagan sin tráfico: la primera visita
+tarda unos 30 segundos. Para evitarlo hay que fijar al menos una réplica
+mínima en cada Container App (*Scale → Min replicas = 1*), lo que tiene costo.
+DataLab, DocFlow y CloudOps se mantienen locales hasta disponer de HTTPS,
+identidades y una política de retención.
