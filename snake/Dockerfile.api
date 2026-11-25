@@ -5,6 +5,8 @@ RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
 COPY index.html tsconfig.json vite.config.ts ./
+# public/ contiene manifest, icono y service worker de la PWA.
+COPY public ./public
 COPY src ./src
 RUN npm run build
 FROM deps AS runtime
