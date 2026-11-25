@@ -28,11 +28,29 @@ function authHeaders(headers = {}) {
   const token = sessionStorage.getItem("labs-access");
   return token ? { ...headers, Authorization: "Bearer " + token } : headers;
 }
-async function api(path, options = {}) {
+// Si el servidor está en modo invitado, se pide una sesión temporal y
+// aislada la primera vez que hace falta (sin registro ni datos personales).
+let guestRequest = null;
+async function guestSession() {
+  guestRequest ??= fetch("/api/guest", { method: "POST" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (data?.token) sessionStorage.setItem("labs-access", data.token);
+      return Boolean(data?.token);
+    })
+    .catch(() => false)
+    .finally(() => (guestRequest = null));
+  return guestRequest;
+}
+async function api(path, options = {}, retry = true) {
   const r = await fetch("/api/" + path, {
     ...options,
     headers: authHeaders(options.headers),
   });
+  if (r.status === 401 && retry) {
+    sessionStorage.removeItem("labs-access");
+    if (await guestSession()) return api(path, options, false);
+  }
   const data = await r.json().catch(() => ({
     detail:
       r.status === 401
