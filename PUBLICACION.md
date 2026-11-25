@@ -37,11 +37,17 @@ Para subir cambios desde el PC, autentícate en GitHub Desktop o en Git con tu c
 
 ## Estado comprobado
 
-La certificación local está en [docs/ROADMAP.md](docs/ROADMAP.md). El 24 de
-noviembre de 2026 la portada pública respondió; las cuatro URLs Azure de
-aplicaciones no respondieron dentro del tiempo de la comprobación. No se
-desplegaron cambios ni se tocaron recursos productivos. Publicar requiere
-autorizar el uso de las credenciales, variables y posibles costes del proveedor.
+La certificación local está en [docs/ROADMAP.md](docs/ROADMAP.md). El 25 de
+noviembre de 2026 se publicó la revisión `7928754` de TaskFlow, ReservaYa,
+TiendaNova y Snake en `rg-portafolio-gervasio`. Azure confirmó las cuatro
+revisiones en ejecución con el 100 % del tráfico y sus comprobaciones de salud
+respondieron HTTP 200. La portada pública también respondió HTTP 200 y conserva
+la URL indicada en el repositorio.
+
+GitHub quedó como gestor de archivos con la cuenta personal `Gervasio02`. Los
+flujos de publicación usan directamente el grupo de recursos de producción,
+con la variable opcional `AZURE_RESOURCE_GROUP` y el valor seguro predeterminado
+`rg-portafolio-gervasio`; ya no dependen de enumerar toda la suscripción.
 
 Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-portal) · [Token de despliegue](https://learn.microsoft.com/en-us/azure/static-web-apps/deployment-token-management).
 

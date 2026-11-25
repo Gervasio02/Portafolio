@@ -50,6 +50,16 @@ localmente desde [labs/README.md](labs/README.md); sus enlaces indican esa
 condición. La certificación de las once fases, pruebas y límites de publicación
 está en [docs/ROADMAP.md](docs/ROADMAP.md).
 
+## Administrar el portafolio
+
+El repositorio de GitHub funciona como gestor de archivos con historial y
+recuperación. Abre [Gervasio02/Portafolio](https://github.com/Gervasio02/Portafolio),
+elige una carpeta y usa **Edit file** para modificar un archivo; la tecla `.`
+abre el editor completo de GitHub. Los cambios de TaskFlow, ReservaYa,
+TiendaNova y Snake que llegan a `main` se prueban, construyen y despliegan en
+Azure. La operación, las URL públicas y el procedimiento de recuperación están
+en [GESTION_PORTAFOLIO.md](GESTION_PORTAFOLIO.md).
+
 ## Pruebas con PostgreSQL local en Windows
 
 Usa PowerShell 7, Node 24, las dependencias npm instaladas y el entorno Python de ReservaYa en `reservaya/backend/.venv` con `requirements-dev.txt`. Los [binarios oficiales de PostgreSQL para Windows](https://www.enterprisedb.com/download-postgresql-binaries) pueden extraerse fuera del repositorio, sin instalar un servicio del sistema. En este equipo se verificó PostgreSQL 16.15.

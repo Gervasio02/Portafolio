@@ -83,29 +83,21 @@ jobs:
         env:
           APP_NAME: ${{ matrix.app }}
           AZURE_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
+          AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP || 'rg-portafolio-gervasio' }}
         run: |
           set -euo pipefail
           az config set extension.use_dynamic_install=yes_without_prompt
           container_app="${APP_NAME}-gervasio-std"
-          resource_id=$(az resource list \
-            --resource-type Microsoft.App/containerApps \
-            --query "[?name=='${container_app}'].id | [0]" \
-            --output tsv)
-          if [[ -z "$resource_id" ]]; then
-            echo "No se encontró la aplicación ${container_app}." >&2
-            exit 1
-          fi
-          resource_group=$(cut -d/ -f5 <<<"$resource_id")
           image="${AZURE_REGISTRY_LOGIN_SERVER}/${APP_NAME}:${GITHUB_SHA}"
           az containerapp update \
             --name "$container_app" \
-            --resource-group "$resource_group" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
             --image "$image" \
             --revision-suffix "${GITHUB_SHA:0:7}-${GITHUB_RUN_ID}" \
             --only-show-errors
           fqdn=$(az containerapp show \
             --name "$container_app" \
-            --resource-group "$resource_group" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
             --query properties.configuration.ingress.fqdn \
             --output tsv)
           case "$APP_NAME" in
