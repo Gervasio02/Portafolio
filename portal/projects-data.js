@@ -1,20 +1,19 @@
 "use strict";
 
-// Fuente única para el catálogo y la selección destacada de la portada.
+// Fuente única de datos para el catálogo (proyectos/).
+// La portada (index.html) tiene su propio HTML estático: si cambias un
+// proyecto aquí, revisa también su entrada en index.html.
 window.PORTFOLIO_PROJECTS = [
   {
     id: "taskflow",
     name: "TaskFlow",
     type: "Gestión",
-    category: "Gestión de trabajo",
     stack: ["React", "Express", "Prisma", "PostgreSQL"],
-    image: "taskflow.png",
-    alt: "Centro de control de TaskFlow con métricas y distribución de tarjetas",
+    image: "taskflow-720.webp",
+    live: "https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     demo: "../taskflow/index.html#demo",
-    homeDemo: "taskflow/index.html#demo",
     featured: true,
     goal: "Organizar entregas y supervisar el trabajo de un equipo.",
-    note: "Crea una tarjeta, cámbiala de columna y observa el SLA, la actividad y la distribución del tablero.",
     features:
       "Tableros, calendario, responsables, límites WIP, comentarios, actividad, SLA, notificaciones y permisos por miembro.",
     architecture:
@@ -26,16 +25,12 @@ window.PORTFOLIO_PROJECTS = [
     id: "reservaya",
     name: "ReservaYa",
     type: "Reservas",
-    category: "Agenda deportiva",
     stack: ["React", "FastAPI", "SQLAlchemy", "PostgreSQL"],
-    image: "reservaya.png",
-    homeImage: "reservaya-cancha.png",
-    alt: "Cancha de ReservaYa junto a su selector de horarios",
+    image: "reservaya-720.webp",
+    live: "https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     demo: "../reservaya/index.html#demo",
-    homeDemo: "reservaya/index.html#demo",
     featured: true,
     goal: "Reservar canchas sin asignar dos veces un mismo horario.",
-    note: "Selecciona una cancha, confirma una tarifa y libera el turno si cambian tus planes.",
     features:
       "Disponibilidad, tarifas punta, reservas, cancelación, comprobantes, horarios, mantenimiento y métricas de ocupación.",
     architecture:
@@ -47,15 +42,12 @@ window.PORTFOLIO_PROJECTS = [
     id: "tiendanova",
     name: "TiendaNova",
     type: "Comercio",
-    category: "Comercio electrónico",
     stack: ["Next.js", "React", "Prisma", "PostgreSQL"],
-    image: "tiendanova.jpg",
-    alt: "Catálogo de TiendaNova con productos de escritorio",
+    image: "tiendanova-720.webp",
+    live: "https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     demo: "../tiendanova/index.html#demo",
-    homeDemo: "tiendanova/index.html#demo",
     featured: true,
     goal: "Simular una compra manteniendo pedidos e inventario consistentes.",
-    note: "Agrega un producto, aplica un cupón simulado y revisa el pedido y el stock resultante.",
     features:
       "Catálogo con variantes, carrito, cupones, checkout idempotente, pedidos, cancelaciones, devoluciones y administración de inventario.",
     architecture:
@@ -67,17 +59,12 @@ window.PORTFOLIO_PROJECTS = [
     id: "snake",
     name: "Snake",
     type: "Juegos",
-    category: "Juego interactivo",
     stack: ["React", "TypeScript", "Express", "Prisma"],
-    image: "snake.svg",
-    alt: "Tablero de Snake con la serpiente y el marcador",
+    image: "snake-720.webp",
     demo: "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
-    homeDemo:
-      "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
     action: "Jugar Snake",
     featured: true,
     goal: "Demostrar un motor de juego reproducible y un ranking verificable.",
-    note: "Elige un modo, juega con teclado o controles táctiles y compara tu puntaje.",
     features:
       "Modos de juego, desafío diario, logros, controles táctiles, pausa, progreso, PWA instalable y ranking con reproducción verificada.",
     architecture:
@@ -89,15 +76,11 @@ window.PORTFOLIO_PROJECTS = [
     id: "interrogatorio",
     name: "Interrogatorio",
     type: "Juegos",
-    category: "Deducción interactiva",
     stack: ["React", "FastAPI", "SQLAlchemy", "Python"],
-    image: "interrogatorio.png",
-    alt: "Pruebas y sala de interrogatorio de un expediente",
+    image: "interrogatorio-720.webp",
     demo: "../interrogatorio/index.html#demo",
-    homeDemo: "interrogatorio/index.html#demo",
     featured: true,
     goal: "Investigar misterios conectando testimonios y evidencias.",
-    note: "Elige un expediente, revisa las pruebas e interroga a los sospechosos.",
     features:
       "Tres familias de casos, sospechosos, cronología, conexiones de evidencias, contradicciones, preguntas, notas, acusación y progreso persistente.",
     architecture:
@@ -110,7 +93,7 @@ window.PORTFOLIO_PROJECTS = [
     name: "CloudOps",
     type: "Observabilidad",
     stack: ["FastAPI", "Python", "SQLite"],
-    demo: "http://localhost:8001/cloudops",
+    run: "/cloudops",
     local: true,
     code: "labs",
     goal: "Inspeccionar respuestas y latencias reales de los servicios del portafolio.",
@@ -126,7 +109,7 @@ window.PORTFOLIO_PROJECTS = [
     name: "DataLab",
     type: "Datos",
     stack: ["FastAPI", "Python", "SQLite"],
-    demo: "http://localhost:8001/datalab",
+    run: "/datalab",
     local: true,
     code: "labs",
     goal: "Limpiar archivos tabulares y explorar su calidad antes de usarlos.",
@@ -142,7 +125,7 @@ window.PORTFOLIO_PROJECTS = [
     name: "DocFlow",
     type: "Documentos",
     stack: ["FastAPI", "Python", "SQLite"],
-    demo: "http://localhost:8001/docflow",
+    run: "/docflow",
     local: true,
     code: "labs",
     goal: "Extraer y revisar facturas ficticias con trazabilidad.",

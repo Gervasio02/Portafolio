@@ -1,0 +1,218 @@
+/* Tema "cuaderno" para las páginas interiores.
+   Se carga después de styles.css / proyectos.css / catalogo.css y
+   reutiliza sus variables para alinear el aspecto con la portada. */
+
+:root {
+  color-scheme: light;
+  --bg: #f3eee4;
+  --panel: #faf7f0;
+  --text: #1f1c17;
+  --muted: #5b544a;
+  --line: #d8cfbf;
+  --mint: #b3401c; /* acento principal (antes verde lima) */
+  --lapiz: #23408e;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(#e7dfd0 1px, transparent 1px),
+    linear-gradient(90deg, #e7dfd0 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -1px -1px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.01em !important;
+}
+
+a {
+  color: var(--lapiz);
+}
+
+a:hover {
+  color: var(--mint);
+}
+
+/* cabecera común */
+.top {
+  border-bottom: 2px solid var(--text);
+}
+
+.brand {
+  font: italic 600 1.45rem/1 var(--serif);
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+.brand span {
+  display: none;
+}
+
+nav a,
+.footer a {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.top nav [aria-current] {
+  color: var(--mint);
+}
+
+.eyebrow,
+.category,
+.catalog-meta {
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.eyebrow span {
+  border-radius: 0;
+  rotate: 45deg;
+}
+
+/* botones */
+.hero-link,
+.lab-action.primary,
+.catalog-actions .hero-link {
+  color: #faf7f0 !important;
+  background: var(--text) !important;
+  border: 2px solid var(--text) !important;
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 var(--accent, var(--mint));
+}
+
+.hero-link:hover {
+  background: var(--text);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--accent, var(--mint));
+}
+
+.slider-controls button,
+.quiet,
+.lab-action,
+.lab-nav a {
+  background: #fffdf8;
+  color: var(--text);
+}
+
+.lab-nav [aria-current="page"] {
+  color: #faf7f0;
+  background: var(--text);
+  border-color: var(--text);
+}
+
+/* paneles */
+.lab-panel,
+.catalog-filters,
+.catalog-card,
+.project-lead figure {
+  background: #fffdf8 !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 10px 24px -18px #4a3a2366;
+}
+
+.lab-cell,
+.demo-list-row,
+.court-preview,
+.field input,
+.field select,
+.catalog-filters input,
+.catalog-filters select {
+  background: var(--bg) !important;
+  color: var(--text);
+  border-color: var(--line) !important;
+}
+
+.catalog-card img {
+  background: #e7dfd0;
+  border-bottom: 1px solid var(--line);
+}
+
+.catalog-intro h1,
+.lab h1,
+.project-lead h1 {
+  letter-spacing: -0.02em !important;
+}
+
+/* acentos por proyecto con contraste sobre papel */
+.project-page {
+  --accent: #2f6b3a;
+  --wash: #e8efe4;
+}
+
+.project-page.taskflow {
+  --accent: #4b44b8;
+  --wash: #e9e7f8;
+}
+
+.project-page.tiendanova {
+  --accent: #a24a14;
+  --wash: #f6e7da;
+}
+
+.project-page .eyebrow {
+  color: var(--accent);
+}
+
+.project-page .eyebrow span {
+  background: var(--accent);
+}
+
+/* etiquetas de prioridad legibles sobre fondo claro */
+.demo-tag[data-tone="alta"] {
+  border-color: #c26a4a;
+  color: #8f3314;
+}
+
+.demo-tag[data-tone="media"] {
+  border-color: #b49a3a;
+  color: #6b5a12;
+}
+
+.demo-tag[data-tone="baja"] {
+  border-color: #6c80a3;
+  color: #2c4572;
+}
+
+.footer {
+  border-top: 2px solid var(--text);
+}
+
+/* aviso de arranque en frío para enlaces a apps en vivo */
+.nota-vivo {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.6rem 0 0;
+}
+
+.project-lead img {
+  height: auto;
+}
+
+.catalog-note {
+  margin-top: 0.6rem;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 480px) {
+  .top {
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 1rem;
+    padding: 0.9rem 0;
+  }
+
+  .top nav {
+    gap: 0.3rem 1rem;
+    justify-content: flex-start;
+  }
+}
