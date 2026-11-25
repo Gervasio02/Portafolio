@@ -8,11 +8,29 @@
       content="Explora los proyectos de Gervasio Torres: aplicaciones web, juegos y laboratorios de ingeniería."
     />
     <meta name="theme-color" content="#07070d" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href="https://gervasio.sbs/proyectos/" />
+    <meta property="og:title" content="Proyectos · Gervasio Torres" />
+    <meta property="og:description" content="Ocho proyectos de Gervasio Torres: aplicaciones web, juegos y laboratorios técnicos." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gervasio.sbs/proyectos/" />
+    <meta property="og:site_name" content="Portafolio de Gervasio Torres" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Portafolio de desarrollo de Gervasio Torres" />
+    <meta name="twitter:card" content="summary_large_image" />
     <title>Proyectos · Gervasio Torres</title>
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="catalogo.css" />
     <link rel="stylesheet" href="../tema.css" />
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="../site.webmanifest" />
     <script src="../projects-data.js" defer></script>
     <script src="catalogo.js" defer></script>
     <script src="../despertar.js" defer></script>
@@ -20,11 +38,11 @@
   <body>
     <a class="skip" href="#catalogo">Saltar al catálogo</a>
     <header class="shell top">
-      <a class="brand" href="../index.html" aria-label="Gervasio Torres, inicio"
+      <a class="brand" href="../index.html" aria-label="GT Gervasio Torres, inicio"
         >Gervasio Torres</a
       >
       <nav aria-label="Principal">
-        <a href="../index.html#trabajo">Proyectos</a
+        <a href="../index.html#niveles">Proyectos</a
         ><a aria-current="page" href="./">Catálogo</a
         ><a href="../laboratorio.html">Demos</a>
       </nav>
@@ -67,13 +85,13 @@
         ><p>
           Activa JavaScript para buscar y explorar el catálogo. También puedes
           acceder a
-          <a href="../index.html#trabajo">los proyectos destacados</a>.
+          <a href="../index.html#niveles">los proyectos destacados</a>.
         </p></noscript
       >
     </main>
     <footer class="shell footer">
       <span>Gervasio Torres</span
-      ><a href="https://github.com/Gervasio02" rel="me">Contacto en GitHub</a
+      ><a href="https://github.com/Gervasio02" target="_blank" rel="me noopener noreferrer">Contacto en GitHub</a
       ><a href="../index.html">Volver al inicio</a>
     </footer>
   </body>

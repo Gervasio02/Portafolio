@@ -4,18 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#07070d" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>Página no encontrada · Gervasio Torres</title>
     <link rel="stylesheet" href="/portada.css" />
   </head>
   <body>
-    <main class="wrap inicio" style="grid-template-columns: 1fr; min-height: 80vh">
+    <main class="wrap inicio error-page">
       <div>
         <p class="hud">Error 404</p>
-        <h1>Game over.<span class="degradado">Esta página no existe.</span></h1>
+        <h1>Página no encontrada.<span class="degradado">Esta ruta no existe.</span></h1>
         <p class="bajada">Puede que el enlace esté mal escrito o que la página se haya movido.</p>
         <p class="acciones">
-          <a class="boton" href="/">▶ Volver al inicio</a>
+          <a class="boton" href="/">Volver al inicio</a>
           <a class="boton boton-sec" href="/proyectos/">Ver proyectos</a>
         </p>
       </div>

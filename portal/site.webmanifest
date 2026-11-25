@@ -1,0 +1,19 @@
+{
+  "name": "Portafolio de Gervasio Torres",
+  "short_name": "Gervasio Torres",
+  "description": "Aplicaciones, juegos y laboratorios de desarrollo full stack.",
+  "lang": "es-CL",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#07070d",
+  "theme_color": "#07070d",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

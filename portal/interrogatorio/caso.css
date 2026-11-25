@@ -27,6 +27,14 @@
   margin-bottom: 1.2rem;
 }
 
+.case-live-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: .45rem;
+  padding: .55rem .25rem;
+}
+
 .case-timeline {
   display: grid;
   gap: .65rem;
@@ -107,6 +115,9 @@
 }
 
 .case-clue summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   padding: .6rem .75rem;
   cursor: pointer;
   font-weight: 640;
@@ -182,6 +193,7 @@
 }
 
 @media (max-width: 520px) {
+  .case-live-link { margin-left: 0; }
   .case-action .field { flex-basis: 100%; }
 }
 

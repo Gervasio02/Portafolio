@@ -57,8 +57,8 @@ function render() {
     const external = (url) => /^https?:/.test(url);
     const links = [];
     if (p.demo)
-      links.push([external(p.demo) ? "Jugar en línea ↗" : "Probar demo", p.demo]);
-    if (p.live) links.push(["App en vivo ↗", p.live]);
+      links.push([external(p.demo) ? "Jugar en línea" : "Probar demo", p.demo]);
+    if (p.live) links.push(["Aplicación en vivo", p.live]);
     links.push([
       "Código",
       `https://github.com/Gervasio02/Portafolio/tree/main/${p.code || p.id}`,
@@ -66,7 +66,10 @@ function render() {
     for (const [label, url] of links) {
       const a = element("a", label);
       a.href = url;
-      if (external(url)) a.rel = "noopener";
+      if (external(url)) {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
       actions.append(a);
     }
     const note = element(
