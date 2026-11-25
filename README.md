@@ -38,7 +38,7 @@ secretos. Para que cada uno acceda al repositorio, autoriza la cuenta personal
 
 ## Operación y costos
 
-- **Portada**: sitio estático en Azure Static Web Apps (plan Free) con el dominio `gervasio.sbs`.
+- **Portada**: sitio estático en GitHub Pages con el dominio `gervasio.sbs` (gratis, HTTPS incluido).
 - **TaskFlow, ReservaYa, Snake e Interrogatorio**: un servicio HTTPS por
   aplicación que ejecute su contenedor y una base autorizada cuando corresponda.
   Si el proveedor pausa servicios por inactividad, la primera solicitud puede

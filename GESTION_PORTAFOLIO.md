@@ -21,7 +21,7 @@ pruebas, el historial y la recuperación que sí ofrece GitHub.
 
 | Servicio | Dirección pública | Salud |
 | --- | --- | --- |
-| Portada | <https://gervasio.sbs> (Azure Static Web Apps) | `/` |
+| Portada | <https://gervasio.sbs> (GitHub Pages) | `/` |
 | TaskFlow | <https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/api/health` |
 | ReservaYa | <https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/api/health` |
 | TiendaNova | <https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/health` |
@@ -40,7 +40,7 @@ La automatización usa la identidad `id-portafolio-github-push`, con permiso
 noviembre de 2026 se verificó el despliegue automático completo de la revisión
 `33ad30f` para las cuatro aplicaciones.
 
-La portada se administra desde `portal/` y se publica en Azure Static Web Apps
+La portada se administra desde `portal/` y se publica en GitHub Pages
 (dominio `gervasio.sbs`, DNS en Hostinger) con el flujo **Publicar portada**
 (`.github/workflows/azure-portal.yml`).
 

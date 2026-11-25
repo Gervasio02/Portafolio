@@ -13,7 +13,7 @@ Cuenta de GitHub personal: `Gervasio02`. Nunca uses una cuenta de empresa.
 
 | Carpeta           | Stack                                        | Despliegue                        |
 | ----------------- | -------------------------------------------- | --------------------------------- |
-| `portal/`         | HTML, CSS y JS sin frameworks                | Azure Static Web Apps → https://gervasio.sbs |
+| `portal/`         | HTML, CSS y JS sin frameworks                | GitHub Pages → https://gervasio.sbs |
 | `taskflow/`       | React, Express, Prisma, PostgreSQL           | Azure Container Apps              |
 | `reservaya/`      | React, FastAPI, SQLAlchemy, PostgreSQL       | Azure Container Apps              |
 | `tiendanova/`     | Next.js, Auth.js, Prisma, PostgreSQL         | Azure Container Apps              |
@@ -90,8 +90,9 @@ Antes de dar por terminado un cambio en `portal/`, revísalo en 1440, 390 y
   `snake/`, `interrogatorio/` o `labs/` → pruebas → imagen en Azure Container
   Registry → nueva revisión en Azure Container Apps (grupo
   `rg-portafolio-gervasio`). Las apps nuevas usan `scripts/azure-desplegar-app.sh`.
-- Push a `main` con cambios en `portal/` → pruebas Playwright → Azure Static
-  Web Apps (https://gervasio.sbs).
+- Push a `main` con cambios en `portal/` → pruebas Playwright → GitHub Pages
+  (https://gervasio.sbs, DNS en Hostinger). Azure Static Web Apps no está
+  disponible en las regiones que permite la suscripción Azure for Students.
 - Nunca escribas tokens, secretos ni cadenas de conexión: los configura
   Gervasio en GitHub (Settings → Secrets and variables) o en Azure.
 
