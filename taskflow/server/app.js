@@ -51,7 +51,9 @@ export function createApp(db, settings) {
     );
     next();
   });
+  // La portada (otro dominio) consulta esta ruta para despertar la app.
   app.get("/api/health", async (_req, res) => {
+    res.set("Cross-Origin-Resource-Policy", "cross-origin");
     await db.$queryRaw`SELECT 1`;
     res.json({ status: "ok" });
   });
