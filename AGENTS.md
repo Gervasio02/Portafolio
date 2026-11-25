@@ -53,11 +53,14 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 - La portada (`portal/index.html`) es HTML estático escrito a mano.
   El catálogo (`portal/proyectos/`) se genera desde `portal/projects-data.js`.
   Si agregas o cambias un proyecto, actualiza **ambos**.
-- Estilo visual: estética gamer oscura (negro `#07070d`, azul `#2f8cff`,
-  morado `#8b5cf6`, rojo `#ff2d55`), definida en `portal/portada.css` (portada)
-  y `portal/tema.css` (páginas interiores). Reutiliza esas variables.
-- El texto de la portada está en primera persona y con tono humano: evita
-  frases de marketing genéricas y no inventes datos personales. Los bloques
+- Estilo visual: sobrio y oscuro. Carbón cálido `#151413`, superficies
+  `#1c1b19`, texto crema `#ece7df`, un solo acento ámbar `#e3a13b`.
+  Tipografía IBM Plex Sans/Mono servida desde `portal/fuentes/`. Sin
+  degradados, brillos, cortes en diagonal ni texto en mayúsculas sostenidas.
+  Variables en `portal/portada.css` (portada) y `portal/tema.css` (interiores).
+- El texto está en primera persona, concreto y con tono humano: cuenta qué
+  hace cada proyecto y qué fue lo difícil. Evita frases de marketing, jerga
+  vacía y datos personales que Gervasio no haya entregado. Los bloques
   marcados `<!-- EDITA: ... -->` los completa Gervasio.
 - Solo datos ficticios. Nada de credenciales reales en el repo: van en `.env`
   (ignorado) y en `.env.example` solo con valores de ejemplo.

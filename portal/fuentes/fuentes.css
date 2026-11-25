@@ -1,0 +1,7 @@
+/* IBM Plex Sans y Plex Mono (SIL Open Font License 1.1, ver OFL-IBM-Plex.txt).
+   Servidas desde el propio sitio: sin peticiones a terceros. */
+@font-face { font-family: "Plex Sans"; src: url("ibm-plex-sans-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plex Sans"; src: url("ibm-plex-sans-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plex Sans"; src: url("ibm-plex-sans-latin-600-normal.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plex Mono"; src: url("ibm-plex-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plex Mono"; src: url("ibm-plex-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500 600; font-style: normal; font-display: swap; }
