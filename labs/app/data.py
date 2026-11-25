@@ -1,4 +1,5 @@
 """Bounded, reproducible tabular ingestion without evaluating user content."""
+
 import csv
 import io
 import math
@@ -32,14 +33,24 @@ def ingest(content: bytes, filename: str) -> tuple[list[str], list[list[str]]]:
             raise ValueError("CSV mal formado") from error
     elif extension == ".xlsx":
         from openpyxl import load_workbook
+
         try:
             with zipfile.ZipFile(io.BytesIO(content)) as archive:
                 entries = archive.infolist()
-                if len(entries) > 1000 or sum(entry.file_size for entry in entries) > 30 * 1024 * 1024:
+                if (
+                    len(entries) > 1000
+                    or sum(entry.file_size for entry in entries) > 30 * 1024 * 1024
+                ):
                     raise ValueError("El Excel expandido supera el límite permitido")
-                if any("vbaproject" in entry.filename.lower() or "externallinks" in entry.filename.lower() for entry in entries):
+                if any(
+                    "vbaproject" in entry.filename.lower()
+                    or "externallinks" in entry.filename.lower()
+                    for entry in entries
+                ):
                     raise ValueError("No se permiten macros ni enlaces externos")
-            workbook = load_workbook(io.BytesIO(content), read_only=True, data_only=False, keep_links=False)
+            workbook = load_workbook(
+                io.BytesIO(content), read_only=True, data_only=False, keep_links=False
+            )
             try:
                 sheet = workbook.active
                 if sheet.max_row > MAX_ROWS + 1 or sheet.max_column > MAX_COLUMNS:
@@ -47,8 +58,12 @@ def ingest(content: bytes, filename: str) -> tuple[list[str], list[list[str]]]:
                 table = []
                 for row in sheet.iter_rows():
                     if any(cell.data_type == "f" for cell in row):
-                        raise ValueError("No se permiten fórmulas en Excel; exporta sus valores")
-                    table.append(["" if cell.value is None else str(cell.value) for cell in row])
+                        raise ValueError(
+                            "No se permiten fórmulas en Excel; exporta sus valores"
+                        )
+                    table.append(
+                        ["" if cell.value is None else str(cell.value) for cell in row]
+                    )
             finally:
                 workbook.close()
         except (zipfile.BadZipFile, KeyError, OSError) as error:
@@ -89,9 +104,19 @@ def clean(rows: list[list[str]], drop_incomplete: bool) -> tuple[list[list[str]]
             incomplete_removed += 1
             continue
         result.append(row)
-    return result, {"input_rows": len(rows), "output_rows": len(result), "duplicates_removed": duplicates,
-                    "empty_rows_removed": empty_rows, "missing_cells": missing,
-                    "incomplete_rows_removed": incomplete_removed, "policy": {"trim": True, "deduplicate": True, "drop_incomplete": drop_incomplete}}
+    return result, {
+        "input_rows": len(rows),
+        "output_rows": len(result),
+        "duplicates_removed": duplicates,
+        "empty_rows_removed": empty_rows,
+        "missing_cells": missing,
+        "incomplete_rows_removed": incomplete_removed,
+        "policy": {
+            "trim": True,
+            "deduplicate": True,
+            "drop_incomplete": drop_incomplete,
+        },
+    }
 
 
 def numeric(value: str) -> float | None:
@@ -107,18 +132,35 @@ def profile(headers: list[str], rows: list[list[str]]) -> list[dict]:
     for index, name in enumerate(headers):
         values = [row[index] for row in rows]
         numbers = [number for value in values if (number := numeric(value)) is not None]
-        result.append({"name": name, "missing": values.count(""), "unique": len(set(values)),
-                       "numeric_count": len(numbers), "sum": sum(numbers) if numbers else None,
-                       "mean": sum(numbers) / len(numbers) if numbers else None,
-                       "min": min(numbers) if numbers else None, "max": max(numbers) if numbers else None,
-                       "frequencies": [{"value": value, "count": count} for value, count in Counter(values).most_common(10)]})
+        result.append(
+            {
+                "name": name,
+                "missing": values.count(""),
+                "unique": len(set(values)),
+                "numeric_count": len(numbers),
+                "sum": sum(numbers) if numbers else None,
+                "mean": sum(numbers) / len(numbers) if numbers else None,
+                "min": min(numbers) if numbers else None,
+                "max": max(numbers) if numbers else None,
+                "frequencies": [
+                    {"value": value, "count": count}
+                    for value, count in Counter(values).most_common(10)
+                ],
+            }
+        )
     return result
 
 
 def export_csv(headers: list[str], rows: list[list[str]]) -> str:
     def safe(value: str) -> str:
         # Spreadsheet programs may interpret these prefixes even in quoted CSV cells.
-        return "'" + value if value.lstrip().startswith(("=", "+", "-", "@")) or value.startswith(("\t", "\r", "\n")) else value
+        return (
+            "'" + value
+            if value.lstrip().startswith(("=", "+", "-", "@"))
+            or value.startswith(("\t", "\r", "\n"))
+            else value
+        )
+
     stream = io.StringIO(newline="")
     writer = csv.writer(stream)
     writer.writerow([safe(cell) for cell in headers])

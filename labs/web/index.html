@@ -1,7 +1,104 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laboratorios · Portafolio</title><link rel="stylesheet" href="/workbench.css"><script src="/workbench.js" defer></script></head><body><header><a href="http://localhost:8080/proyectos/">Portafolio</a><nav aria-label="Laboratorios"><a href="/datalab">DataLab</a><a href="/docflow">DocFlow</a><a href="/cloudops">CloudOps</a></nav></header><main><p class="eyebrow">Laboratorios de ingeniería · demostración local</p><h1 id="title"></h1><p id="description"></p><p id="message" role="status" aria-live="polite"></p><section id="datalab" hidden><form id="upload"><label>Archivo CSV UTF-8 o XLSX sin fórmulas (máximo 5 MB)<input id="file" type="file" accept=".csv,.xlsx" required></label><label><input id="drop" type="checkbox"> Eliminar filas incompletas</label><button>Procesar archivo</button></form><button id="sample">Procesar datos ficticios de ejemplo</button><h2>Conjuntos guardados</h2><div id="datasets"></div><div id="analysis"></div></section><section id="docflow" hidden><form id="invoice"><label>Factura ficticia en texto con campos etiquetados<textarea id="source" rows="10" maxlength="20000" required>Proveedor: Ejemplo Ficticio SpA
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Laboratorios · Portafolio</title>
+    <link rel="stylesheet" href="/workbench.css?v=20261124" />
+    <script src="/workbench.js?v=20261124" defer></script>
+  </head>
+  <body>
+    <header>
+      <a href="http://localhost:8080/proyectos/">Portafolio</a>
+      <nav aria-label="Laboratorios">
+        <a href="/datalab">DataLab</a><a href="/docflow">DocFlow</a
+        ><a href="/cloudops">CloudOps</a>
+      </nav>
+    </header>
+    <main>
+      <p class="eyebrow">Laboratorios de ingeniería · demostración local</p>
+      <h1 id="title"></h1>
+      <p id="description"></p>
+      <p id="identity"></p>
+      <p id="message" role="status" aria-live="polite"></p>
+      <section id="datalab" hidden>
+        <form id="upload">
+          <label
+            >Archivo CSV UTF-8 o XLSX sin fórmulas (máximo 5 MB)<input
+              id="file"
+              type="file"
+              accept=".csv,.xlsx"
+              required /></label
+          ><label
+            ><input id="drop" type="checkbox" /> Eliminar filas
+            incompletas</label
+          ><button>Procesar archivo</button>
+        </form>
+        <button id="sample">Procesar datos ficticios de ejemplo</button>
+        <h2>Conjuntos guardados</h2>
+        <div id="datasets"></div>
+        <div id="analysis"></div>
+        <form id="query" hidden>
+          <h2>Consulta reproducible</h2>
+          <label>Agrupar por<select id="query-group"></select></label
+          ><label>Métrica<select id="query-metric"></select></label
+          ><label
+            >Operación<select id="query-operation">
+              <option value="count">Conteo</option>
+              <option value="sum">Suma</option>
+              <option value="average">Promedio</option>
+              <option value="min">Mínimo</option>
+              <option value="max">Máximo</option>
+            </select></label
+          ><button>Ejecutar consulta</button>
+        </form>
+        <div id="query-result"></div>
+      </section>
+      <section id="docflow" hidden>
+        <form id="document-upload">
+          <label
+            >TXT, PDF con texto, PNG o JPG ficticio (máximo 5 MB)<input
+              id="document-file"
+              type="file"
+              accept=".txt,.pdf,.png,.jpg,.jpeg"
+              required /></label
+          ><button>Extraer archivo</button>
+        </form>
+        <form id="invoice">
+          <label
+            >O pega una factura ficticia con campos etiquetados<textarea
+              id="source"
+              rows="10"
+              maxlength="20000"
+              required
+            >
+Proveedor: Ejemplo Ficticio SpA
 RUT: 76.123.456-0
 Folio: DEMO-001
 Fecha: 2026-11-23
 Neto: 10000
 Impuesto: 1900
-Total: 11900</textarea></label><button>Extraer y enviar a revisión</button></form><p>Extracción por reglas. No se ejecuta OCR ni se llama a un modelo. Los campos ausentes permanecen vacíos.</p><h2>Documentos y revisión</h2><div id="documents"></div></section><section id="cloudops" hidden><p>Se guarda cada comprobación manual. La latencia incluye el tiempo de solicitud desde este servidor. No equivale a disponibilidad continua.</p><button id="check">Comprobar servicios</button><div id="services"></div><div id="history"></div></section></main><footer>Solo datos ficticios · <a href="/docs">Consultar API</a></footer></body></html>
+Total: 11900</textarea></label
+          ><button>Extraer y enviar a revisión</button>
+        </form>
+        <p>
+          Extracción local por reglas desde texto, PDF con texto u OCR de
+          imágenes. No se llama a modelos externos y los campos ausentes
+          permanecen vacíos.
+        </p>
+        <h2>Documentos y revisión</h2>
+        <div id="documents"></div>
+      </section>
+      <section id="cloudops" hidden>
+        <p>
+          Se guarda cada comprobación manual. La latencia incluye el tiempo de
+          solicitud desde este servidor. No equivale a disponibilidad continua.
+        </p>
+        <button id="check">Comprobar servicios</button>
+        <div id="services"></div>
+        <div id="history"></div>
+      </section>
+    </main>
+    <footer>Solo datos ficticios · <a href="/docs">Consultar API</a></footer>
+  </body>
+</html>
