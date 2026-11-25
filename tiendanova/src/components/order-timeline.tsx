@@ -23,8 +23,26 @@ const steps = [
 ] as const;
 
 export function OrderTimeline({ status }: { status: Status }) {
-  if (status === "CANCELLED") return <section className="panel"><h2>Pedido cancelado</h2><p>Las unidades volvieron al inventario. La compra era simulada.</p></section>;
-  const current = steps.findIndex((step) => step.status === status);
+  if (status === "CANCELLED")
+    return (
+      <section className="panel">
+        <h2>Pedido cancelado</h2>
+        <p>Las unidades volvieron al inventario. La compra era simulada.</p>
+      </section>
+    );
+  if (status === "RETURNED")
+    return (
+      <section className="panel">
+        <h2>Pedido devuelto</h2>
+        <p>
+          La devolución fue aprobada y las unidades regresaron al inventario.
+        </p>
+      </section>
+    );
+  const current =
+    status === "RETURN_REQUESTED"
+      ? steps.length - 1
+      : steps.findIndex((step) => step.status === status);
   return (
     <section className="panel timeline-panel" aria-labelledby="follow-title">
       <h2 id="follow-title">Seguimiento del pedido</h2>
@@ -56,6 +74,9 @@ export function OrderTimeline({ status }: { status: Status }) {
           );
         })}
       </ol>
+      {status === "RETURN_REQUESTED" && (
+        <p>La solicitud de devolución está en revisión.</p>
+      )}
     </section>
   );
 }

@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { money } from "@/lib/commerce";
 import { addressSchema } from "@/lib/validation";
 import { cancelMyOrder } from "@/app/actions";
+import { ReturnRequestForm } from "@/components/forms";
 import { OrderTimeline } from "@/components/order-timeline";
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default async function OrderPage({
   ]);
   const order = await db.order.findFirst({
     where: { id, userId: user.id },
-    include: { items: true },
+    include: { items: true, returnRequest: true },
   });
   if (!order) notFound();
   const address = addressSchema.safeParse(order.address);
@@ -45,20 +46,51 @@ export default async function OrderPage({
       <p className="eyebrow">Pedido</p>
       <h1>{order.id.slice(-8).toUpperCase()}</h1>
       <OrderTimeline status={order.status} />
-      {order.status === "PAID" && <form action={cancelMyOrder}><input type="hidden" name="id" value={order.id}/><button type="submit">Cancelar pedido de prueba</button></form>}
+      {order.status === "PAID" && (
+        <form action={cancelMyOrder}>
+          <input type="hidden" name="id" value={order.id} />
+          <button type="submit">Cancelar pedido de prueba</button>
+        </form>
+      )}
+      {order.status === "DELIVERED" && !order.returnRequest && (
+        <ReturnRequestForm orderId={order.id} />
+      )}
+      {order.returnRequest && (
+        <section className="panel">
+          <h2>Devolución</h2>
+          <p>
+            Estado:{" "}
+            {order.returnRequest.status === "REQUESTED"
+              ? "En revisión"
+              : order.returnRequest.status === "APPROVED"
+                ? "Aprobada"
+                : "Rechazada"}
+          </p>
+          <p>{order.returnRequest.reason}</p>
+          {order.returnRequest.adminNote && (
+            <p>Respuesta: {order.returnRequest.adminNote}</p>
+          )}
+        </section>
+      )}
       <div className="panel">
         <h2>Resumen de compra</h2>
         <ul className="clean-list order-items">
           {order.items.map((item) => (
             <li key={item.id}>
               <span>
-                {item.name} × {item.quantity}
+                {item.name}
+                {item.variantName ? ` · ${item.variantName}` : ""} ×{" "}
+                {item.quantity}
               </span>
               <strong>{money(item.price * item.quantity)}</strong>
             </li>
           ))}
         </ul>
-        {order.discount > 0 && <p>Descuento {order.coupon}: −{money(order.discount)}</p>}
+        {order.discount > 0 && (
+          <p>
+            Descuento {order.coupon}: −{money(order.discount)}
+          </p>
+        )}
         <p className="summary-line">
           <strong>Total</strong>
           <strong>{money(order.total)}</strong>

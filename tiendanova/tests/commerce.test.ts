@@ -8,6 +8,7 @@ import {
   money,
   nextStatus,
   placeOrder,
+  variantPrice,
 } from "../src/lib/commerce";
 import {
   addressSchema,
@@ -29,6 +30,7 @@ import {
 describe("local guest cart", () => {
   const line = {
     productId: "product-id",
+    variantId: "base",
     slug: "lamp",
     name: "Lamp",
     stock: 10,
@@ -77,6 +79,11 @@ describe("local guest cart", () => {
 });
 
 describe("commerce invariants", () => {
+  it("rejects a variant whose adjustment produces a non-positive price", () => {
+    expect(variantPrice(9990, 1100)).toBe(11090);
+    expect(() => variantPrice(9990, -9990)).toThrow(CommerceError);
+  });
+
   it("computes whole Chilean pesos without floating-point arithmetic", () => {
     expect(
       calculateTotal([

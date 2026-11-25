@@ -1,6 +1,9 @@
 # TiendaNova
 
-Tienda de demostración para productos de escritorio. El catálogo se genera en el servidor. Los clientes pueden buscar artículos, guardar su carrito, registrar una dirección y hacer una compra simulada. El panel admin controla catálogo, stock, estados de entrega y ventas.
+Tienda de demostración para productos de escritorio. El catálogo se genera en
+el servidor. Los clientes pueden buscar artículos, elegir variantes, guardar su
+carrito, registrar una dirección y hacer una compra simulada. El panel admin
+controla catálogo, variantes, stock, estados de entrega, devoluciones y ventas.
 
 | Capa                   | Tecnología                                           |
 | ---------------------- | ---------------------------------------------------- |
@@ -56,7 +59,15 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-El test de integración intenta vender simultáneamente una última unidad y verifica qué queda en la base. El test E2E aplica una búsqueda, persiste el carrito de invitado, registra al cliente, importa el carrito, simula rechazo y aprobación, comprueba el pedido y verifica que el cliente no accede al panel admin. Con un administrador sembrado, también avanza el pedido a enviado y entregado y comprueba los cambios desde el seguimiento del cliente. Los umbrales de cobertura del 70 % se aplican a validación, almacenamiento de carrito y lógica de compra. El test de stock se omite si no se configura una base terminada en `_test`, por lo que la cobertura completa requiere PostgreSQL.
+El test de integración intenta vender simultáneamente una última unidad, compra
+una variante y comprueba que una devolución aprobada repone el inventario una
+sola vez. El test E2E aplica una búsqueda, persiste el carrito de invitado,
+registra al cliente, importa el carrito, simula rechazo y aprobación, comprueba
+el pedido y verifica que el cliente no accede al panel admin. Con un
+administrador sembrado, también gestiona catálogo y avanza el pedido a enviado y
+entregado. Los umbrales de cobertura del 70 % se aplican a validación,
+almacenamiento de carrito y lógica de compra. La cobertura completa requiere una
+base PostgreSQL cuyo nombre termine en `_test`.
 
 El reporte de cobertura queda en `coverage/index.html`. Si ya tienes Chromium instalado, puedes indicarlo con `CHROMIUM_PATH`. Para una app de pruebas existente define `BASE_URL`. Las pruebas crean pedidos y usuarios ficticios en la base de pruebas.
 
@@ -88,3 +99,17 @@ Mensajes de commit propuestos por fase: `docs: define historias y arquitectura`,
 El titular puede cancelar un pedido pagado antes del despacho. La operación cambia el estado y restituye las unidades en una sola transacción; los reintentos simultáneos no duplican el stock. Una cancelación en carrera con el despacho solo puede ganar si el pedido sigue pagado. Los pedidos cancelados quedan en el historial y se excluyen de las ventas simuladas. No hay cobros ni reembolsos reales. Aplicar las migraciones antes de iniciar la versión nueva.
 
 El cupón ficticio `DEMO10` descuenta 10 % del subtotal, sin límite de usos. El descuento y el código se guardan en el pedido; se aplican en el servidor y respetan la clave de idempotencia.
+
+## Variantes y devoluciones
+
+Las variantes tienen SKU, ajuste de precio, stock y estado propios. El carrito y
+el pedido conservan la variante elegida; el checkout vuelve a comprobar su stock
+dentro de la transacción. El producto base continúa disponible cuando no se
+selecciona una variante.
+
+El titular puede solicitar una devolución de un pedido entregado y el
+administrador puede aprobarla o rechazarla con una nota. Una aprobación cambia
+el pedido a devuelto y repone cada stock —base o variante— en la misma
+transacción. La restricción única por pedido y la comprobación de estado impiden
+que reintentos simultáneos dupliquen la reposición. Es un flujo ficticio: no
+procesa dinero, etiquetas de transporte ni reembolsos reales.

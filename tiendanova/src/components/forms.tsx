@@ -8,10 +8,13 @@ import {
   register,
   saveAddress,
   saveProduct,
+  saveVariant,
+  requestMyReturn,
+  decideReturn,
   type FormState,
 } from "@/app/actions";
 import { categories, categoryNames } from "@/lib/validation";
-import type { Address, Product } from "@prisma/client";
+import type { Address, Product, ProductVariant } from "@prisma/client";
 
 const empty: FormState = {};
 
@@ -165,8 +168,14 @@ export function CheckoutForm({
   return (
     <form action={action} className="form-stack">
       <input type="hidden" name="key" value={checkoutKey} />
-      <label>Cupón de prueba (opcional)<input name="coupon" maxLength={30} placeholder="DEMO10" /></label>
-      <p>DEMO10 descuenta un 10 % del subtotal. El total definitivo se confirma al finalizar la compra simulada.</p>
+      <label>
+        Cupón de prueba (opcional)
+        <input name="coupon" maxLength={30} placeholder="DEMO10" />
+      </label>
+      <p>
+        DEMO10 descuenta un 10 % del subtotal. El total definitivo se confirma
+        al finalizar la compra simulada.
+      </p>
       <label className="field">
         <span>Dirección de entrega</span>
         <select name="addressId" required defaultValue="">
@@ -307,6 +316,135 @@ export function ProductForm({
       <Feedback state={state} />
       <button type="submit" className="button dark" disabled={pending}>
         {pending ? "Guardando…" : "Guardar producto"}
+      </button>
+    </form>
+  );
+}
+
+export function VariantForm({
+  productId,
+  variant,
+}: {
+  productId: string;
+  variant?: Pick<
+    ProductVariant,
+    "id" | "name" | "sku" | "priceAdjustment" | "stock" | "active"
+  >;
+}) {
+  const [state, action, pending] = useActionState(saveVariant, empty);
+  return (
+    <form action={action} className="form-stack">
+      <input type="hidden" name="id" value={variant?.id ?? ""} />
+      <input type="hidden" name="productId" value={productId} />
+      <div className="form-pair">
+        <label className="field">
+          <span>Nombre de variante</span>
+          <input
+            name="name"
+            required
+            maxLength={60}
+            defaultValue={variant?.name}
+            placeholder="Ejemplo: Negro"
+          />
+        </label>
+        <label className="field">
+          <span>SKU</span>
+          <input
+            name="sku"
+            required
+            maxLength={40}
+            pattern="[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*"
+            defaultValue={variant?.sku}
+            placeholder="LAMP-NEGRA"
+          />
+        </label>
+      </div>
+      <div className="form-pair">
+        <label className="field">
+          <span>Ajuste de precio (CLP)</span>
+          <input
+            name="priceAdjustment"
+            type="number"
+            min="-1000000"
+            max="1000000"
+            required
+            defaultValue={variant?.priceAdjustment ?? 0}
+          />
+        </label>
+        <label className="field">
+          <span>Stock de variante</span>
+          <input
+            name="stock"
+            type="number"
+            min="0"
+            max="100000"
+            required
+            defaultValue={variant?.stock ?? 0}
+          />
+        </label>
+      </div>
+      <label className="checkbox">
+        <input
+          name="active"
+          type="checkbox"
+          defaultChecked={variant?.active ?? true}
+        />{" "}
+        Disponible para comprar
+      </label>
+      <Feedback state={state} />
+      <button type="submit" className="button outline" disabled={pending}>
+        {pending ? "Guardando…" : "Guardar variante"}
+      </button>
+    </form>
+  );
+}
+
+export function ReturnRequestForm({ orderId }: { orderId: string }) {
+  const [state, action, pending] = useActionState(requestMyReturn, empty);
+  return (
+    <form action={action} className="form-stack panel">
+      <input type="hidden" name="orderId" value={orderId} />
+      <h2>Solicitar devolución</h2>
+      <p className="muted">
+        Disponible durante 30 días desde la compra de prueba, una vez entregada.
+      </p>
+      <label className="field">
+        <span>Motivo</span>
+        <textarea
+          name="reason"
+          required
+          minLength={10}
+          maxLength={500}
+          rows={3}
+        />
+      </label>
+      <Feedback state={state} />
+      <button type="submit" className="button outline" disabled={pending}>
+        {pending ? "Enviando…" : "Enviar solicitud"}
+      </button>
+    </form>
+  );
+}
+
+export function ReturnDecisionForm({ requestId }: { requestId: string }) {
+  const [state, action, pending] = useActionState(decideReturn, empty);
+  return (
+    <form action={action} className="form-stack compact-action">
+      <input type="hidden" name="requestId" value={requestId} />
+      <label className="field">
+        <span>Nota administrativa</span>
+        <input name="adminNote" maxLength={500} />
+      </label>
+      <label className="field">
+        <span>Decisión</span>
+        <select name="decision" defaultValue="APPROVED">
+          <option value="APPROVED">Aprobar y reponer inventario</option>
+          <option value="REJECTED">Rechazar</option>
+        </select>
+      </label>
+      <Feedback state={state} />
+      <button type="submit" className="plain" disabled={pending}>
+        {pending ? "Resolviendo…" : "Resolver solicitud"}
       </button>
     </form>
   );

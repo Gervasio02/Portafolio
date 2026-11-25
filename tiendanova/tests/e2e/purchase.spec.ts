@@ -162,13 +162,14 @@ test("an administrator manages a product and can read sales", async ({
   await newForm.getByLabel("Precio (CLP)").fill("12990");
   await newForm.getByLabel("Stock", { exact: true }).fill("4");
   await newForm.getByRole("button", { name: "Guardar producto" }).click();
-  const item = page.locator("details").filter({ hasText: title });
-  await item.locator("summary").click();
+  const item = page.locator(`details[data-product-slug="producto-${suffix}"]`);
+  const itemSummary = item.locator(":scope > summary");
+  await itemSummary.click();
   await item.getByLabel("Stock", { exact: true }).fill("5");
   await item.getByRole("button", { name: "Guardar producto" }).click();
-  await expect(item.locator("summary")).toContainText("5 uds.");
+  await expect(itemSummary).toContainText("5 uds.");
   await item.getByRole("button", { name: "Archivar producto" }).click();
-  await expect(item.locator("summary")).toContainText("Archivado");
+  await expect(itemSummary).toContainText("Archivado");
   await page.goto(`/catalogo/producto-${suffix}`);
   await expect(
     page.getByRole("heading", { name: "Página no disponible" }),

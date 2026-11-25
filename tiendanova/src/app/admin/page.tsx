@@ -5,7 +5,11 @@ import { requireAdmin } from "@/lib/session";
 import { db } from "@/lib/db";
 import { money, nextStatus } from "@/lib/commerce";
 import { statusNames } from "@/lib/validation";
-import { ProductForm } from "@/components/forms";
+import {
+  ProductForm,
+  ReturnDecisionForm,
+  VariantForm,
+} from "@/components/forms";
 import { SalesChart } from "@/components/sales-chart";
 import { archiveProduct, progressOrder } from "@/app/actions";
 
@@ -35,26 +39,53 @@ export default async function AdminPage({
   const selected = Object.values(Status).find((status) => status === estado);
   const now = new Date();
   const since = new Date(now.getTime() - 7 * 86400000);
-  const [products, orders, stats, recentSales, byStatus, lowStock] =
-    await Promise.all([
-      db.product.findMany({
-        orderBy: [{ active: "desc" }, { name: "asc" }],
-        take: 100,
-      }),
-      db.order.findMany({
-        where: { status: selected },
-        orderBy: { createdAt: "desc" },
-        take: 50,
-        include: { user: { select: { name: true } } },
-      }),
-      db.order.aggregate({ _sum: { total: true }, _count: true, where: { status: { not: "CANCELLED" } } }),
-      db.order.findMany({
-        where: { createdAt: { gte: since }, status: { not: "CANCELLED" } },
-        select: { createdAt: true, total: true },
-      }),
-      db.order.groupBy({ by: ["status"], _count: true }),
-      db.product.count({ where: { active: true, stock: { lte: 3 } } }),
-    ]);
+  const [
+    products,
+    orders,
+    stats,
+    recentSales,
+    byStatus,
+    lowStockProducts,
+    lowStockVariants,
+    returns,
+  ] = await Promise.all([
+    db.product.findMany({
+      orderBy: [{ active: "desc" }, { name: "asc" }],
+      take: 100,
+      include: { variants: { orderBy: { name: "asc" } } },
+    }),
+    db.order.findMany({
+      where: { status: selected },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      include: { user: { select: { name: true } } },
+    }),
+    db.order.aggregate({
+      _sum: { total: true },
+      _count: true,
+      where: { status: { notIn: ["CANCELLED", "RETURNED"] } },
+    }),
+    db.order.findMany({
+      where: {
+        createdAt: { gte: since },
+        status: { notIn: ["CANCELLED", "RETURNED"] },
+      },
+      select: { createdAt: true, total: true },
+    }),
+    db.order.groupBy({ by: ["status"], _count: true }),
+    db.product.count({ where: { active: true, stock: { lte: 3 } } }),
+    db.productVariant.count({ where: { active: true, stock: { lte: 3 } } }),
+    db.returnRequest.findMany({
+      where: { status: "REQUESTED" },
+      orderBy: { requestedAt: "asc" },
+      take: 50,
+      include: {
+        order: { select: { id: true } },
+        user: { select: { name: true } },
+      },
+    }),
+  ]);
+  const lowStock = lowStockProducts + lowStockVariants;
   const counts = new Map(
     byStatus.map(({ status, _count }) => [status, _count]),
   );
@@ -94,7 +125,7 @@ export default async function AdminPage({
           <strong>{counts.get(Status.PAID) ?? 0}</strong>
         </div>
         <div className="panel stat">
-          <span>Productos con 3 unidades o menos</span>
+          <span>Productos o variantes con 3 unidades o menos</span>
           <strong>{lowStock}</strong>
         </div>
       </div>
@@ -110,12 +141,27 @@ export default async function AdminPage({
         </details>
         <div className="admin-list">
           {products.map((product) => (
-            <details key={product.id}>
+            <details key={product.id} data-product-slug={product.slug}>
               <summary>
                 {product.name} · {product.stock} uds. ·{" "}
                 {product.active ? "Visible" : "Archivado"}
               </summary>
               <ProductForm product={product} />
+              <section className="nested-admin">
+                <h3>Variantes</h3>
+                {product.variants.map((variant) => (
+                  <details key={variant.id}>
+                    <summary>
+                      {variant.name} · {variant.sku} · {variant.stock} uds.
+                    </summary>
+                    <VariantForm productId={product.id} variant={variant} />
+                  </details>
+                ))}
+                <details>
+                  <summary>Crear variante</summary>
+                  <VariantForm productId={product.id} />
+                </details>
+              </section>
               {product.active && (
                 <form action={archiveProduct}>
                   <input type="hidden" name="id" value={product.id} />
@@ -125,6 +171,25 @@ export default async function AdminPage({
             </details>
           ))}
         </div>
+      </section>
+      <section className="panel admin-section" id="devoluciones">
+        <h2>Solicitudes de devolución</h2>
+        {returns.length ? (
+          <div className="admin-list">
+            {returns.map((request) => (
+              <article key={request.id} className="return-request">
+                <h3>
+                  Pedido {request.order.id.slice(-8).toUpperCase()} ·{" "}
+                  {request.user.name}
+                </h3>
+                <p>{request.reason}</p>
+                <ReturnDecisionForm requestId={request.id} />
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="muted">No hay solicitudes pendientes.</p>
+        )}
       </section>
       <section className="panel admin-section" id="pedidos">
         <h2>Pedidos recientes</h2>

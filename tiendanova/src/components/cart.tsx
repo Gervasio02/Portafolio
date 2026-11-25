@@ -44,15 +44,15 @@ export function Cart({
     0,
   );
 
-  function change(productId: string, quantity: number) {
+  function change(productId: string, variantId: string, quantity: number) {
     start(async () => {
       if (signedIn) {
-        setState(await updateCart(productId, quantity));
+        setState(await updateCart(productId, variantId, quantity));
         return;
       }
       const result = writeLocalCart(
         local.flatMap((line) =>
-          line.productId === productId
+          line.productId === productId && line.variantId === variantId
             ? quantity
               ? [{ ...line, quantity }]
               : []
@@ -80,8 +80,9 @@ export function Cart({
               onClick={() =>
                 start(async () => {
                   const result = await importCart(
-                    local.map(({ productId, quantity }) => ({
+                    local.map(({ productId, variantId, quantity }) => ({
                       productId,
+                      variantId,
                       quantity,
                     })),
                   );
@@ -98,7 +99,10 @@ export function Cart({
         {selected.length ? (
           <ul className="cart-list">
             {selected.map((line) => (
-              <li className="cart-line" key={line.productId}>
+              <li
+                className="cart-line"
+                key={`${line.productId}:${line.variantId}`}
+              >
                 <Image
                   src={line.image}
                   alt=""
@@ -108,6 +112,9 @@ export function Cart({
                 />
                 <div className="line-title">
                   <Link href={`/catalogo/${line.slug}`}>{line.name}</Link>
+                  {line.variantName && (
+                    <p className="muted small">{line.variantName}</p>
+                  )}
                   <p className="muted small">{price(line.price)} por unidad</p>
                   {(line.active === false || line.quantity > line.stock) && (
                     <p className="error-text small">
@@ -122,7 +129,9 @@ export function Cart({
                     className="icon-button"
                     aria-label={`Quitar una unidad de ${line.name}`}
                     disabled={pending || line.quantity === 1}
-                    onClick={() => change(line.productId, line.quantity - 1)}
+                    onClick={() =>
+                      change(line.productId, line.variantId, line.quantity - 1)
+                    }
                   >
                     <Minus size={15} />
                   </button>
@@ -136,7 +145,9 @@ export function Cart({
                       line.active === false ||
                       line.quantity >= Math.min(25, line.stock)
                     }
-                    onClick={() => change(line.productId, line.quantity + 1)}
+                    onClick={() =>
+                      change(line.productId, line.variantId, line.quantity + 1)
+                    }
                   >
                     <Plus size={15} />
                   </button>
@@ -148,7 +159,7 @@ export function Cart({
                     className="icon-button"
                     aria-label={`Eliminar ${line.name}`}
                     disabled={pending}
-                    onClick={() => change(line.productId, 0)}
+                    onClick={() => change(line.productId, line.variantId, 0)}
                   >
                     <Trash2 size={16} />
                   </button>

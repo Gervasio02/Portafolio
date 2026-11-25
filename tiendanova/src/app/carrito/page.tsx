@@ -19,7 +19,7 @@ export default async function CartPage() {
         db.cartItem.findMany({
           where: { userId: user.id },
           include: { product: true },
-          orderBy: { productId: "asc" },
+          orderBy: [{ productId: "asc" }, { variantId: "asc" }],
         }),
         db.address.findMany({
           where: { userId: user.id },
@@ -28,16 +28,27 @@ export default async function CartPage() {
         }),
       ])
     : [[], []];
-  const items = cart.map(({ product, quantity }) => ({
-    productId: product.id,
-    slug: product.slug,
-    name: product.name,
-    image: product.images[0] ?? "/products/workspace.jpg",
-    price: product.price,
-    stock: product.stock,
-    quantity,
-    active: product.active,
-  }));
+  const variantIds = cart
+    .map((line) => line.variantId)
+    .filter((id) => id !== "base");
+  const variants = user
+    ? await db.productVariant.findMany({ where: { id: { in: variantIds } } })
+    : [];
+  const items = cart.map(({ product, variantId, quantity }) => {
+    const variant = variants.find((candidate) => candidate.id === variantId);
+    return {
+      productId: product.id,
+      variantId,
+      variantName: variant?.name,
+      slug: product.slug,
+      name: product.name,
+      image: product.images[0] ?? "/products/workspace.jpg",
+      price: product.price + (variant?.priceAdjustment ?? 0),
+      stock: variantId === "base" ? product.stock : (variant?.stock ?? 0),
+      quantity,
+      active: product.active && (variantId === "base" || !!variant?.active),
+    };
+  });
   return (
     <section className="wrap workpage">
       <Link href="/#catalogo" className="text-link back-link">

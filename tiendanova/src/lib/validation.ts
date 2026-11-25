@@ -11,6 +11,8 @@ export const statusNames = {
   SHIPPED: "Enviado",
   DELIVERED: "Entregado",
   CANCELLED: "Cancelado",
+  RETURN_REQUESTED: "Devolución solicitada",
+  RETURNED: "Devuelto",
 };
 
 export const email = z.email().max(254).trim().toLowerCase();
@@ -31,6 +33,7 @@ export const addressSchema = z.object({
 });
 export const lineSchema = z.object({
   productId: z.string().min(1).max(40),
+  variantId: z.string().min(1).max(40).optional().default("base"),
   quantity: z.number().int().min(1).max(25),
 });
 export const linesSchema = z
@@ -38,7 +41,8 @@ export const linesSchema = z
   .max(20)
   .refine(
     (items) =>
-      new Set(items.map((item) => item.productId)).size === items.length,
+      new Set(items.map((item) => `${item.productId}:${item.variantId}`))
+        .size === items.length,
   );
 export const checkoutSchema = z.object({
   key: z.uuid(),
@@ -62,6 +66,32 @@ export const productSchema = z.object({
     .min(1)
     .max(5),
   active: z.boolean(),
+});
+
+export const variantSchema = z.object({
+  productId: z.string().min(1).max(40),
+  name: z.string().trim().min(1).max(60),
+  sku: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .min(2)
+    .max(40)
+    .regex(/^[A-Z0-9]+(?:-[A-Z0-9]+)*$/),
+  priceAdjustment: z.coerce.number().int().min(-1_000_000).max(1_000_000),
+  stock: z.coerce.number().int().min(0).max(100_000),
+  active: z.boolean(),
+});
+
+export const returnRequestSchema = z.object({
+  orderId: z.string().min(1).max(40),
+  reason: z.string().trim().min(10).max(500),
+});
+
+export const returnDecisionSchema = z.object({
+  requestId: z.string().min(1).max(40),
+  decision: z.enum(["APPROVED", "REJECTED"]),
+  adminNote: z.string().trim().max(500).optional().default(""),
 });
 
 const optionalPrice = z.preprocess(

@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 
 export async function GET(
-  _: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -11,8 +11,22 @@ export async function GET(
     where: { id },
     select: { active: true, stock: true },
   });
+  const variantId = new URL(request.url).searchParams.get("variant");
+  const variant =
+    product?.active && variantId && variantId !== "base"
+      ? await db.productVariant.findFirst({
+          where: { id: variantId, productId: id, active: true },
+          select: { stock: true },
+        })
+      : null;
   return Response.json(
-    { stock: product?.active ? product.stock : 0 },
+    {
+      stock: product?.active
+        ? variantId && variantId !== "base"
+          ? (variant?.stock ?? 0)
+          : product.stock
+        : 0,
+    },
     { headers: { "Cache-Control": "no-store" } },
   );
 }

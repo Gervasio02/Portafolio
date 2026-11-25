@@ -13,21 +13,37 @@ import {
 
 export function AddProduct({
   product,
+  variants,
   isSignedIn,
 }: {
   product: Omit<LocalItem, "quantity">;
+  variants: {
+    id: string;
+    name: string;
+    priceAdjustment: number;
+    stock: number;
+  }[];
   isSignedIn: boolean;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [variantId, setVariantId] = useState(variants[0]?.id ?? "base");
   const [liveStock, setLiveStock] = useState<number | undefined>();
-  const stock = liveStock ?? product.stock;
+  const variant = variants.find((candidate) => candidate.id === variantId);
+  const stock = liveStock ?? variant?.stock ?? product.stock;
+  const selectedProduct = {
+    ...product,
+    variantId,
+    variantName: variant?.name,
+    price: product.price + (variant?.priceAdjustment ?? 0),
+    stock,
+  };
   useEffect(() => {
     const request = new AbortController();
     const refresh = async () => {
       if (document.hidden) return;
       try {
         const response = await fetch(
-          `/api/products/${product.productId}/availability`,
+          `/api/products/${product.productId}/availability?variant=${encodeURIComponent(variantId)}`,
           { signal: request.signal, cache: "no-store" },
         );
         const result: unknown = await response.json();
@@ -55,7 +71,7 @@ export function AddProduct({
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", refresh);
     };
-  }, [product.productId]);
+  }, [product.productId, variantId]);
   const [state, setState] = useState<FormState>({});
   const [pending, start] = useTransition();
   const available = Math.min(25, stock);
@@ -75,13 +91,19 @@ export function AddProduct({
           start(async () => {
             if (isSignedIn) {
               setState(
-                await addToCart({ productId: product.productId, quantity }),
+                await addToCart({
+                  productId: product.productId,
+                  variantId,
+                  quantity,
+                }),
               );
               return;
             }
             const local = parseCart(readCartSnapshot());
             const previous = local.find(
-              (line) => line.productId === product.productId,
+              (line) =>
+                line.productId === product.productId &&
+                line.variantId === variantId,
             );
             const total = (previous?.quantity ?? 0) + quantity;
             if (total > available) {
@@ -97,8 +119,12 @@ export function AddProduct({
               return;
             }
             const next = [
-              ...local.filter((line) => line.productId !== product.productId),
-              { ...product, stock, quantity: total },
+              ...local.filter(
+                (line) =>
+                  line.productId !== product.productId ||
+                  line.variantId !== variantId,
+              ),
+              { ...selectedProduct, quantity: total },
             ];
             setState(
               writeLocalCart(next)
@@ -108,6 +134,31 @@ export function AddProduct({
           });
         }}
       >
+        {variants.length > 0 && (
+          <label className="field">
+            <span>Variante</span>
+            <select
+              value={variantId}
+              onChange={(event) => {
+                setVariantId(event.target.value);
+                setLiveStock(undefined);
+                setQuantity(1);
+                setState({});
+              }}
+            >
+              {variants.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name} ·{" "}
+                  {new Intl.NumberFormat("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                    maximumFractionDigits: 0,
+                  }).format(product.price + option.priceAdjustment)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label className="field">
           <span>Cantidad</span>
           <input

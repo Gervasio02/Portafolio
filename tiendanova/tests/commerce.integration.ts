@@ -1,7 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
-import { cancelOrder, placeOrder } from "../src/lib/commerce";
+import {
+  cancelOrder,
+  placeOrder,
+  requestReturn,
+  resolveReturn,
+} from "../src/lib/commerce";
 
 const hasTestDatabase =
   process.env.DATABASE_URL &&
@@ -14,6 +19,7 @@ describe.skipIf(!hasTestDatabase)("orders in PostgreSQL", () => {
     product?: string;
     actorAddress?: string;
     competitorAddress?: string;
+    variant?: string;
   } = {};
   beforeAll(async () => {
     const suffix = randomUUID();
@@ -147,22 +153,133 @@ describe.skipIf(!hasTestDatabase)("orders in PostgreSQL", () => {
   });
 
   it("cancels exactly once and restores stock under concurrent requests", async () => {
-    const order = await db.order.findFirstOrThrow({where:{items:{some:{productId:ids.product}}}});
+    const order = await db.order.findFirstOrThrow({
+      where: { items: { some: { productId: ids.product } } },
+    });
     const outsider = order.userId === ids.actor ? ids.competitor! : ids.actor!;
-    await expect(cancelOrder(db,outsider,order.id)).rejects.toThrow("Pedido no encontrado");
-    const results=await Promise.all([cancelOrder(db,order.userId,order.id),cancelOrder(db,order.userId,order.id)]);
-    expect(results.every(result=>result.status === "CANCELLED")).toBe(true);
-    expect((await db.product.findUniqueOrThrow({where:{id:ids.product}})).stock).toBe(1);
+    await expect(cancelOrder(db, outsider, order.id)).rejects.toThrow(
+      "Pedido no encontrado",
+    );
+    const results = await Promise.all([
+      cancelOrder(db, order.userId, order.id),
+      cancelOrder(db, order.userId, order.id),
+    ]);
+    expect(results.every((result) => result.status === "CANCELLED")).toBe(true);
+    expect(
+      (await db.product.findUniqueOrThrow({ where: { id: ids.product } }))
+        .stock,
+    ).toBe(1);
   });
 
   it("validates and persists the simulated coupon without duplicating checkout", async () => {
-    const order = await db.order.findFirstOrThrow({where:{items:{some:{productId:ids.product}}}});
-    await db.cartItem.upsert({where:{userId_productId:{userId:order.userId,productId:ids.product!}},create:{userId:order.userId,productId:ids.product!,quantity:1},update:{quantity:1}});
-    const addressId=order.userId===ids.actor?ids.actorAddress:ids.competitorAddress;
-    const checkout={key:randomUUID(),addressId,payment:'approve',coupon:'demo10'};
-    await expect(placeOrder(db,order.userId,{...checkout,coupon:'bad'})).rejects.toThrow('Cupón');
-    const result=await placeOrder(db,order.userId,checkout);
-    expect(result.total).toBe(8910);expect(result.discount).toBe(990);expect(result.coupon).toBe('DEMO10');
-    expect((await placeOrder(db,order.userId,checkout)).id).toBe(result.id);
+    const order = await db.order.findFirstOrThrow({
+      where: { items: { some: { productId: ids.product } } },
+    });
+    await db.cartItem.upsert({
+      where: {
+        userId_productId_variantId: {
+          userId: order.userId,
+          productId: ids.product!,
+          variantId: "base",
+        },
+      },
+      create: {
+        userId: order.userId,
+        productId: ids.product!,
+        variantId: "base",
+        quantity: 1,
+      },
+      update: { quantity: 1 },
+    });
+    const addressId =
+      order.userId === ids.actor ? ids.actorAddress : ids.competitorAddress;
+    const checkout = {
+      key: randomUUID(),
+      addressId,
+      payment: "approve",
+      coupon: "demo10",
+    };
+    await expect(
+      placeOrder(db, order.userId, { ...checkout, coupon: "bad" }),
+    ).rejects.toThrow("Cupón");
+    const result = await placeOrder(db, order.userId, checkout);
+    expect(result.total).toBe(8910);
+    expect(result.discount).toBe(990);
+    expect(result.coupon).toBe("DEMO10");
+    expect((await placeOrder(db, order.userId, checkout)).id).toBe(result.id);
+  });
+
+  it("checks out an exact variant and restores it once after an approved return", async () => {
+    const variant = await db.productVariant.create({
+      data: {
+        productId: ids.product!,
+        name: "Edición azul",
+        sku: `BLUE-${randomUUID()}`,
+        priceAdjustment: 1100,
+        stock: 1,
+      },
+    });
+    ids.variant = variant.id;
+    await db.cartItem.deleteMany({ where: { userId: ids.actor } });
+    await db.cartItem.create({
+      data: {
+        userId: ids.actor!,
+        productId: ids.product!,
+        variantId: variant.id,
+        quantity: 1,
+      },
+    });
+    const placed = await placeOrder(db, ids.actor!, {
+      key: randomUUID(),
+      addressId: ids.actorAddress!,
+      payment: "approve",
+    });
+    const order = await db.order.findUniqueOrThrow({
+      where: { id: placed.id },
+      include: { items: true },
+    });
+    expect(order.total).toBe(11000);
+    expect(order.items[0]).toMatchObject({
+      variantId: variant.id,
+      variantName: "Edición azul",
+      price: 11000,
+    });
+    expect(
+      (await db.productVariant.findUniqueOrThrow({ where: { id: variant.id } }))
+        .stock,
+    ).toBe(0);
+    await db.order.update({
+      where: { id: order.id },
+      data: { status: "DELIVERED" },
+    });
+    await expect(
+      requestReturn(
+        db,
+        ids.competitor!,
+        order.id,
+        "No corresponde al pedido recibido.",
+      ),
+    ).rejects.toThrow("Pedido no encontrado");
+    const requested = await requestReturn(
+      db,
+      ids.actor!,
+      order.id,
+      "No corresponde al pedido recibido.",
+    );
+    expect(
+      (await db.order.findUniqueOrThrow({ where: { id: order.id } })).status,
+    ).toBe("RETURN_REQUESTED");
+    const decisions = await Promise.all([
+      resolveReturn(db, requested.id, "APPROVED", "Revisión completada"),
+      resolveReturn(db, requested.id, "APPROVED", "Revisión completada"),
+    ]);
+    expect(decisions.every((item) => item.status === "APPROVED")).toBe(true);
+    expect(
+      (await db.productVariant.findUniqueOrThrow({ where: { id: variant.id } }))
+        .stock,
+    ).toBe(1);
+    expect(
+      (await db.order.findUniqueOrThrow({ where: { id: order.id } })).status,
+    ).toBe("RETURNED");
   });
 });

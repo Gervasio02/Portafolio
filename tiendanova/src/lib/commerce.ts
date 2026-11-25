@@ -14,7 +14,22 @@ export function calculateTotal(lines: { price: number; quantity: number }[]) {
   return lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
 }
 
-export function nextStatus(status: "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED") {
+export function variantPrice(basePrice: number, adjustment: number) {
+  const price = basePrice + adjustment;
+  if (!Number.isSafeInteger(price) || price < 1)
+    throw new CommerceError("La variante no tiene un precio válido.");
+  return price;
+}
+
+export function nextStatus(
+  status:
+    | "PAID"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "RETURN_REQUESTED"
+    | "RETURNED",
+) {
   if (status === "PAID") return "SHIPPED";
   if (status === "SHIPPED") return "DELIVERED";
   return null;
@@ -39,7 +54,8 @@ export async function placeOrder(
   const where = { userId_checkoutKey: { userId, checkoutKey: key } };
   const previous = await db.order.findUnique({ where });
   if (previous) return previous;
-  if (coupon && coupon !== "DEMO10") throw new CommerceError("Cupón de prueba no válido.");
+  if (coupon && coupon !== "DEMO10")
+    throw new CommerceError("Cupón de prueba no válido.");
   if (payment === "decline")
     throw new CommerceError(
       "El pago simulado fue rechazado. El carrito sigue disponible.",
@@ -74,24 +90,56 @@ export async function placeOrder(
         name: string;
         price: number;
         quantity: number;
+        variantId: string | null;
+        variantName: string | null;
       }[] = [];
       for (const line of cart) {
+        const product = await tx.product.findFirst({
+          where: { id: line.productId, active: true },
+          select: { name: true, price: true },
+        });
+        if (!product)
+          throw new CommerceError(
+            "Una pieza cambió de disponibilidad. Revisa el carrito.",
+          );
         try {
           // PostgreSQL rechecks stock after acquiring the row lock. A loser rolls back the whole purchase.
-          const product = await tx.product.update({
-            where: {
-              id: line.productId,
-              active: true,
-              stock: { gte: line.quantity },
-            },
-            data: { stock: { decrement: line.quantity } },
-            select: { name: true, price: true },
-          });
-          items.push({
-            productId: line.productId,
-            quantity: line.quantity,
-            ...product,
-          });
+          if (line.variantId === "base") {
+            await tx.product.update({
+              where: {
+                id: line.productId,
+                active: true,
+                stock: { gte: line.quantity },
+              },
+              data: { stock: { decrement: line.quantity } },
+            });
+            items.push({
+              productId: line.productId,
+              quantity: line.quantity,
+              ...product,
+              variantId: null,
+              variantName: null,
+            });
+          } else {
+            const variant = await tx.productVariant.update({
+              where: {
+                id: line.variantId,
+                productId: line.productId,
+                active: true,
+                stock: { gte: line.quantity },
+              },
+              data: { stock: { decrement: line.quantity } },
+              select: { id: true, name: true, priceAdjustment: true },
+            });
+            items.push({
+              productId: line.productId,
+              quantity: line.quantity,
+              name: product.name,
+              price: variantPrice(product.price, variant.priceAdjustment),
+              variantId: variant.id,
+              variantName: variant.name,
+            });
+          }
         } catch (error) {
           if (!isPrismaError(error, "P2025")) throw error;
           throw new CommerceError(
@@ -131,19 +179,133 @@ export async function placeOrder(
   }
 }
 
-
 /** Cancel a paid simulated order exactly once, restoring inventory atomically. */
-export async function cancelOrder(db: PrismaClient, userId: string, orderId: string) {
+export async function cancelOrder(
+  db: PrismaClient,
+  userId: string,
+  orderId: string,
+) {
   return db.$transaction(async (tx) => {
-    const order = await tx.order.findFirst({where:{id:orderId,userId},include:{items:{orderBy:{productId:"asc"}}}});
+    const order = await tx.order.findFirst({
+      where: { id: orderId, userId },
+      include: { items: { orderBy: { productId: "asc" } } },
+    });
     if (!order) throw new CommerceError("Pedido no encontrado.");
-    const changed = await tx.order.updateMany({where:{id:orderId,userId,status:"PAID"},data:{status:"CANCELLED"}});
+    const changed = await tx.order.updateMany({
+      where: { id: orderId, userId, status: "PAID" },
+      data: { status: "CANCELLED" },
+    });
     if (!changed.count) {
-      const current=await tx.order.findUniqueOrThrow({where:{id:orderId}});
+      const current = await tx.order.findUniqueOrThrow({
+        where: { id: orderId },
+      });
       if (current.status === "CANCELLED") return current;
       throw new CommerceError("Solo se puede cancelar antes del despacho.");
     }
-    for (const item of order.items) await tx.product.update({where:{id:item.productId},data:{stock:{increment:item.quantity}}});
-    return tx.order.findUniqueOrThrow({where:{id:orderId}});
+    for (const item of order.items) {
+      if (item.variantId)
+        await tx.productVariant.update({
+          where: { id: item.variantId },
+          data: { stock: { increment: item.quantity } },
+        });
+      else
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+    }
+    return tx.order.findUniqueOrThrow({ where: { id: orderId } });
+  });
+}
+
+/** Request one auditable return for a delivered order owned by the customer. */
+export async function requestReturn(
+  db: PrismaClient,
+  userId: string,
+  orderId: string,
+  reason: string,
+) {
+  return db.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "Order" WHERE id = ${orderId} FOR UPDATE`;
+    const order = await tx.order.findFirst({
+      where: { id: orderId, userId },
+      include: { returnRequest: true },
+    });
+    if (!order) throw new CommerceError("Pedido no encontrado.");
+    if (order.returnRequest) return order.returnRequest;
+    if (order.status !== "DELIVERED")
+      throw new CommerceError(
+        "La devolución se puede solicitar después de la entrega.",
+      );
+    const deadline = new Date(order.createdAt.getTime() + 30 * 86400000);
+    if (deadline < new Date())
+      throw new CommerceError("El plazo de devolución de 30 días terminó.");
+    const created = await tx.returnRequest.create({
+      data: { orderId, userId, reason },
+    });
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: "RETURN_REQUESTED" },
+    });
+    return created;
+  });
+}
+
+/**
+ * Resolve a return once. Approval restores the exact base or variant stock in
+ * the same transaction as the audit decision.
+ */
+export async function resolveReturn(
+  db: PrismaClient,
+  requestId: string,
+  decision: "APPROVED" | "REJECTED",
+  adminNote: string,
+) {
+  return db.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "ReturnRequest" WHERE id = ${requestId} FOR UPDATE`;
+    const request = await tx.returnRequest.findUnique({
+      where: { id: requestId },
+      include: { order: { include: { items: true } } },
+    });
+    if (!request) throw new CommerceError("Solicitud no encontrada.");
+    if (request.status !== "REQUESTED") {
+      if (request.status === decision) return request;
+      throw new CommerceError("La solicitud ya fue resuelta.");
+    }
+    if (request.order.status !== "RETURN_REQUESTED")
+      throw new CommerceError("El pedido ya no admite esta decisión.");
+
+    const changed = await tx.returnRequest.updateMany({
+      where: { id: requestId, status: "REQUESTED" },
+      data: {
+        status: decision,
+        adminNote: adminNote || null,
+        resolvedAt: new Date(),
+      },
+    });
+    if (!changed.count)
+      throw new CommerceError("La solicitud ya fue resuelta.");
+
+    if (decision === "APPROVED") {
+      for (const item of request.order.items) {
+        if (item.variantId)
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { increment: item.quantity } },
+          });
+        else
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { increment: item.quantity } },
+          });
+      }
+    }
+    await tx.order.update({
+      where: { id: request.orderId },
+      data: {
+        status: decision === "APPROVED" ? "RETURNED" : "DELIVERED",
+      },
+    });
+    return tx.returnRequest.findUniqueOrThrow({ where: { id: requestId } });
   });
 }

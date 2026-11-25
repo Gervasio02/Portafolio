@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const item = z.object({
   productId: z.string().min(1).max(40),
+  variantId: z.string().min(1).max(40).default("base"),
+  variantName: z.string().max(60).optional(),
   slug: z.string().max(80),
   name: z.string().max(80),
   image: z.string().regex(/^\/products\/[\w.-]+\.(?:png|jpe?g|webp)$/i),
@@ -14,7 +16,8 @@ const list = z
   .max(20)
   .refine(
     (items) =>
-      new Set(items.map((line) => line.productId)).size === items.length,
+      new Set(items.map((line) => `${line.productId}:${line.variantId}`))
+        .size === items.length,
   );
 export type LocalItem = z.infer<typeof item>;
 const KEY = "tiendanova.cart.v1";

@@ -24,7 +24,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
   const [product, user] = await Promise.all([
-    db.product.findFirst({ where: { slug, active: true } }),
+    db.product.findFirst({
+      where: { slug, active: true },
+      include: {
+        variants: {
+          where: { active: true },
+          orderBy: [{ name: "asc" }, { id: "asc" }],
+        },
+      },
+    }),
     currentUser(),
   ]);
   if (!product) notFound();
@@ -49,7 +57,9 @@ export default async function ProductPage({ params }: Props) {
               image: product.images[0] ?? "/products/workspace.jpg",
               price: product.price,
               stock: product.stock,
+              variantId: "base",
             }}
+            variants={product.variants}
             isSignedIn={!!user}
           />
         </div>
