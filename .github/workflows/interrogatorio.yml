@@ -13,10 +13,10 @@ jobs:
       run:
         working-directory: interrogatorio/backend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -30,10 +30,10 @@ jobs:
       run:
         working-directory: interrogatorio/frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: npm
@@ -41,3 +41,29 @@ jobs:
       - run: npm ci
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run build
+  desplegar:
+    name: Publicar en Azure
+    needs: [backend, frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Construir, publicar y verificar
+        env:
+          REGISTRY_NAME: ${{ vars.AZURE_REGISTRY_NAME }}
+          REGISTRY_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
+          AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP || 'rg-portafolio-gervasio' }}
+          SECRETOS_ALEATORIOS: "jwt-secret:JWT_SECRET"
+        run: |
+          scripts/azure-desplegar-app.sh interrogatorio interrogatorio /ready 8000 \
+            APP_ENV=production RATE_LIMIT=on

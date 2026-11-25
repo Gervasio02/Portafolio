@@ -46,7 +46,8 @@ type Result = {
   secrets: { name: string; secret: string }[];
 };
 type Rank = { player: string; score: number; difficulty: string };
-const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// En producción la API está en el mismo dominio (VITE_API_URL vacío).
+const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 function App() {
   const [token, setToken] = useState(
     localStorage.getItem("interrogatorio_token") || "",

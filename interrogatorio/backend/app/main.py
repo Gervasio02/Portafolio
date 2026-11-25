@@ -15,6 +15,7 @@ from sqlalchemy import JSON, Boolean, Integer, String, create_engine, select, te
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker, Session
 from .engine import Difficulty, answer, generate_case, public_case
+from .limites import middleware_limites
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./interrogatorio.db")
 
@@ -82,6 +83,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.middleware("http")(middleware_limites)
 hasher = PasswordHash.recommended()
 
 
@@ -321,3 +323,12 @@ def ranking(session: Session = Depends(db)):
         {"player": g.owner[5:], "score": g.score, "difficulty": g.difficulty}
         for g in rows
     ]
+
+
+# En producción el mismo contenedor sirve la interfaz compilada (ver Dockerfile).
+# Se monta al final para que las rutas de la API tengan prioridad.
+STATIC_DIR = os.getenv("STATIC_DIR", "")
+if STATIC_DIR and os.path.isdir(STATIC_DIR):
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="interfaz")
