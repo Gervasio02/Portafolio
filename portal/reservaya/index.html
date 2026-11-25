@@ -7,13 +7,15 @@
   <title>ReservaYa · Portafolio de Gervasio Torres</title>
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../proyectos.css">
+  <link rel="stylesheet" href="../tema.css">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <script src="../laboratorio.js" defer></script>
 </head>
 <body class="project-page reservaya" data-demo="reservaya">
   <a class="skip" href="#demo">Saltar a la demo</a>
   <header class="shell top">
-    <a class="brand" href="../index.html" aria-label="Inicio del portafolio">GT<span>.</span></a>
-    <nav aria-label="Otras aplicaciones"><a href="../taskflow/index.html">TaskFlow</a><a href="../tiendanova/index.html">TiendaNova</a></nav>
+    <a class="brand" href="../index.html" aria-label="Inicio del portafolio">Gervasio Torres</a>
+    <nav aria-label="Principal"><a href="../index.html#trabajo">Proyectos</a><a href="../proyectos/">Catálogo</a><a href="../laboratorio.html">Demos</a></nav>
   </header>
   <main class="shell">
     <section class="project-lead" aria-labelledby="project-title">
@@ -21,10 +23,11 @@
         <p class="eyebrow"><span></span> ReservaYa · Operación de un recinto deportivo</p>
         <h1 id="project-title">Encuentra cancha y reserva tu hora.</h1>
         <p class="project-summary">Ayuda a un recinto con varias canchas a publicar sus horarios y bloquear franjas por mantenimiento. Los jugadores pueden ver la disponibilidad antes de reservar.</p>
-        <div class="project-links"><a class="hero-link" href="#demo">Probar ReservaYa</a><a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/">Abrir aplicación completa</a><a href="#recorrido">Cómo funciona</a></div>
+        <div class="project-links"><a class="hero-link" href="#demo">Probar ReservaYa</a><a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">Abrir aplicación completa ↗</a><a href="#recorrido">Cómo funciona</a></div>
+        <p class="nota-vivo">La app en vivo se apaga cuando nadie la usa: la primera carga puede tardar unos 30 segundos.</p>
       </div>
       <figure>
-        <img src="../capturas/reservaya-cancha.png" alt="Vista de una cancha y sus horarios de reserva en ReservaYa" fetchpriority="high">
+        <img src="../capturas/reservaya-cancha-1200.webp" width="1200" height="931" alt="Vista de una cancha y sus horarios de reserva en ReservaYa" fetchpriority="high">
         <figcaption>Captura de la aplicación completa</figcaption>
       </figure>
     </section>
@@ -44,6 +47,6 @@
       <p>El servidor administra la agenda, los bloqueos y las reservas. PostgreSQL evita dos reservas activas para la misma cancha y hora. Esta demo pública funciona en el navegador con datos ficticios.</p>
     </section>
   </main>
-  <footer class="shell footer"><span>ReservaYa · Gervasio Torres</span><a href="../index.html#proyectos">Volver al portafolio</a></footer>
+  <footer class="shell footer"><span>ReservaYa · Gervasio Torres</span><a href="../index.html#trabajo">Volver al portafolio</a></footer>
 </body>
 </html>

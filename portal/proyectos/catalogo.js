@@ -54,28 +54,28 @@ function render() {
       element("p", p.stack.join(" · "), "stack"),
     );
     const actions = element("div", null, "catalog-actions");
-    for (const [label, url] of [
-      ["Abrir demo", p.demo],
-      [
-        "Código",
-        `https://github.com/Gervasio02/Portafolio/tree/main/${p.code || p.id}`,
-      ],
-    ]) {
+    const external = (url) => /^https?:/.test(url);
+    const links = [];
+    if (p.demo)
+      links.push([external(p.demo) ? "Jugar en línea ↗" : "Probar demo", p.demo]);
+    if (p.live) links.push(["App en vivo ↗", p.live]);
+    links.push([
+      "Código",
+      `https://github.com/Gervasio02/Portafolio/tree/main/${p.code || p.id}`,
+    ]);
+    for (const [label, url] of links) {
       const a = element("a", label);
       a.href = url;
+      if (external(url)) a.rel = "noopener";
       actions.append(a);
     }
-    body.append(
-      actions,
-      element(
-        "p",
-        p.local
-          ? "Demo local · iniciar servidor labs en el puerto 8001"
-          : p.id === "snake"
-            ? "Demo externa · disponibilidad sin comprobar"
-            : "Demo local del portal · datos ficticios",
-      ),
-    );
+    let note = "Demo en el navegador · datos ficticios";
+    if (p.local)
+      note = `Se ejecuta en local: inicia el servidor de labs/ y abre ${p.run} (instrucciones en el README).`;
+    else if (p.live || external(p.demo || ""))
+      note =
+        "La app en vivo se apaga cuando nadie la usa: la primera carga puede tardar unos 30 segundos.";
+    body.append(actions, element("p", note, "catalog-note"));
     const details = element("details");
     details.append(element("summary", "Objetivo, arquitectura y aprendizajes"));
     for (const [title, text] of [

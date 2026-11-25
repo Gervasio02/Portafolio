@@ -1,0 +1,244 @@
+/* Tema gamer oscuro para las páginas interiores.
+   Se carga después de styles.css / proyectos.css / catalogo.css y
+   reutiliza sus variables para alinear el aspecto con la portada. */
+
+:root {
+  color-scheme: dark;
+  --bg: #07070d;
+  --panel: #12121f;
+  --text: #ecebff;
+  --muted: #a3a3c2;
+  --line: #2a2a47;
+  --mint: #8b5cf6; /* acento principal (morado) */
+  --azul: #2f8cff;
+  --azul-claro: #6cc4ff;
+  --morado-claro: #b69cff;
+  --rojo: #ff2d55;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  --corte: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  background:
+    radial-gradient(60rem 30rem at 85% -5%, #8b5cf626, transparent 70%),
+    radial-gradient(50rem 30rem at -10% 30%, #2f8cff1f, transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 800;
+}
+
+a {
+  color: var(--azul-claro);
+}
+
+a:hover {
+  color: #fff;
+}
+
+/* cabecera común */
+.top {
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font: 700 1rem/1 "Segoe UI", system-ui, sans-serif;
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+.brand::before {
+  content: "GT";
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  font: 800 0.95rem var(--mono);
+  color: #fff;
+  background: linear-gradient(135deg, var(--azul), var(--mint) 55%, var(--rojo));
+  clip-path: polygon(0 0, 75% 0, 100% 25%, 100% 100%, 25% 100%, 0 75%);
+}
+
+.brand span {
+  display: none;
+}
+
+nav a,
+.footer a {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+nav a:hover,
+.footer a:hover {
+  color: var(--text);
+}
+
+.top nav [aria-current] {
+  color: var(--azul-claro);
+}
+
+.eyebrow,
+.category,
+.catalog-meta {
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--azul-claro);
+}
+
+.eyebrow span {
+  border-radius: 0;
+  rotate: 45deg;
+  background: var(--rojo) !important;
+}
+
+.catalog-intro h1 span,
+.lab h1 span {
+  color: var(--rojo);
+}
+
+.catalog-intro h1,
+.lab h1,
+.project-lead h1 {
+  text-transform: uppercase;
+  letter-spacing: -0.03em !important;
+}
+
+/* botones */
+.hero-link,
+.lab-action.primary,
+.catalog-actions .hero-link {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--azul), var(--mint)) !important;
+  border: 0 !important;
+  border-radius: 0;
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.hero-link:hover,
+.lab-action.primary:hover {
+  filter: brightness(1.2);
+}
+
+.slider-controls button,
+.quiet,
+.lab-action,
+.lab-nav a {
+  background: #191930;
+  color: var(--text);
+  border-color: var(--line);
+  border-radius: 0;
+}
+
+.lab-nav [aria-current="page"] {
+  color: #fff;
+  background: linear-gradient(135deg, var(--azul), var(--mint));
+  border-color: transparent;
+}
+
+/* paneles */
+.lab-panel,
+.catalog-filters,
+.catalog-card,
+.project-lead figure {
+  background: linear-gradient(180deg, #191930, #12121f) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 0 1px var(--line);
+  clip-path: var(--corte);
+}
+
+.lab-cell,
+.demo-list-row,
+.court-preview,
+.field input,
+.field select,
+.catalog-filters input,
+.catalog-filters select {
+  background: #0b0b14 !important;
+  color: var(--text);
+  border-color: var(--line) !important;
+  border-radius: 0 !important;
+}
+
+.catalog-card:target {
+  box-shadow: inset 0 0 0 1px var(--mint);
+}
+
+.catalog-card img {
+  background: #191930;
+  border-bottom: 1px solid var(--line);
+}
+
+.catalog-card summary {
+  color: var(--morado-claro);
+}
+
+/* acentos por proyecto */
+.project-page {
+  --accent: #6cc4ff;
+  --wash: #11203a;
+}
+
+.project-page.taskflow {
+  --accent: #b69cff;
+  --wash: #1d1638;
+}
+
+.project-page.tiendanova {
+  --accent: #ff7a93;
+  --wash: #2c1220;
+}
+
+.project-page .eyebrow {
+  color: var(--accent);
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+}
+
+/* aviso de arranque en frío para enlaces a apps en vivo */
+.nota-vivo {
+  font: 0.8rem var(--mono);
+  color: var(--muted);
+  margin: 0.6rem 0 0;
+}
+
+.project-lead img {
+  height: auto;
+}
+
+.catalog-note {
+  margin-top: 0.6rem;
+  font: 0.8rem var(--mono);
+}
+
+@media (max-width: 480px) {
+  .top {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.9rem 0;
+  }
+
+  .top nav {
+    gap: 0.3rem 1rem;
+    justify-content: flex-start;
+  }
+}

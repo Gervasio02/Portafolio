@@ -21,7 +21,7 @@ pruebas, el historial y la recuperación que sí ofrece GitHub.
 
 | Servicio | Dirección pública | Salud |
 | --- | --- | --- |
-| Portada | <https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site/> | `/` |
+| Portada | <https://gervasio02.github.io/Portafolio/> (GitHub Pages, tras activarlo; ver `PUBLICACION.md`) | `/` |
 | TaskFlow | <https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/api/health` |
 | ReservaYa | <https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/api/health` |
 | TiendaNova | <https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/health` |
@@ -38,8 +38,8 @@ La automatización usa la identidad `id-portafolio-github-push`, con permiso
 noviembre de 2026 se verificó el despliegue automático completo de la revisión
 `33ad30f` para las cuatro aplicaciones.
 
-La portada se administra desde `portal/` y su publicación actual está en
-ChatGPT Sites. No guardes contraseñas, tokens ni cadenas de conexión en el
+La portada se administra desde `portal/` y se publica en GitHub Pages con el
+flujo **Publicar portada** (`.github/workflows/azure-portal.yml`). No guardes contraseñas, tokens ni cadenas de conexión en el
 repositorio; usa exclusivamente secretos o variables del proveedor.
 
 ## Recuperación

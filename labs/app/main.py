@@ -86,7 +86,10 @@ def create_app(database="data/labs.db", targets=None):
     Path(database).parent.mkdir(parents=True, exist_ok=True)
     app = FastAPI(title="Laboratorios de ingeniería", version="0.1.0")
     services = targets or {
-        "portal": "https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site",
+        # La portada puede publicarse en otro servidor (GitHub Pages, Azure...).
+        "portal": os.getenv(
+            "PORTAL_URL", "https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site"
+        ),
         "taskflow": "https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "reservaya": "https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "tiendanova": "https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",

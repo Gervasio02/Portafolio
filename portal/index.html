@@ -5,421 +5,382 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Portafolio de ingeniería informática de Gervasio Torres. Explora aplicaciones web, juegos y proyectos de ingeniería, y descubre cómo se diseñaron y construyeron."
+      content="Gervasio Torres, estudiante de ingeniería informática en Chile. Juegos y aplicaciones full stack con demo jugable, app en vivo y código abierto."
     />
-    <meta name="theme-color" content="#131713" />
+    <meta name="theme-color" content="#07070d" />
+    <meta property="og:title" content="Gervasio Torres · Portafolio" />
+    <meta
+      property="og:description"
+      content="Juegos y aplicaciones completas, de la interfaz a la base de datos."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <title>Gervasio Torres · Portafolio</title>
-    <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="portada.css" />
-    <script src="projects-data.js" defer></script>
-    <script src="presentacion.js" defer></script>
+    <script src="inicio.js" defer></script>
   </head>
-  <body class="portfolio-home">
-    <a class="skip" href="#proyectos">Saltar a los proyectos</a>
-    <header class="shell top">
-      <a class="brand" href="#" aria-label="Gervasio Torres, inicio"
-        >GT<span>.</span></a
-      >
+  <body>
+    <a class="skip" href="#niveles">Saltar a los proyectos</a>
+
+    <header class="wrap top">
+      <a class="logo" href="./" aria-label="Gervasio Torres, inicio">
+        <span class="logo-marca" aria-hidden="true">GT</span>
+        <span>Gervasio Torres</span>
+      </a>
       <nav aria-label="Principal">
-        <a href="proyectos/">Proyectos</a>
-        <a href="laboratorio.html">Demos</a>
-        <a href="#perfil">Habilidades</a>
+        <a href="#niveles">Proyectos</a>
+        <a href="#logros">Logros</a>
+        <a href="#parches">Parches</a>
+        <a href="proyectos/">Catálogo</a>
+        <a href="#contacto">Contacto</a>
       </nav>
     </header>
-    <main class="shell">
-      <section class="hero" aria-labelledby="nombre">
-        <div class="hero-main">
-          <p class="eyebrow">Ingeniería informática</p>
-          <h1 id="nombre">Gervasio<br />Torres<span>.</span></h1>
-          <p class="intro">
-            Desarrollo aplicaciones web de principio a fin, desde lo que el
-            usuario ve hasta las reglas que protegen sus datos.
+
+    <main>
+      <!-- ============ PANTALLA DE INICIO ============ -->
+      <section class="wrap inicio" aria-labelledby="hola">
+        <div class="inicio-texto">
+          <p class="hud">
+            <span class="parpadeo" aria-hidden="true"></span> Jugador 1 listo
           </p>
-          <div class="hero-actions">
-            <a class="hero-link" href="proyectos/">Explorar proyectos</a>
-            <a
-              class="source-link"
-              href="https://github.com/Gervasio02/Portafolio"
-              >Ver código en GitHub</a
+          <h1 id="hola">
+            Hola, soy Gervasio.
+            <span class="degradado">Construyo juegos y aplicaciones</span>
+            de principio a fin.
+          </h1>
+          <p class="bajada">
+            Estudio ingeniería informática en Chile. Me gusta entender lo que
+            pasa detrás de la pantalla: cómo un servidor comprueba que tu
+            puntaje en Snake es real, o qué ocurre cuando dos personas reservan
+            la misma cancha en el mismo segundo. Cada proyecto tiene demo
+            jugable, app en vivo y código abierto.
+          </p>
+          <p class="acciones">
+            <a class="boton" href="#niveles">▶ Empezar</a>
+            <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio"
+              >Ver código en GitHub ↗</a
             >
-          </div>
+          </p>
         </div>
-        <aside class="hero-workflow" aria-labelledby="capas-titulo">
-          <h2 id="capas-titulo">De la interfaz a los datos</h2>
-          <ol>
-            <li><strong>Interfaz</strong><span>React y TypeScript</span></li>
-            <li><strong>Servicios</strong><span>Node.js y Python</span></li>
-            <li><strong>Datos</strong><span>SQL y PostgreSQL</span></li>
-          </ol>
+
+        <aside class="ficha" aria-labelledby="ficha-titulo">
+          <div class="ficha-cabeza">
+            <h2 id="ficha-titulo">Ficha del jugador</h2>
+            <span class="etiqueta">Online</span>
+          </div>
+          <dl class="ficha-datos">
+            <div><dt>Clase</dt><dd>Desarrollador full stack</dd></div>
+            <div><dt>Región</dt><dd>Santiago, Chile · <time id="hora-local">--:--</time></dd></div>
+            <div><dt>Misión actual</dt><dd>Mejorar este portafolio y automatizar sus despliegues</dd></div>
+            <!-- EDITA: agrega una fila con lo que estés haciendo (curso, práctica, búsqueda de trabajo). -->
+          </dl>
+          <div class="barras" aria-label="Lenguajes por cantidad de proyectos">
+            <p><span>JS / TS</span><span class="barra"><i style="--v: 100%"></i></span><b>6</b></p>
+            <p><span>Python</span><span class="barra azul"><i style="--v: 50%"></i></span><b>3</b></p>
+            <p><span>SQL</span><span class="barra rojo"><i style="--v: 100%"></i></span><b>6</b></p>
+          </div>
+          <p class="ficha-pie">Barras = proyectos de este repo que usan cada lenguaje.</p>
         </aside>
       </section>
 
-      <section class="featured" aria-labelledby="destacado-titulo">
-        <div class="section-title">
-          <h2 id="destacado-titulo">Así funcionan</h2>
-          <p>Capturas y acceso a cada demo</p>
-        </div>
-        <div
-          class="slider"
-          data-slider
-          data-theme="taskflow"
-          role="region"
-          aria-roledescription="carrusel"
-          aria-label="Capturas de los proyectos"
-        >
-          <div class="slider-media">
-            <img
-              id="slide-image"
-              src="capturas/taskflow.png"
-              width="1440"
-              height="1068"
-              alt="Centro de control de TaskFlow con métricas y distribución de tarjetas"
-            />
-          </div>
-          <div class="slide-copy">
-            <div
-              class="slide-content"
-              role="group"
-              aria-live="off"
-              aria-atomic="true"
-            >
-              <p class="eyebrow" id="slide-category">Gestión de trabajo</p>
-              <h3 id="slide-name">TaskFlow</h3>
-              <p id="slide-note">
-                Crea una tarjeta, cámbiala de columna y mira cómo se actualiza
-                la distribución del tablero.
-              </p>
-            </div>
-            <a id="slide-link" class="hero-link" href="taskflow/index.html#demo"
-              >Probar TaskFlow</a
-            >
-            <div
-              class="slider-controls"
-              role="group"
-              aria-label="Controles del carrusel"
-              hidden
-            >
-              <button type="button" id="slide-toggle">Pausar rotación</button>
-              <button
-                type="button"
-                id="slide-prev"
-                aria-label="Proyecto anterior"
-              >
-                Anterior
-              </button>
-              <button
-                type="button"
-                id="slide-next"
-                aria-label="Proyecto siguiente"
-              >
-                Siguiente
-              </button>
-              <div
-                class="slider-steps"
-                role="group"
-                aria-label="Seleccionar proyecto"
-              >
-                <button
-                  type="button"
-                  data-slide="0"
-                  aria-label="TaskFlow"
-                  aria-pressed="true"
-                ></button>
-                <button
-                  type="button"
-                  data-slide="1"
-                  aria-label="ReservaYa"
-                  aria-pressed="false"
-                ></button>
-                <button
-                  type="button"
-                  data-slide="2"
-                  aria-label="TiendaNova"
-                  aria-pressed="false"
-                ></button>
-                <button
-                  type="button"
-                  data-slide="3"
-                  aria-label="Snake"
-                  aria-pressed="false"
-                ></button>
-                <button
-                  type="button"
-                  data-slide="4"
-                  aria-label="Interrogatorio"
-                  aria-pressed="false"
-                ></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="proyectos" aria-labelledby="titulo-proyectos">
-        <div class="section-title">
-          <h2 id="titulo-proyectos">Proyectos</h2>
+      <!-- ============ NIVELES (PROYECTOS) ============ -->
+      <section id="niveles" class="wrap niveles" aria-labelledby="niveles-titulo">
+        <header class="encabezado">
+          <p class="hud">Selección de nivel</p>
+          <h2 id="niveles-titulo">Proyectos</h2>
           <p>
-            Cinco proyectos con experiencias interactivas ·
-            <a href="proyectos/">Ver catálogo completo</a>
+            Cinco proyectos, cada uno con un jefe final: un problema técnico
+            concreto. Las demos usan datos ficticios y funcionan en tu
+            navegador.
           </p>
-        </div>
-        <div class="work">
-          <article class="project project-taskflow">
-            <div class="project-preview">
-              <img
-                src="capturas/taskflow.png"
-                width="1440"
-                height="1068"
-                loading="lazy"
-                alt=""
-              />
-            </div>
-            <div class="description">
-              <p class="category">Colaboración</p>
-              <h3>TaskFlow</h3>
-              <p>
-                Coordina entregas e incidentes en un tablero Kanban. El sistema
-                completo diferencia permisos de dueño, editor y lector.
-              </p>
-              <ul class="stack" aria-label="Tecnologías de TaskFlow">
-                <li>React</li>
-                <li>Express</li>
-                <li>Prisma</li>
-              </ul>
-              <a class="capture" href="taskflow/index.html#demo"
-                >Probar demo <span class="visually-hidden">de TaskFlow</span></a
-              >
-            </div>
-          </article>
-          <article class="project project-reservaya">
-            <div class="project-preview">
-              <img
-                src="capturas/reservaya-cancha.png"
-                width="1440"
-                height="1117"
-                loading="lazy"
-                alt=""
-              />
-            </div>
-            <div class="description">
-              <p class="category">Disponibilidad</p>
-              <h3>ReservaYa</h3>
-              <p>
-                Elige una cancha, reserva un turno y libéralo si cambian tus
-                planes. El sistema completo evita reservas simultáneas para la
-                misma hora.
-              </p>
-              <ul class="stack" aria-label="Tecnologías de ReservaYa">
-                <li>React</li>
-                <li>FastAPI</li>
-                <li>SQLAlchemy</li>
-              </ul>
-              <a class="capture" href="reservaya/index.html#demo"
-                >Probar demo
-                <span class="visually-hidden">de ReservaYa</span></a
-              >
-            </div>
-          </article>
-          <article class="project project-tiendanova">
-            <div class="project-preview">
-              <img
-                src="capturas/tiendanova.jpg"
-                width="1420"
-                height="1160"
-                loading="lazy"
-                alt=""
-              />
-            </div>
-            <div class="description">
-              <p class="category">Comercio</p>
-              <h3>TiendaNova</h3>
-              <p>
-                Compara un pago aprobado con uno rechazado. Explora el historial
-                de pedidos y comprueba cuándo baja el stock.
-              </p>
-              <ul class="stack" aria-label="Tecnologías de TiendaNova">
-                <li>Next.js</li>
-                <li>TypeScript</li>
-                <li>Auth.js</li>
-              </ul>
-              <a class="capture" href="tiendanova/index.html#demo"
-                >Probar demo
-                <span class="visually-hidden">de TiendaNova</span></a
-              >
-            </div>
-          </article>
-          <article class="project project-snake">
-            <div class="project-preview">
-              <img
-                src="capturas/snake.svg"
-                width="960"
-                height="720"
-                loading="lazy"
-                alt=""
-              />
-            </div>
-            <div class="description">
-              <p class="category">Juego interactivo</p>
+        </header>
+
+        <div class="destacados">
+          <article class="carta carta-juego" id="snake" style="--c: var(--azul)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/snake-720.webp 720w, capturas/snake-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 540px" />
+                <img src="capturas/snake.png" width="1280" height="900" loading="lazy" decoding="async" alt="Pantalla de inicio de Snake con marcador y desafío diario" />
+              </picture>
+              <span class="sello">Juego</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 01</p>
               <h3>Snake</h3>
               <p>
-                Juega al clásico de la serpiente, elige entre tres modos y
-                compite por un lugar en el ranking.
+                El clásico de la serpiente con tres modos, desafío diario,
+                logros, controles táctiles y ranking. Se instala como app en el
+                teléfono.
               </p>
-              <ul class="stack" aria-label="Tecnologías de Snake">
-                <li>React</li>
-                <li>TypeScript</li>
-                <li>PostgreSQL</li>
-              </ul>
-              <a
-                class="capture"
-                href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
-                >Jugar Snake <span class="visually-hidden">en línea</span></a
-              >
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Un ranking a prueba de trampas: el servidor vuelve a jugar tu
+                  partida con el mismo motor TypeScript y solo acepta el
+                  puntaje si coincide.
+                </dd>
+              </dl>
+              <p class="stack">React · TypeScript · Express · Prisma</p>
+              <p class="links">
+                <a class="boton" href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">▶ Jugar en línea</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/snake">Código</a>
+              </p>
             </div>
           </article>
-          <article class="project project-interrogatorio">
-            <div class="project-preview">
-              <img
-                src="capturas/interrogatorio.png"
-                width="1180"
-                height="780"
-                loading="lazy"
-                alt=""
-              />
-            </div>
-            <div class="description">
-              <p class="category">Deducción · Prototipo</p>
+
+          <article class="carta carta-juego" id="interrogatorio" style="--c: var(--morado)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/interrogatorio-720.webp 720w, capturas/interrogatorio-1200.webp 1180w" sizes="(max-width: 860px) 92vw, 540px" />
+                <img src="capturas/interrogatorio.png" width="1180" height="780" loading="lazy" decoding="async" alt="Expediente de Interrogatorio con pruebas y sospechosos" />
+              </picture>
+              <span class="sello">Juego · prototipo</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 02</p>
               <h3>Interrogatorio</h3>
               <p>
-                Elige entre dos expedientes, interroga a los sospechosos y
-                contrasta las pruebas. Una demo de deducción que funciona
-                directamente en tu navegador.
+                Un juego de deducción: abres un expediente, revisas pruebas,
+                interrogas a los sospechosos y buscas contradicciones antes de
+                acusar.
               </p>
-              <ul class="stack" aria-label="Tecnologías de Interrogatorio">
-                <li>JavaScript</li>
-                <li>HTML</li>
-                <li>CSS</li>
-              </ul>
-              <a class="capture" href="interrogatorio/index.html#demo"
-                >Probar Interrogatorio</a
-              >
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Que no se pueda hacer trampa: la verdad del caso queda en el
+                  servidor y el jugador solo ve lo que ha descubierto.
+                </dd>
+              </dl>
+              <p class="stack">React · FastAPI · SQLAlchemy · Python</p>
+              <p class="links">
+                <a class="boton" href="interrogatorio/index.html#demo">▶ Abrir un expediente</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio">Código</a>
+              </p>
             </div>
           </article>
         </div>
+
+        <div class="rejilla">
+          <article class="carta" id="taskflow" style="--c: var(--morado)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/taskflow-720.webp 720w, capturas/taskflow-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/taskflow.png" width="1440" height="1068" loading="lazy" decoding="async" alt="Centro de control de TaskFlow con avance y tarjetas vencidas" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 03</p>
+              <h3>TaskFlow</h3>
+              <p>
+                Un tablero Kanban para equipos, con roles, SLA y un panel que
+                muestra qué se está atrasando.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Que el orden de las tarjetas no se rompa cuando dos personas
+                  las mueven a la vez, y que cada rol vea solo lo suyo.
+                </dd>
+              </dl>
+              <p class="stack">React · Express · Prisma · PostgreSQL</p>
+              <p class="links">
+                <a href="taskflow/index.html#demo">Probar la demo</a>
+                <a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow">Código</a>
+              </p>
+            </div>
+          </article>
+
+          <article class="carta" id="reservaya" style="--c: var(--azul)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/reservaya-cancha-720.webp 720w, capturas/reservaya-cancha-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/reservaya-cancha.png" width="1440" height="1117" loading="lazy" decoding="async" alt="Ficha de una cancha en ReservaYa junto al selector de horarios" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 04</p>
+              <h3>ReservaYa</h3>
+              <p>
+                Reserva de canchas deportivas con tarifas por horario,
+                comprobante y cancelación.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Dos personas confirman el mismo turno en el mismo segundo y
+                  solo una se lo puede quedar.
+                </dd>
+              </dl>
+              <p class="stack">React · FastAPI · SQLAlchemy · PostgreSQL</p>
+              <p class="links">
+                <a href="reservaya/index.html#demo">Probar la demo</a>
+                <a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/reservaya">Código</a>
+              </p>
+            </div>
+          </article>
+
+          <article class="carta" id="tiendanova" style="--c: var(--rojo)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/tiendanova-720.webp 720w, capturas/tiendanova-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/tiendanova.jpg" width="1420" height="1160" loading="lazy" decoding="async" alt="Portada del catálogo de TiendaNova" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 05</p>
+              <h3>TiendaNova</h3>
+              <p>
+                Una tienda con variantes, cupones, pedidos, devoluciones y
+                panel de administración. Los pagos son simulados.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  El doble clic en «pagar»: el checkout es idempotente y
+                  descuenta el inventario en una sola transacción.
+                </dd>
+              </dl>
+              <p class="stack">Next.js · Auth.js · Prisma · PostgreSQL</p>
+              <p class="links">
+                <a href="tiendanova/index.html#demo">Probar la demo</a>
+                <a href="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/tiendanova">Código</a>
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <p class="aviso">
+          <strong>Cargando servidor…</strong> Las apps en vivo se apagan cuando
+          nadie juega para no gastar recursos. La primera visita puede tardar
+          unos 30 segundos.
+        </p>
+
+        <div class="extra">
+          <p class="hud">Contenido extra · se ejecuta en local</p>
+          <ul>
+            <li><strong>DataLab</strong>: limpia archivos CSV y Excel y muestra su calidad.</li>
+            <li><strong>DocFlow</strong>: extrae datos de facturas ficticias con revisión humana.</li>
+            <li><strong>CloudOps</strong>: mide si las apps publicadas responden y cuánto tardan.</li>
+          </ul>
+          <p>
+            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs">Código y cómo ejecutarlas</a>
+            ·
+            <a href="proyectos/">Catálogo completo con filtros</a>
+          </p>
+        </div>
       </section>
 
-      <section class="architecture" aria-labelledby="arquitectura-titulo">
-        <div class="section-title">
-          <h2 id="arquitectura-titulo">Arquitectura y calidad</h2>
-          <p>Decisiones comprobables detrás de las demos</p>
-        </div>
-        <div class="architecture-grid">
-          <article>
-            <span aria-hidden="true">01</span>
-            <h3>Interfaces accesibles</h3>
-            <p>
-              Navegación por teclado, estados de carga y error, diseño adaptable
-              y movimiento reducido según la preferencia del sistema.
-            </p>
-          </article>
-          <article>
-            <span aria-hidden="true">02</span>
-            <h3>Reglas en el servidor</h3>
-            <p>
-              Autorización, validación y operaciones idempotentes protegen
-              reservas, tarjetas, pedidos e inventario.
-            </p>
-          </article>
-          <article>
-            <span aria-hidden="true">03</span>
-            <h3>Datos consistentes</h3>
-            <p>
-              Restricciones y transacciones PostgreSQL resuelven operaciones
-              simultáneas sin depender de números decorativos.
-            </p>
-          </article>
-          <article>
-            <span aria-hidden="true">04</span>
-            <h3>Verificación reproducible</h3>
-            <p>
-              Pruebas de interfaz, API y concurrencia acompañan las migraciones
-              y compilaciones de cada aplicación.
-            </p>
-          </article>
-        </div>
+      <!-- ============ LOGROS ============ -->
+      <section id="logros" class="wrap logros" aria-labelledby="logros-titulo">
+        <header class="encabezado">
+          <p class="hud">Logros desbloqueados</p>
+          <h2 id="logros-titulo">Logros</h2>
+          <p>Cifras medidas en las pruebas del repositorio, no decorativas.</p>
+        </header>
+        <ul class="trofeos">
+          <li style="--c: var(--morado)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>98,9 %</strong>
+            <span>Cobertura de la API de TaskFlow</span>
+          </li>
+          <li style="--c: var(--azul)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>95,8 %</strong>
+            <span>Cobertura del backend de ReservaYa</span>
+          </li>
+          <li style="--c: var(--rojo)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>91,8 %</strong>
+            <span>Cobertura de la lógica de TiendaNova</span>
+          </li>
+          <li style="--c: var(--morado)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>111</strong>
+            <span>Pruebas en el backend de Interrogatorio</span>
+          </li>
+        </ul>
+
+        <h3 class="sub">Reglas de la partida</h3>
+        <ol class="reglas">
+          <li>
+            <h4>Las reglas viven en el servidor</h4>
+            <p>La interfaz puede ocultar un botón, pero es la API la que decide si tienes permiso.</p>
+          </li>
+          <li>
+            <h4>La base de datos tiene la última palabra</h4>
+            <p>Restricciones únicas y transacciones en PostgreSQL, en vez de esperar que dos peticiones nunca choquen.</p>
+          </li>
+          <li>
+            <h4>Probar contra una base real</h4>
+            <p>Las pruebas de API usan PostgreSQL de verdad, no un simulacro.</p>
+          </li>
+          <li>
+            <h4>Cada cambio pasa por CI</h4>
+            <p>Si las pruebas pasan, la app se despliega sola en Azure; si fallan, sigue la versión anterior.</p>
+          </li>
+        </ol>
       </section>
 
-      <section class="profile" id="perfil" aria-labelledby="titulo-perfil">
-        <div class="section-title">
-          <h2 id="titulo-perfil">Habilidades aplicadas</h2>
-          <p>Lenguajes y herramientas utilizados en los proyectos</p>
-        </div>
-        <div class="skills">
-          <article class="skill">
-            <h3>Interfaces web</h3>
-            <p>
-              Construcción de formularios, tableros y flujos de compra con
-              componentes reutilizables.
-            </p>
-            <ul class="stack" aria-label="Tecnologías para interfaces">
-              <li>HTML</li>
-              <li>CSS</li>
-              <li>JavaScript</li>
-              <li>TypeScript</li>
-              <li>React</li>
-              <li>Next.js</li>
-            </ul>
-          </article>
-          <article class="skill">
-            <h3>APIs y autenticación</h3>
-            <p>
-              Diseño de APIs REST, manejo de sesiones y control de acceso según
-              el rol de cada usuario.
-            </p>
-            <ul class="stack" aria-label="Tecnologías para servicios">
-              <li>Node.js</li>
-              <li>Express</li>
-              <li>Python</li>
-              <li>FastAPI</li>
-              <li>Auth.js</li>
-            </ul>
-          </article>
-          <article class="skill">
-            <h3>Modelado de datos</h3>
-            <p>
-              Uso de restricciones y transacciones para proteger turnos, pedidos
-              e inventario cuando hay operaciones simultáneas.
-            </p>
-            <ul class="stack" aria-label="Tecnologías para datos">
-              <li>SQL</li>
-              <li>PostgreSQL</li>
-              <li>Prisma</li>
-              <li>SQLAlchemy</li>
-            </ul>
-          </article>
-          <article class="skill">
-            <h3>Pruebas y despliegue</h3>
-            <p>
-              Pruebas de interfaz, API y flujos completos, con configuraciones
-              reproducibles para desarrollo e integración continua.
-            </p>
-            <ul class="stack" aria-label="Herramientas de pruebas y despliegue">
-              <li>Jest</li>
-              <li>Vitest</li>
-              <li>pytest</li>
-              <li>Playwright</li>
-              <li>Docker</li>
-              <li>GitHub Actions</li>
-            </ul>
-          </article>
-        </div>
+      <!-- ============ NOTAS DE PARCHE ============ -->
+      <section id="parches" class="wrap parches" aria-labelledby="parches-titulo">
+        <header class="encabezado">
+          <p class="hud">Historial de versiones</p>
+          <h2 id="parches-titulo">Notas del parche</h2>
+          <p>Cómo fue creciendo el repositorio, según el historial de commits.</p>
+        </header>
+        <ol class="linea">
+          <li><time datetime="2026-11-22">22 nov</time><p><b>#01</b> Primer commit: las tres apps principales en un solo repositorio.</p></li>
+          <li><time datetime="2026-11-23">23 nov</time><p><b>#02</b> Primer despliegue en Azure. Se suman Snake e Interrogatorio.</p></li>
+          <li><time datetime="2026-11-23">23 nov</time><p><b>#03</b> Pruebas de concurrencia en PostgreSQL. TaskFlow suma responsables, límites por columna, calendario y SLA.</p></li>
+          <li><time datetime="2026-11-24">24 nov</time><p><b>#04</b> Snake gana desafío diario y logros. TiendaNova, variantes y devoluciones. Auditoría de dependencias limpia.</p></li>
+          <li><time datetime="2026-11-25">25 nov</time><p><b>#05</b> Despliegue automático: cada push a <code>main</code> prueba, construye y publica una revisión nueva.</p></li>
+          <li><time datetime="2026-11-25">25 nov</time><p><b>#06</b> Nueva portada y publicación en GitHub Pages.</p></li>
+        </ol>
+        <p><a href="https://github.com/Gervasio02/Portafolio/commits/main">Ver todos los commits ↗</a></p>
+      </section>
+
+      <!-- ============ EQUIPAMIENTO ============ -->
+      <section class="wrap equipo" aria-labelledby="equipo-titulo">
+        <header class="encabezado">
+          <p class="hud">Inventario</p>
+          <h2 id="equipo-titulo">Equipamiento</h2>
+          <p>Todo lo de esta lista aparece en al menos un proyecto de arriba.</p>
+        </header>
+        <dl class="inventario">
+          <div style="--c: var(--azul)"><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, SQL, HTML, CSS</dd></div>
+          <div style="--c: var(--morado)"><dt>Frontend</dt><dd>React, Next.js, Vite</dd></div>
+          <div style="--c: var(--rojo)"><dt>Backend</dt><dd>Node.js con Express, FastAPI, Auth.js</dd></div>
+          <div style="--c: var(--azul)"><dt>Datos</dt><dd>PostgreSQL, Prisma, SQLAlchemy, Alembic, SQLite</dd></div>
+          <div style="--c: var(--morado)"><dt>Pruebas</dt><dd>Jest, Vitest, pytest, Playwright</dd></div>
+          <div style="--c: var(--rojo)"><dt>Entrega</dt><dd>Docker, GitHub Actions, Azure Container Apps</dd></div>
+        </dl>
       </section>
     </main>
-    <footer class="shell footer">
-      <span>Gervasio Torres</span
-      ><a href="https://github.com/Gervasio02" rel="me">Contacto en GitHub</a
-      ><a href="proyectos/">Todos los proyectos</a
-      ><a href="#">Volver al inicio</a>
+
+    <footer id="contacto" class="wrap pie">
+      <div>
+        <p class="hud">¿Multijugador?</p>
+        <h2>Juguemos en equipo</h2>
+        <!-- EDITA: agrega tu correo o LinkedIn si quieres que te contacten por ahí. -->
+        <p>
+          Si quieres comentar un proyecto o tienes una oportunidad en mente,
+          encuéntrame en GitHub.
+        </p>
+        <p class="acciones">
+          <a class="boton" href="https://github.com/Gervasio02" rel="me">github.com/Gervasio02</a>
+        </p>
+      </div>
+      <p class="colofon">
+        Hecho con HTML, CSS y unas pocas líneas de JavaScript, sin frameworks.
+        <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal">Código de esta página</a>.
+        Última actualización: noviembre de 2026.
+      </p>
     </footer>
   </body>
 </html>
