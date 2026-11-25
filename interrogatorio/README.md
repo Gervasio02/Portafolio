@@ -2,10 +2,10 @@
 
 Prototipo de juego de misterio en español con API FastAPI, interfaz React y un motor determinista. El jugador entrevista sospechosos, presenta pruebas, guarda notas y formula una acusación. La verdad se genera en el servidor a partir de una semilla; las respuestas actuales también son deterministas y no consumen servicios de IA.
 
-> **Estado:** experiencia completa para demostración local y portafolio. No debe
-> exponerse públicamente sin los controles operativos descritos en “Seguridad y
-> límites conocidos”. El motor ofrece tres familias de expedientes con título,
-> resumen, cronología y conexiones o contradicciones entre evidencias.
+> **Estado:** publicado en Azure Container Apps como demo pública
+> (<https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/>).
+> El motor ofrece tres familias de expedientes con título, resumen, cronología
+> y conexiones o contradicciones entre evidencias.
 
 ## Inicio con Docker
 
@@ -66,12 +66,44 @@ Las rutas de partidas requieren el token Bearer. El contrato detallado está en 
 
 ## Seguridad y límites conocidos
 
-Las contraseñas usan Argon2 y las entradas tienen límites básicos. El proyecto **no debe exponerse públicamente**: falta rate limiting, protección contra intentos de acceso, rotación y revocación de tokens, moderación y control de concurrencia. En desarrollo, si no se configura `JWT_SECRET` con al menos 32 caracteres, se genera una clave temporal y las sesiones dejan de funcionar al reiniciar. Para conservarlas, configura una clave aleatoria larga en `.env` (Compose) o como variable de entorno (ejecución directa). Con `APP_ENV=production`, el servidor rechaza claves ausentes, cortas o la antigua clave de ejemplo; esto no significa que el prototipo esté listo para producción. `/health` comprueba que el proceso responde y `/ready` verifica además la conexión a la base de datos. La semilla y las pistas permiten reconstruir o inferir la solución, de modo que no son secretos resistentes a un jugador con acceso al código. Las pruebas de ataques verifican únicamente respuestas deterministas, no seguridad frente a un modelo real.
+- Contraseñas con Argon2 y límites de tamaño en todas las entradas.
+- **Límite de peticiones por IP** (`app/limites.py`): registro 5/min, inicio
+  de sesión 10/min, invitados 20/min, creación de partidas 120/min y 600
+  peticiones/min en total. Responde `429` con `Retry-After`. Se desactiva con
+  `RATE_LIMIT=off` (solo para pruebas).
+- Cabeceras `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
+- Con `APP_ENV=production`, el servidor exige `JWT_SECRET` aleatorio de 32+
+  caracteres. Las sesiones duran 12 horas.
+- `/health` comprueba el proceso y `/ready` además la base de datos.
+
+Límites conocidos: el limitador vive en memoria (vale para una réplica; con
+varias habría que usar Redis) y no hay revocación de tokens antes de su
+vencimiento. La semilla y las pistas permiten reconstruir la solución a quien
+lea el código: es un juego, no un secreto.
+
+## Producción (un solo contenedor)
+
+`Dockerfile` en esta carpeta compila la interfaz y la sirve desde FastAPI en el
+puerto 8000, con la API en el mismo dominio. Variables:
+
+| Variable       | Uso                                                        |
+| -------------- | ---------------------------------------------------------- |
+| `APP_ENV`      | `production`                                               |
+| `JWT_SECRET`   | Secreto aleatorio de 32+ caracteres (secreto de Azure)     |
+| `DATABASE_URL` | Por defecto SQLite en `/data`; acepta PostgreSQL           |
+| `CORS_ORIGINS` | Solo si otra web llama a la API                            |
+
+```bash
+docker build -t interrogatorio . && docker run -p 8000:8000 \
+  -e APP_ENV=production -e JWT_SECRET=$(openssl rand -base64 48) interrogatorio
+```
+
+El flujo `.github/workflows/interrogatorio.yml` prueba y, en `main`, publica la
+imagen y actualiza la Container App `interrogatorio-gervasio-std`.
 
 ## Material para portafolio
 
 La interfaz y el flujo local fueron verificados en escritorio y a 390 px:
 creación de sesión invitada, apertura de expediente, cronología, conexiones de
-evidencias, pregunta y respuesta. No se ha desplegado esta versión. Antes de
-publicarla, configura claves y orígenes seguros, rate limiting, supervisión y una
-base PostgreSQL dedicada, y repite el flujo contra la URL resultante.
+evidencias, pregunta y respuesta. La versión publicada se verifica con el mismo
+flujo contra la URL de Azure.

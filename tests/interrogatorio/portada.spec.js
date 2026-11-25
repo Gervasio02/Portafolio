@@ -9,6 +9,7 @@ const paginas = [
   '/reservaya/index.html',
   '/tiendanova/index.html',
   '/interrogatorio/index.html',
+  '/cv.html',
 ];
 
 test('ningún enlace interno ni recurso del portal está roto', async ({ page, request }) => {

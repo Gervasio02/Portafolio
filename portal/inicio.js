@@ -1,6 +1,6 @@
 "use strict";
 
-// Muestra la hora actual de Santiago en la ficha "En este momento".
+// Muestra la hora actual de Chile en la ficha del jugador.
 const reloj = document.getElementById("hora-local");
 
 if (reloj) {

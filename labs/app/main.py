@@ -6,8 +6,9 @@ import os
 import secrets
 import sqlite3
 import time
+from collections import defaultdict, deque
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -73,27 +74,39 @@ def configured_identities(production: bool) -> dict[str, str]:
         if len(legacy) < 32:
             raise RuntimeError("LABS_ACCESS_TOKEN debe contener al menos 32 caracteres")
         identities[legacy] = "shared-legacy"
-    if production and (not identities or set(identities.values()) == {"shared-legacy"}):
+    guest_mode = os.getenv("LABS_GUEST_MODE", "off").lower() in ("on", "1", "true")
+    if production and not guest_mode and (
+        not identities or set(identities.values()) == {"shared-legacy"}
+    ):
         raise RuntimeError(
             "Configura LABS_USER_TOKENS con identidades aisladas en producción"
         )
     return identities
 
 
-def create_app(database="data/labs.db", targets=None):
+def create_app(database=None, targets=None):
+    database = database or os.getenv("LABS_DB", "data/labs.db")
     production = os.getenv("APP_ENV", "development").lower() == "production"
     identities = configured_identities(production)
+    # Modo invitado: cada visitante recibe una identidad aislada y temporal,
+    # sin registrarse. Sus datos se borran pasadas GUEST_TTL_HOURS horas.
+    guest_mode = os.getenv("LABS_GUEST_MODE", "off").lower() in ("on", "1", "true")
+    guest_ttl = timedelta(hours=float(os.getenv("GUEST_TTL_HOURS", "24")))
+    guest_hits: dict[str, deque] = defaultdict(deque)
+    write_hits: dict[str, deque] = defaultdict(deque)
+    rate_limit = os.getenv("RATE_LIMIT", "on").lower() not in ("off", "0", "false")
     Path(database).parent.mkdir(parents=True, exist_ok=True)
     app = FastAPI(title="Laboratorios de ingeniería", version="0.1.0")
     services = targets or {
         # La portada puede publicarse en otro servidor (GitHub Pages, Azure...).
         "portal": os.getenv(
-            "PORTAL_URL", "https://portafolio-gervasio-torres.aloycmexico-9087.chatgpt.site"
+            "PORTAL_URL", "https://gervasio.sbs"
         ),
         "taskflow": "https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "reservaya": "https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
         "tiendanova": "https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",
         "snake": "https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health",
+        "interrogatorio": "https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",
     }
 
     @contextmanager
@@ -115,6 +128,7 @@ def create_app(database="data/labs.db", targets=None):
         CREATE TABLE IF NOT EXISTS check_runs(id INTEGER PRIMARY KEY, started_at TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS incidents(id INTEGER PRIMARY KEY, owner TEXT NOT NULL DEFAULT 'local-demo', service TEXT NOT NULL, description TEXT NOT NULL, source TEXT NOT NULL, created_at TEXT NOT NULL, resolved_at TEXT);
         CREATE TABLE IF NOT EXISTS alerts(owner TEXT NOT NULL DEFAULT 'local-demo', service TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 0, consecutive_failures INTEGER NOT NULL DEFAULT 2, PRIMARY KEY(owner,service));
+        CREATE TABLE IF NOT EXISTS guests(token_hash TEXT PRIMARY KEY, owner TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL);
         """)
         # Migrate the earlier single-user demonstration without losing its records.
         for table in ("datasets", "incidents"):
@@ -157,10 +171,69 @@ def create_app(database="data/labs.db", targets=None):
             [(owner, name) for owner in owners for name in services],
         )
 
+    def client_ip(request: Request) -> str:
+        forwarded = request.headers.get("x-forwarded-for", "")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        return request.client.host if request.client else "desconocida"
+
+    def allowed(store: dict, key: str, limit: int, window: float) -> bool:
+        if not rate_limit:
+            return True
+        now = time.monotonic()
+        queue = store[key]
+        while queue and now - queue[0] > window:
+            queue.popleft()
+        if len(queue) >= limit:
+            return False
+        queue.append(now)
+        return True
+
+    def guest_owner(supplied: str) -> str | None:
+        if not guest_mode or not supplied.startswith("Bearer "):
+            return None
+        digest = hashlib.sha256(supplied[7:].encode()).hexdigest()
+        limit = (datetime.now(timezone.utc) - guest_ttl).isoformat()
+        with db() as connection:
+            row = connection.execute(
+                "SELECT owner FROM guests WHERE token_hash=? AND created_at>=?",
+                (digest, limit),
+            ).fetchone()
+        return row[0] if row else None
+
+    def purge_expired_guests(connection):
+        limit = (datetime.now(timezone.utc) - guest_ttl).isoformat()
+        expired = [
+            row[0]
+            for row in connection.execute(
+                "SELECT owner FROM guests WHERE created_at<?", (limit,)
+            )
+        ]
+        for owner in expired:
+            connection.execute(
+                "DELETE FROM decisions WHERE document_id IN (SELECT id FROM documents WHERE owner=?)",
+                (owner,),
+            )
+            for table in ("datasets", "documents", "incidents", "alerts", "guests"):
+                connection.execute(f"DELETE FROM {table} WHERE owner=?", (owner,))
+
     @app.middleware("http")
     async def boundaries(request: Request, call_next):
         request.state.owner = "local-demo"
-        if request.url.path.startswith("/api/") and identities:
+        if request.method not in ("GET", "HEAD", "OPTIONS") and not allowed(
+            write_hits, client_ip(request), 60, 60
+        ):
+            return Response(
+                "Demasiadas solicitudes. Espera un momento.",
+                status_code=429,
+                headers={"Retry-After": "60"},
+            )
+        public = request.url.path == "/api/guest"
+        if (
+            request.url.path.startswith("/api/")
+            and not public
+            and (identities or guest_mode)
+        ):
             supplied = request.headers.get("authorization", "")
             owner = next(
                 (
@@ -169,7 +242,7 @@ def create_app(database="data/labs.db", targets=None):
                     if secrets.compare_digest(supplied, "Bearer " + token)
                 ),
                 None,
-            )
+            ) or guest_owner(supplied)
             if owner is None:
                 return Response(
                     "Acceso requerido",
@@ -213,7 +286,35 @@ def create_app(database="data/labs.db", targets=None):
 
     @app.get("/api/session")
     def session(request: Request):
-        return {"owner": request.state.owner, "isolated": bool(identities)}
+        return {
+            "owner": request.state.owner,
+            "isolated": bool(identities) or guest_mode,
+            "guest_mode": guest_mode,
+        }
+
+    @app.post("/api/guest", status_code=201)
+    def create_guest(request: Request):
+        if not guest_mode:
+            raise HTTPException(404, "El modo invitado no está activo")
+        if not allowed(guest_hits, client_ip(request), 10, 3600):
+            raise HTTPException(429, "Demasiadas sesiones nuevas desde esta red")
+        token = secrets.token_urlsafe(32)
+        owner = "invitado-" + secrets.token_hex(4)
+        with db() as connection:
+            purge_expired_guests(connection)
+            connection.execute(
+                "INSERT INTO guests(token_hash,owner,created_at) VALUES(?,?,?)",
+                (
+                    hashlib.sha256(token.encode()).hexdigest(),
+                    owner,
+                    datetime.now(timezone.utc).isoformat(),
+                ),
+            )
+            connection.executemany(
+                "INSERT OR IGNORE INTO alerts(owner,service) VALUES(?,?)",
+                [(owner, name) for name in services],
+            )
+        return {"token": token, "owner": owner, "expires_in_hours": guest_ttl.total_seconds() / 3600}
 
     @app.post("/api/datasets", status_code=201)
     async def dataset(

@@ -131,7 +131,7 @@ def test_observations_are_measured_and_throttled(client, monkeypatch):
     response = client.post("/api/cloudops/check")
     assert response.status_code == 200
     rows = response.json()["history"]
-    assert len(rows) == 5
+    assert len(rows) == 6  # portada + 5 apps
     assert all(
         r["success"] == 1 and r["code"] == 200 and r["latency"] >= 0 for r in rows
     )
@@ -216,6 +216,7 @@ def test_per_user_tokens_isolate_datasets_documents_and_incidents(
     assert c.get("/api/session", headers=ana).json() == {
         "owner": "ana",
         "isolated": True,
+        "guest_mode": False,
     }
     assert c.get("/api/datasets", headers=bob).json() == []
     assert c.get(f"/api/datasets/{dataset['id']}", headers=bob).status_code == 404
@@ -309,3 +310,43 @@ def test_failure_alerts_are_real_samples_and_do_not_duplicate(client, monkeypatc
     SimulatedDatetime.offset = 122
     assert client.post("/api/cloudops/check").status_code == 200
     assert len(client.get("/api/cloudops/incidents").json()) == 1
+
+
+def test_guest_mode_isolates_visitors_and_expires(tmp_path, monkeypatch):
+    monkeypatch.setenv("LABS_GUEST_MODE", "on")
+    monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv("RATE_LIMIT", "off")
+    monkeypatch.delenv("LABS_USER_TOKENS", raising=False)
+    monkeypatch.delenv("LABS_ACCESS_TOKEN", raising=False)
+    c = TestClient(create_app(str(tmp_path / "guest.db"), targets={"demo": "http://x"}))
+    assert c.get("/api/datasets").status_code == 401
+    first = c.post("/api/guest").json()
+    second = c.post("/api/guest").json()
+    a = {"Authorization": "Bearer " + first["token"]}
+    b = {"Authorization": "Bearer " + second["token"]}
+    created = c.post("/api/datasets?filename=a.csv", content=b"x\n1\n", headers=a)
+    assert created.status_code == 201
+    assert len(c.get("/api/datasets", headers=a).json()) == 1
+    assert c.get("/api/datasets", headers=b).json() == []
+    assert c.get("/api/session", headers=a).json()["owner"].startswith("invitado-")
+    # Al vencer, la sesión deja de valer y sus datos se eliminan.
+    monkeypatch.setenv("GUEST_TTL_HOURS", "0")
+    expired = TestClient(create_app(str(tmp_path / "guest.db"), targets={"demo": "http://x"}))
+    assert expired.get("/api/datasets", headers=a).status_code == 401
+    expired.post("/api/guest")
+    import sqlite3
+
+    with sqlite3.connect(tmp_path / "guest.db") as connection:
+        assert connection.execute("SELECT COUNT(*) FROM datasets").fetchone()[0] == 0
+
+
+def test_guest_creation_is_rate_limited(tmp_path, monkeypatch):
+    monkeypatch.setenv("LABS_GUEST_MODE", "on")
+    monkeypatch.setenv("RATE_LIMIT", "on")
+    c = TestClient(create_app(str(tmp_path / "rl.db"), targets={"demo": "http://x"}))
+    codes = [c.post("/api/guest").status_code for _ in range(11)]
+    assert codes[:10] == [201] * 10 and codes[10] == 429
+
+
+def test_guest_endpoint_disabled_by_default(client):
+    assert client.post("/api/guest").status_code == 404

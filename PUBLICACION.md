@@ -1,76 +1,68 @@
 # Publicación del portafolio
 
-La portada (`portal/`) es un sitio estático: HTML, CSS y JavaScript sin build.
-Se puede alojar en cualquier servidor de archivos. Las aplicaciones completas
-(TaskFlow, ReservaYa, TiendaNova y Snake) ya se despliegan solas en Azure
-Container Apps; ver `GESTION_PORTAFOLIO.md`.
+| Parte | Dónde | Cómo se actualiza |
+| --- | --- | --- |
+| Portada, CV y demos (`portal/`) | GitHub Pages → **https://gervasio.sbs** | Push a `main` → flujo **Publicar portada** |
+| TaskFlow, ReservaYa, TiendaNova, Snake, Interrogatorio, Laboratorios | Azure Container Apps (`rg-portafolio-gervasio`, Chile Central) | Push a `main` en su carpeta → su flujo |
 
-## Opción recomendada: GitHub Pages (gratis, automático)
+Todo se edita desde GitHub (web, `github.dev` con la tecla `.`, GitHub
+Desktop, Codex o Claude) y se publica solo al llegar a `main`.
 
-Con esta opción editas la portada desde cualquier lugar (GitHub web, el
-teléfono, Codex o Claude) y se publica sola al llegar a `main`.
+> **¿Por qué la portada no está en Azure?** La suscripción *Azure for Students*
+> solo permite crear recursos en Chile Central, México Central, North Central
+> US, South Africa North y Canada East, y Azure Static Web Apps no existe en
+> ninguna de esas regiones. GitHub Pages es gratis, sirve HTTPS con tu dominio
+> y no se apaga nunca (sin arranque en frío). Las apps sí siguen en Azure.
 
-**Configuración (una sola vez):**
+## 1. GitHub Pages (una vez)
 
-1. Abre <https://github.com/Gervasio02/Portafolio/settings/pages>.
-2. En **Build and deployment → Source**, elige **GitHub Actions**.
-3. Ve a **Actions → Publicar portada → Run workflow** (rama `main`).
-4. Cuando termine, la portada queda en
-   **<https://gervasio02.github.io/Portafolio/>**.
+1. https://github.com/Gervasio02/Portafolio/settings/pages
+2. **Build and deployment → Source: GitHub Actions**.
+3. **Custom domain:** `gervasio.sbs` → **Save**. Cuando el DNS valide, marca
+   **Enforce HTTPS**.
+4. **Actions → Publicar portada → Run workflow** (rama `main`).
 
-**Después:** cada push a `main` que toque `portal/` ejecuta las pruebas de
-Playwright y, si pasan, publica la nueva versión en 1–2 minutos.
+## 2. DNS en Hostinger (hPanel → Dominios → gervasio.sbs → DNS / Nameservers)
 
-**Editar desde cualquier lugar:**
+Borra primero los registros `A` de `@` y el `CNAME` de `www` que Hostinger crea
+por defecto (estacionamiento) y agrega:
 
-- En el navegador: abre el repositorio y pulsa la tecla `.` para abrir
-  `github.dev` (VS Code en la web). Edita `portal/index.html`, haz commit en una
-  rama y abre un pull request; al hacer merge se publica.
-- Desde Codex o Claude: pídeles el cambio; siguen las reglas de `AGENTS.md`
-  (rama + PR).
-- En el PC: GitHub Desktop → *Pull* → editar → *Commit* → *Push*.
+| Tipo  | Nombre | Apunta a              |
+| ----- | ------ | --------------------- |
+| A     | `@`    | `185.199.108.153`     |
+| A     | `@`    | `185.199.109.153`     |
+| A     | `@`    | `185.199.110.153`     |
+| A     | `@`    | `185.199.111.153`     |
+| CNAME | `www`  | `gervasio02.github.io` |
 
-**Dominio propio (opcional):** en la misma página de Pages, escribe tu dominio
-en **Custom domain** y crea en tu proveedor DNS un registro `CNAME` hacia
-`gervasio02.github.io`. Activa **Enforce HTTPS** cuando aparezca.
+La propagación tarda de minutos a unas horas. GitHub emite el certificado
+HTTPS automáticamente. Documentación:
+[dominio personalizado en GitHub Pages](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
-## Opción alternativa: Azure Static Web Apps (plan Free)
+## 3. Apps sin espera
 
-Útil si quieres tener todo en Azure. El mismo flujo publica en ambos sitios si
-lo configuras:
+Las Container Apps escalan a cero cuando nadie las usa (sin costo en reposo).
+`portal/despertar.js` las despierta en cuanto alguien abre la portada, el
+catálogo o una página de proyecto, y muestra «En línea» cuando ya responden.
+Si algún día prefieres que nunca se apaguen: en cada Container App,
+**Escala → Mínimo de réplicas = 1** (tiene costo mensual).
 
-1. En [Azure Portal](https://portal.azure.com/) crea un recurso
-   **Static Web Apps**, plan **Free**, origen **Other / Otro**.
-2. En el recurso: **Overview → Manage deployment token**. Copia el token a
-   GitHub: **Settings → Secrets and variables → Actions → Secrets**, con el
-   nombre `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-3. En **Actions → Variables**, crea `AZURE_STATIC_WEB_APPS_READY` = `true`.
-4. Ejecuta **Publicar portada** con *Run workflow*. Azure aplica además los
-   encabezados de seguridad de `portal/staticwebapp.config.json`.
+## 4. Interrogatorio y Laboratorios
 
-Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-portal) ·
-[Token de despliegue](https://learn.microsoft.com/en-us/azure/static-web-apps/deployment-token-management).
+`interrogatorio-gervasio-std` y `labs-gervasio-std` existen en el entorno
+`portfolio-gervasio-standard` con la identidad `id-portafolio-apps-pull` para
+leer el registro. Sus flujos (`interrogatorio.yml`, `labs.yml`) usan
+`scripts/azure-desplegar-app.sh` para publicar cada versión. El secreto
+`JWT_SECRET` de Interrogatorio se genera dentro del flujo; nadie lo ve.
 
-## Otras opciones compatibles
+## Comprobación final (usuarios finales)
 
-Como `portal/` no necesita build, también sirve en Netlify, Cloudflare Pages o
-Vercel: conecta el repositorio y define **`portal`** como directorio de
-publicación, sin comando de build.
+Desde un teléfono y un computador que no sean el tuyo:
 
-## Después de cambiar de dirección
-
-Cuando la portada tenga su URL definitiva:
-
-- Actualiza la fila **Portada** de `GESTION_PORTAFOLIO.md`.
-- Si usas CloudOps, define `PORTAL_URL` con la nueva dirección (ver
-  `labs/README.md`).
-- La dirección anterior en ChatGPT Sites deja de ser necesaria.
-
-## Aplicaciones completas
-
-Siguen en Azure Container Apps (`rg-portafolio-gervasio`) y se actualizan solas
-con cada push a `main` en su carpeta. Se apagan sin tráfico: la primera visita
-tarda unos 30 segundos. Para evitarlo hay que fijar al menos una réplica
-mínima en cada Container App (*Scale → Min replicas = 1*), lo que tiene costo.
-DataLab, DocFlow y CloudOps se mantienen locales hasta disponer de HTTPS,
-identidades y una política de retención.
+1. Abre https://gervasio.sbs y espera a que los proyectos marquen «En línea».
+2. Snake: juega una partida y revisa el ranking.
+3. Interrogatorio: entra como invitado, interroga y acusa.
+4. TaskFlow, ReservaYa, TiendaNova: usa las credenciales de demo de cada README.
+5. Laboratorios: procesa los datos de ejemplo en DataLab, extrae una factura en
+   DocFlow y ejecuta una comprobación en CloudOps.
+6. Descarga el CV en PDF desde la sección de contacto.
