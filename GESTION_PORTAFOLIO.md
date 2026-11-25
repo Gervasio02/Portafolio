@@ -33,6 +33,11 @@ Las cuatro aplicaciones contenedorizadas están en el grupo
 publica una imagen privada en Azure Container Registry, crea una revisión nueva
 y comprueba su URL de salud.
 
+La automatización usa la identidad `id-portafolio-github-push`, con permiso
+`Container Apps Contributor` limitado a `rg-portafolio-gervasio`. El 25 de
+noviembre de 2026 se verificó el despliegue automático completo de la revisión
+`33ad30f` para las cuatro aplicaciones.
+
 La portada se administra desde `portal/` y su publicación actual está en
 ChatGPT Sites. No guardes contraseñas, tokens ni cadenas de conexión en el
 repositorio; usa exclusivamente secretos o variables del proveedor.
