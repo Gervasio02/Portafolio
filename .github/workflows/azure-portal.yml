@@ -71,6 +71,61 @@ jobs:
           path: portal
       - uses: actions/deploy-pages@v4
 
+  verificar-publicacion:
+    name: Verificar sitio publicado
+    needs: github-pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar páginas y metadatos en producción
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          base_url="https://gervasio.sbs"
+          paths=("/" "/proyectos/" "/cv.html" "/robots.txt" "/sitemap.xml")
+
+          for attempt in {1..18}; do
+            published=true
+
+            for path in "${paths[@]}"; do
+              output="/tmp/portal$(printf '%s' "$path" | tr '/.' '__')"
+              if ! curl \
+                --fail \
+                --silent \
+                --show-error \
+                --location \
+                --max-time 20 \
+                "${base_url}${path}" \
+                --output "$output"; then
+                published=false
+                break
+              fi
+            done
+
+            root_file="/tmp/portal_"
+            robots_file="/tmp/portal_robots_txt"
+            sitemap_file="/tmp/portal_sitemap_xml"
+
+            if [[ "$published" == true ]] \
+              && grep -Fq '<link rel="canonical" href="https://gervasio.sbs/"' "$root_file" \
+              && grep -Fq '<meta property="og:url" content="https://gervasio.sbs/"' "$root_file" \
+              && grep -Fq '<meta property="og:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg"' "$root_file" \
+              && grep -Fq 'Sitemap: https://gervasio.sbs/sitemap.xml' "$robots_file" \
+              && grep -Fq '<loc>https://gervasio.sbs/</loc>' "$sitemap_file"; then
+              echo "La publicación está disponible y contiene los metadatos esperados."
+              exit 0
+            fi
+
+            if [[ "$attempt" -lt 18 ]]; then
+              echo "La publicación aún no está propagada (intento ${attempt}/18); reintentando en 10 segundos."
+              sleep 10
+            fi
+          done
+
+          echo "La publicación no quedó completa después de 18 intentos." >&2
+          exit 1
+
   azure:
     name: Publicar en Azure Static Web Apps
     needs: probar

@@ -8,23 +8,42 @@
       content="Gervasio Torres, analista programador y egresado de Ingeniería Informática (INACAP). Juegos y aplicaciones full stack con demo jugable, app en vivo y código abierto."
     />
     <meta name="theme-color" content="#07070d" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href="https://gervasio.sbs/" />
     <meta property="og:title" content="Gervasio Torres · Portafolio" />
     <meta
       property="og:description"
       content="Juegos y aplicaciones completas, de la interfaz a la base de datos."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gervasio.sbs/" />
+    <meta property="og:site_name" content="Portafolio de Gervasio Torres" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Portafolio de desarrollo de Gervasio Torres" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Gervasio Torres · Portafolio" />
+    <meta name="twitter:description" content="Cinco aplicaciones y tres laboratorios de desarrollo full stack." />
+    <meta name="twitter:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
     <title>Gervasio Torres · Portafolio</title>
     <link rel="stylesheet" href="portada.css" />
     <script src="inicio.js" defer></script>
     <script src="despertar.js" defer></script>
+    <script src="schema.js" defer></script>
   </head>
   <body>
     <a class="skip" href="#niveles">Saltar a los proyectos</a>
 
     <header class="wrap top">
-      <a class="logo" href="./" aria-label="Gervasio Torres, inicio">
+      <a class="logo" href="./" aria-label="GT Gervasio Torres, inicio">
         <span class="logo-marca" aria-hidden="true">GT</span>
         <span>Gervasio Torres</span>
       </a>
@@ -43,7 +62,7 @@
       <section class="wrap inicio" aria-labelledby="hola">
         <div class="inicio-texto">
           <p class="hud">
-            <span class="parpadeo" aria-hidden="true"></span> Jugador 1 listo
+            <span class="parpadeo" aria-hidden="true"></span> Disponible para nuevas oportunidades
           </p>
           <h1 id="hola">
             Hola, soy Gervasio.
@@ -59,29 +78,29 @@
             jugable, app en vivo y código abierto.
           </p>
           <p class="acciones">
-            <a class="boton" href="#niveles">▶ Empezar</a>
+            <a class="boton" href="#niveles">Ver proyectos</a>
             <a class="boton boton-sec" href="cv.html">Ver mi CV</a>
-            <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio"
-              >Código en GitHub ↗</a
+            <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio" target="_blank" rel="noopener noreferrer"
+              >Código en GitHub</a
             >
           </p>
         </div>
 
         <aside class="ficha" aria-labelledby="ficha-titulo">
           <div class="ficha-cabeza">
-            <h2 id="ficha-titulo">Ficha del jugador</h2>
+            <h2 id="ficha-titulo">Perfil profesional</h2>
             <span class="etiqueta">Online</span>
           </div>
           <dl class="ficha-datos">
-            <div><dt>Clase</dt><dd>Analista programador · Ingeniería Informática</dd></div>
+            <div><dt>Formación</dt><dd>Analista programador · Ingeniería Informática</dd></div>
             <div><dt>Región</dt><dd>O'Higgins, Chile · <time id="hora-local">--:--</time></dd></div>
-            <div><dt>Misión actual</dt><dd>Práctica profesional en Tuniche: bots de automatización</dd></div>
-            <div><dt>Siguiente nivel</dt><dd>Título de Ingeniería Informática y primer empleo como desarrollador</dd></div>
+            <div><dt>Experiencia reciente</dt><dd>Práctica profesional en Tuniche: bots de automatización</dd></div>
+            <div><dt>Objetivo profesional</dt><dd>Título de Ingeniería Informática y primer empleo como desarrollador</dd></div>
           </dl>
           <div class="barras" aria-label="Lenguajes por cantidad de proyectos">
-            <p><span>JS / TS</span><span class="barra"><i style="--v: 100%"></i></span><b>6</b></p>
-            <p><span>Python</span><span class="barra azul"><i style="--v: 50%"></i></span><b>3</b></p>
-            <p><span>SQL</span><span class="barra rojo"><i style="--v: 100%"></i></span><b>6</b></p>
+            <p><span>JS / TS</span><span class="barra"><i class="barra-completa"></i></span><b>6</b></p>
+            <p><span>Python</span><span class="barra azul"><i class="barra-media"></i></span><b>3</b></p>
+            <p><span>SQL</span><span class="barra rojo"><i class="barra-completa"></i></span><b>6</b></p>
           </div>
           <p class="ficha-pie">Barras = proyectos de este repo que usan cada lenguaje.</p>
         </aside>
@@ -90,17 +109,17 @@
       <!-- ============ NIVELES (PROYECTOS) ============ -->
       <section id="niveles" class="wrap niveles" aria-labelledby="niveles-titulo">
         <header class="encabezado">
-          <p class="hud">Selección de nivel</p>
+          <p class="hud">Proyectos destacados</p>
           <h2 id="niveles-titulo">Proyectos</h2>
           <p>
-            Cinco proyectos, cada uno con un jefe final: un problema técnico
-            concreto. Las demos usan datos ficticios y funcionan en tu
-            navegador.
+            Ocho proyectos: cinco aplicaciones y tres laboratorios. Cada uno
+            presenta un reto técnico concreto, una experiencia pública y su
+            código fuente.
           </p>
         </header>
 
         <div class="destacados">
-          <article class="carta carta-juego" id="snake" data-salud="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--azul)">
+          <article class="carta carta-juego tema-azul" id="snake" data-salud="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/snake-720.webp 720w, capturas/snake-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 540px" />
@@ -109,7 +128,7 @@
               <span class="sello">Juego</span>
             </figure>
             <div class="carta-cuerpo">
-              <p class="nivel">Nivel 01</p>
+              <p class="nivel">Juego publicado</p>
               <p class="estado" data-estado aria-live="polite"></p>
               <h3>Snake</h3>
               <p>
@@ -118,7 +137,7 @@
                 teléfono.
               </p>
               <dl>
-                <dt>Jefe final</dt>
+                <dt>Reto técnico</dt>
                 <dd>
                   Un ranking a prueba de trampas: el servidor vuelve a jugar tu
                   partida con el mismo motor TypeScript y solo acepta el
@@ -127,13 +146,13 @@
               </dl>
               <p class="stack">React · TypeScript · Express · Prisma</p>
               <p class="links">
-                <a class="boton" href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">▶ Jugar en línea</a>
-                <a href="https://github.com/Gervasio02/Portafolio/tree/main/snake">Código</a>
+                <a class="boton" href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Jugar en línea</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/snake" target="_blank" rel="noopener noreferrer">Código</a>
               </p>
             </div>
           </article>
 
-          <article class="carta carta-juego" id="interrogatorio" data-salud="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health" style="--c: var(--morado)">
+          <article class="carta carta-juego tema-morado" id="interrogatorio" data-salud="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/interrogatorio-720.webp 720w, capturas/interrogatorio-1200.webp 1180w" sizes="(max-width: 860px) 92vw, 540px" />
@@ -142,7 +161,7 @@
               <span class="sello">Juego</span>
             </figure>
             <div class="carta-cuerpo">
-              <p class="nivel">Nivel 02</p>
+              <p class="nivel">Juego publicado</p>
               <p class="estado" data-estado aria-live="polite"></p>
               <h3>Interrogatorio</h3>
               <p>
@@ -151,7 +170,7 @@
                 acusar.
               </p>
               <dl>
-                <dt>Jefe final</dt>
+                <dt>Reto técnico</dt>
                 <dd>
                   Que no se pueda hacer trampa: la verdad del caso queda en el
                   servidor y el jugador solo ve lo que ha descubierto.
@@ -159,16 +178,16 @@
               </dl>
               <p class="stack">React · FastAPI · SQLAlchemy · Python</p>
               <p class="links">
-                <a class="boton" href="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">▶ Jugar en línea</a>
+                <a class="boton" href="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Jugar en línea</a>
                 <a href="interrogatorio/index.html#demo">Demo rápida</a>
-                <a href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio">Código</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio" target="_blank" rel="noopener noreferrer">Código</a>
               </p>
             </div>
           </article>
         </div>
 
         <div class="rejilla">
-          <article class="carta" id="taskflow" data-salud="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--morado)">
+          <article class="carta tema-morado" id="taskflow" data-salud="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/taskflow-720.webp 720w, capturas/taskflow-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -177,7 +196,7 @@
               <span class="sello">App web</span>
             </figure>
             <div class="carta-cuerpo">
-              <p class="nivel">Nivel 03</p>
+              <p class="nivel">Aplicación publicada</p>
               <p class="estado" data-estado aria-live="polite"></p>
               <h3>TaskFlow</h3>
               <p>
@@ -185,7 +204,7 @@
                 muestra qué se está atrasando.
               </p>
               <dl>
-                <dt>Jefe final</dt>
+                <dt>Reto técnico</dt>
                 <dd>
                   Que el orden de las tarjetas no se rompa cuando dos personas
                   las mueven a la vez, y que cada rol vea solo lo suyo.
@@ -194,13 +213,13 @@
               <p class="stack">React · Express · Prisma · PostgreSQL</p>
               <p class="links">
                 <a href="taskflow/index.html#demo">Probar la demo</a>
-                <a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
-                <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow">Código</a>
+                <a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Aplicación en vivo</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow" target="_blank" rel="noopener noreferrer">Código</a>
               </p>
             </div>
           </article>
 
-          <article class="carta" id="reservaya" data-salud="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--azul)">
+          <article class="carta tema-azul" id="reservaya" data-salud="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/reservaya-cancha-720.webp 720w, capturas/reservaya-cancha-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -209,7 +228,7 @@
               <span class="sello">App web</span>
             </figure>
             <div class="carta-cuerpo">
-              <p class="nivel">Nivel 04</p>
+              <p class="nivel">Aplicación publicada</p>
               <p class="estado" data-estado aria-live="polite"></p>
               <h3>ReservaYa</h3>
               <p>
@@ -217,7 +236,7 @@
                 comprobante y cancelación.
               </p>
               <dl>
-                <dt>Jefe final</dt>
+                <dt>Reto técnico</dt>
                 <dd>
                   Dos personas confirman el mismo turno en el mismo segundo y
                   solo una se lo puede quedar.
@@ -226,13 +245,13 @@
               <p class="stack">React · FastAPI · SQLAlchemy · PostgreSQL</p>
               <p class="links">
                 <a href="reservaya/index.html#demo">Probar la demo</a>
-                <a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
-                <a href="https://github.com/Gervasio02/Portafolio/tree/main/reservaya">Código</a>
+                <a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Aplicación en vivo</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/reservaya" target="_blank" rel="noopener noreferrer">Código</a>
               </p>
             </div>
           </article>
 
-          <article class="carta" id="tiendanova" data-salud="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health" style="--c: var(--rojo)">
+          <article class="carta tema-rojo" id="tiendanova" data-salud="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/tiendanova-720.webp 720w, capturas/tiendanova-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -241,7 +260,7 @@
               <span class="sello">App web</span>
             </figure>
             <div class="carta-cuerpo">
-              <p class="nivel">Nivel 05</p>
+              <p class="nivel">Aplicación publicada</p>
               <p class="estado" data-estado aria-live="polite"></p>
               <h3>TiendaNova</h3>
               <p>
@@ -249,7 +268,7 @@
                 panel de administración. Los pagos son simulados.
               </p>
               <dl>
-                <dt>Jefe final</dt>
+                <dt>Reto técnico</dt>
                 <dd>
                   El doble clic en «pagar»: el checkout es idempotente y
                   descuenta el inventario en una sola transacción.
@@ -258,8 +277,8 @@
               <p class="stack">Next.js · Auth.js · Prisma · PostgreSQL</p>
               <p class="links">
                 <a href="tiendanova/index.html#demo">Probar la demo</a>
-                <a href="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
-                <a href="https://github.com/Gervasio02/Portafolio/tree/main/tiendanova">Código</a>
+                <a href="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Aplicación en vivo</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/tiendanova" target="_blank" rel="noopener noreferrer">Código</a>
               </p>
             </div>
           </article>
@@ -272,16 +291,14 @@
         </p>
 
         <div class="extra">
-          <p class="hud">Contenido extra · herramientas</p>
-          <ul>
-            <li><strong>DataLab</strong>: limpia archivos CSV y Excel y muestra su calidad.</li>
-            <li><strong>DocFlow</strong>: extrae datos de facturas ficticias con revisión humana.</li>
-            <li><strong>CloudOps</strong>: mide si las apps publicadas responden y cuánto tardan.</li>
+          <p class="hud">Laboratorios técnicos</p>
+          <ul class="laboratorios-lista">
+            <li><strong>DataLab</strong><span>Limpia archivos CSV y Excel y muestra su calidad.</span><a href="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/datalab" target="_blank" rel="noopener noreferrer" data-salud="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">Abrir DataLab <span class="estado" data-estado></span></a></li>
+            <li><strong>DocFlow</strong><span>Extrae datos de facturas ficticias con revisión humana.</span><a href="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/docflow" target="_blank" rel="noopener noreferrer" data-salud="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">Abrir DocFlow <span class="estado" data-estado></span></a></li>
+            <li><strong>CloudOps</strong><span>Mide si las aplicaciones publicadas responden y cuánto tardan.</span><a href="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/cloudops" target="_blank" rel="noopener noreferrer" data-salud="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">Abrir CloudOps <span class="estado" data-estado></span></a></li>
           </ul>
           <p>
-            <a class="boton" href="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/datalab" rel="noopener" data-salud="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">▶ Abrir el taller <span class="estado" data-estado></span></a>
-            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs">Código</a>
-            ·
+            <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio/tree/main/labs" target="_blank" rel="noopener noreferrer">Código de los laboratorios</a>
             <a href="proyectos/">Catálogo completo con filtros</a>
           </p>
         </div>
@@ -291,7 +308,7 @@
       <!-- ============ TRAYECTORIA ============ -->
       <section id="historia" class="wrap historia" aria-labelledby="historia-titulo">
         <header class="encabezado">
-          <p class="hud">Modo historia</p>
+          <p class="hud">Trayectoria profesional</p>
           <h2 id="historia-titulo">Trayectoria</h2>
           <p>Mi formación y la experiencia que la acompaña. El detalle completo está en <a href="cv.html">mi CV</a>.</p>
         </header>
@@ -299,17 +316,17 @@
           <div>
             <h3 class="sub">Experiencia en informática</h3>
             <ol class="hitos">
-              <li style="--c: var(--azul)">
+              <li class="tema-azul">
                 <span class="fecha">sep – nov 2026</span>
                 <h4>Práctica profesional · Tuniche</h4>
                 <p>Práctica enfocada en el desarrollo de bots de automatización.</p>
               </li>
-              <li style="--c: var(--morado)">
+              <li class="tema-morado">
                 <span class="fecha">ene – abr 2023</span>
                 <h4>Práctica informática · Centro de Negocios Sercotec</h4>
                 <p>Práctica en el área de informática del centro.</p>
               </li>
-              <li style="--c: var(--rojo)">
+              <li class="tema-rojo">
                 <span class="fecha">nov 2026</span>
                 <h4>Proyecto personal · Este portafolio</h4>
                 <p>Cinco aplicaciones y tres herramientas con pruebas automatizadas, CI/CD y despliegue en Azure.</p>
@@ -319,12 +336,12 @@
           <div>
             <h3 class="sub">Formación</h3>
             <ol class="hitos">
-              <li style="--c: var(--morado)">
+              <li class="tema-morado">
                 <span class="fecha">2023 – 2024</span>
                 <h4>Ingeniería Informática</h4>
                 <p>Universidad Tecnológica de Chile INACAP, Rancagua. Egresado, en proceso de titulación.</p>
               </li>
-              <li style="--c: var(--azul)">
+              <li class="tema-azul">
                 <span class="fecha">2019 – 2022</span>
                 <h4>Analista Programador · titulado</h4>
                 <p>Centro de Formación Técnica INACAP, Rancagua.</p>
@@ -352,34 +369,34 @@
       <!-- ============ LOGROS ============ -->
       <section id="logros" class="wrap logros" aria-labelledby="logros-titulo">
         <header class="encabezado">
-          <p class="hud">Logros desbloqueados</p>
-          <h2 id="logros-titulo">Logros</h2>
+          <p class="hud">Resultados verificables</p>
+          <h2 id="logros-titulo">Resultados</h2>
           <p>Cifras medidas en las pruebas del repositorio, no decorativas.</p>
         </header>
         <ul class="trofeos">
-          <li style="--c: var(--morado)">
+          <li class="tema-morado">
             <span class="trofeo" aria-hidden="true">★</span>
             <strong>98,9 %</strong>
             <span>Cobertura de la API de TaskFlow</span>
           </li>
-          <li style="--c: var(--azul)">
+          <li class="tema-azul">
             <span class="trofeo" aria-hidden="true">★</span>
             <strong>95,8 %</strong>
             <span>Cobertura del backend de ReservaYa</span>
           </li>
-          <li style="--c: var(--rojo)">
+          <li class="tema-rojo">
             <span class="trofeo" aria-hidden="true">★</span>
             <strong>91,8 %</strong>
             <span>Cobertura de la lógica de TiendaNova</span>
           </li>
-          <li style="--c: var(--morado)">
+          <li class="tema-morado">
             <span class="trofeo" aria-hidden="true">★</span>
             <strong>111</strong>
             <span>Pruebas en el backend de Interrogatorio</span>
           </li>
         </ul>
 
-        <h3 class="sub">Reglas de la partida</h3>
+        <h3 class="sub">Principios de ingeniería</h3>
         <ol class="reglas">
           <li>
             <h4>Las reglas viven en el servidor</h4>
@@ -403,8 +420,8 @@
       <!-- ============ NOTAS DE PARCHE ============ -->
       <section id="parches" class="wrap parches" aria-labelledby="parches-titulo">
         <header class="encabezado">
-          <p class="hud">Historial de versiones</p>
-          <h2 id="parches-titulo">Notas del parche</h2>
+          <p class="hud">Evolución del proyecto</p>
+          <h2 id="parches-titulo">Historial de cambios</h2>
           <p>Cómo fue creciendo el repositorio, según el historial de commits.</p>
         </header>
         <ol class="linea">
@@ -415,31 +432,31 @@
           <li><time datetime="2026-11-25">25 nov</time><p><b>#05</b> Despliegue automático: cada push a <code>main</code> prueba, construye y publica una revisión nueva.</p></li>
           <li><time datetime="2026-11-25">25 nov</time><p><b>#06</b> Nueva portada y publicación en GitHub Pages.</p></li>
         </ol>
-        <p><a href="https://github.com/Gervasio02/Portafolio/commits/main">Ver todos los commits ↗</a></p>
+        <p><a href="https://github.com/Gervasio02/Portafolio/commits/main" target="_blank" rel="noopener noreferrer">Ver todos los cambios</a></p>
       </section>
 
       <!-- ============ EQUIPAMIENTO ============ -->
       <section class="wrap equipo" aria-labelledby="equipo-titulo">
         <header class="encabezado">
-          <p class="hud">Inventario</p>
-          <h2 id="equipo-titulo">Equipamiento</h2>
+          <p class="hud">Tecnologías</p>
+          <h2 id="equipo-titulo">Herramientas de desarrollo</h2>
           <p>Todo lo de esta lista aparece en al menos un proyecto de arriba.</p>
         </header>
         <dl class="inventario">
-          <div style="--c: var(--azul)"><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, SQL, HTML, CSS</dd></div>
-          <div style="--c: var(--morado)"><dt>Frontend</dt><dd>React, Next.js, Vite</dd></div>
-          <div style="--c: var(--rojo)"><dt>Backend</dt><dd>Node.js con Express, FastAPI, Auth.js</dd></div>
-          <div style="--c: var(--azul)"><dt>Datos</dt><dd>PostgreSQL, Prisma, SQLAlchemy, Alembic, SQLite</dd></div>
-          <div style="--c: var(--morado)"><dt>Pruebas</dt><dd>Jest, Vitest, pytest, Playwright</dd></div>
-          <div style="--c: var(--rojo)"><dt>Entrega</dt><dd>Docker, GitHub Actions, Azure Container Apps</dd></div>
+          <div class="tema-azul"><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, SQL, HTML, CSS</dd></div>
+          <div class="tema-morado"><dt>Frontend</dt><dd>React, Next.js, Vite</dd></div>
+          <div class="tema-rojo"><dt>Backend</dt><dd>Node.js con Express, FastAPI, Auth.js</dd></div>
+          <div class="tema-azul"><dt>Datos</dt><dd>PostgreSQL, Prisma, SQLAlchemy, Alembic, SQLite</dd></div>
+          <div class="tema-morado"><dt>Pruebas</dt><dd>Jest, Vitest, pytest, Playwright</dd></div>
+          <div class="tema-rojo"><dt>Entrega</dt><dd>Docker, GitHub Actions, Azure Container Apps</dd></div>
         </dl>
       </section>
     </main>
 
     <footer id="contacto" class="wrap pie">
       <div>
-        <p class="hud">¿Multijugador?</p>
-        <h2>Juguemos en equipo</h2>
+        <p class="hud">Contacto</p>
+        <h2>Trabajemos juntos</h2>
         <p>
           Busco mi primer puesto como desarrollador. Si tienes una oportunidad
           o quieres comentar un proyecto, escríbeme.
@@ -447,13 +464,13 @@
         <p class="acciones">
           <a class="boton" href="mailto:Gervasiot19@gmail.com">Gervasiot19@gmail.com</a>
           <a class="boton boton-sec" href="cv/Gervasio-Torres-CV.pdf" download>Descargar CV (PDF)</a>
-          <a class="boton boton-sec" href="https://github.com/Gervasio02" rel="me">GitHub ↗</a>
+          <a class="boton boton-sec" href="https://github.com/Gervasio02" target="_blank" rel="me noopener noreferrer">GitHub</a>
         </p>
         <!-- EDITA: agrega tu LinkedIn aquí si tienes uno. -->
       </div>
       <p class="colofon">
         Hecho con HTML, CSS y unas pocas líneas de JavaScript, sin frameworks.
-        <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal">Código de esta página</a>.
+        <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal" target="_blank" rel="noopener noreferrer">Código de esta página</a>.
         Última actualización: noviembre de 2026.
       </p>
     </footer>

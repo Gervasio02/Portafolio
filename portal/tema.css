@@ -49,6 +49,7 @@ a:hover {
 .brand {
   display: flex;
   align-items: center;
+  min-height: 44px;
   gap: 0.7rem;
   font: 700 1rem/1 "Segoe UI", system-ui, sans-serif;
   letter-spacing: 0;
@@ -73,6 +74,12 @@ a:hover {
 
 nav a,
 .footer a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.35rem 0.15rem;
   font-family: var(--mono);
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -245,7 +252,7 @@ nav a:hover,
 
 /* indicador de estado de servidores (despertar.js) */
 .estado {
-  font: 600 0.75rem var(--mono);
+  font: 600 0.875rem var(--mono);
   color: var(--muted);
 }
 

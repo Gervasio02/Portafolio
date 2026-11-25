@@ -20,10 +20,10 @@
 .catalog-body p { color: var(--muted); }
 .catalog-body .stack { margin: 1rem 0; }
 .catalog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.2rem; }
-.catalog-actions a { font-weight: 650; }
+.catalog-actions a { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .15rem; font-weight: 650; }
 .catalog-actions .hero-link { color: var(--bg); }
 .catalog-card details { margin-top: 1.3rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-.catalog-card summary { color: var(--mint); font-weight: 700; cursor: pointer; }
+.catalog-card summary { display: flex; align-items: center; min-height: 44px; color: var(--mint); font-weight: 700; cursor: pointer; }
 .catalog-card details h3 { margin: 1.2rem 0 .25rem; font-size: 1rem; }
 .catalog-card details p { margin: 0; }
 .catalog-empty { padding: 2rem; border: 1px dashed var(--line); border-radius: .7rem; color: var(--muted); }

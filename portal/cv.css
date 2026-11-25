@@ -52,8 +52,15 @@ a {
   font: 0.85rem var(--mono);
 }
 
+.barra a,
+.contacto a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 .descargar {
-  padding: 0.4rem 0.9rem;
+  padding: 0.65rem 0.9rem;
   color: #fff;
   text-decoration: none;
   background: linear-gradient(135deg, #2f8cff, var(--morado));
@@ -217,6 +224,10 @@ section p {
   .no-imprimir,
   .skip {
     display: none;
+  }
+
+  .contacto a {
+    min-height: 0;
   }
 
   .hoja {

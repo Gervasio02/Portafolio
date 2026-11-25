@@ -20,7 +20,7 @@ nav a:hover,.footer a:hover{color:var(--mint)}
 h1,h2,h3,p{margin-top:0}
 .hero h1{font-size:clamp(4rem,10.2vw,9.2rem);line-height:.85;letter-spacing:-.09em;margin:1.75rem 0 0;font-weight:780}
 .intro p{font-size:clamp(1.2rem,2.2vw,1.75rem);line-height:1.35;color:var(--muted);max-width:22rem}
-.hero-link{display:inline-block;background:var(--mint);color:var(--bg);border-radius:.35rem;padding:.72rem 1.1rem;text-decoration:none;font-weight:750}
+.hero-link{display:inline-flex;align-items:center;min-height:44px;background:var(--mint);color:var(--bg);border-radius:.35rem;padding:.72rem 1.1rem;text-decoration:none;font-weight:750}
 .hero-link:hover{background:#e2ff9e}
 .section-title{border-top:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:1rem;padding:1.4rem 0}
 .section-title h2,.section-title p{margin:0}
