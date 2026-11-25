@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Gervasio Torres, estudiante de ingeniería informática en Chile. Cinco aplicaciones full stack con sus demos, su código y las decisiones detrás de cada una."
+      content="Gervasio Torres, estudiante de ingeniería informática en Chile. Juegos y aplicaciones full stack con demo jugable, app en vivo y código abierto."
     />
-    <meta name="theme-color" content="#f3eee4" />
+    <meta name="theme-color" content="#07070d" />
     <meta property="og:title" content="Gervasio Torres · Portafolio" />
     <meta
       property="og:description"
-      content="Aplicaciones completas, de la interfaz a la base de datos, con demo y código abierto."
+      content="Juegos y aplicaciones completas, de la interfaz a la base de datos."
     />
     <meta property="og:type" content="website" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -20,552 +20,366 @@
     <script src="inicio.js" defer></script>
   </head>
   <body>
-    <a class="skip" href="#trabajo">Saltar a los proyectos</a>
+    <a class="skip" href="#niveles">Saltar a los proyectos</a>
 
     <header class="wrap top">
-      <a class="firma" href="./" aria-label="Gervasio Torres, inicio">
-        Gervasio Torres
+      <a class="logo" href="./" aria-label="Gervasio Torres, inicio">
+        <span class="logo-marca" aria-hidden="true">GT</span>
+        <span>Gervasio Torres</span>
       </a>
       <nav aria-label="Principal">
-        <a href="#trabajo">Proyectos</a>
-        <a href="#bitacora">Bitácora</a>
+        <a href="#niveles">Proyectos</a>
+        <a href="#logros">Logros</a>
+        <a href="#parches">Parches</a>
         <a href="proyectos/">Catálogo</a>
         <a href="#contacto">Contacto</a>
       </nav>
     </header>
 
     <main>
-      <!-- ============ PRESENTACIÓN ============ -->
-      <section class="wrap intro" aria-labelledby="hola">
-        <div class="intro-texto">
-          <p class="nota-mono">~/portafolio $ whoami</p>
+      <!-- ============ PANTALLA DE INICIO ============ -->
+      <section class="wrap inicio" aria-labelledby="hola">
+        <div class="inicio-texto">
+          <p class="hud">
+            <span class="parpadeo" aria-hidden="true"></span> Jugador 1 listo
+          </p>
           <h1 id="hola">
-            Hola, soy Gervasio. Estudio ingeniería informática y construyo
-            aplicaciones completas para entender cómo funcionan
-            <span class="subrayado"
-              >por dentro<svg
-                viewBox="0 0 220 18"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3 12 C 40 4, 90 16, 130 9 S 200 6, 217 11"
-                /></svg></span
-            >.
+            Hola, soy Gervasio.
+            <span class="degradado">Construyo juegos y aplicaciones</span>
+            de principio a fin.
           </h1>
           <p class="bajada">
-            Me interesa la parte que no se ve: qué pasa cuando dos personas
-            reservan la misma cancha al mismo tiempo, o cuando alguien aprieta
-            «comprar» dos veces. Cada proyecto de esta página tiene una demo que
-            puedes probar, la aplicación real funcionando y el código completo.
+            Estudio ingeniería informática en Chile. Me gusta entender lo que
+            pasa detrás de la pantalla: cómo un servidor comprueba que tu
+            puntaje en Snake es real, o qué ocurre cuando dos personas reservan
+            la misma cancha en el mismo segundo. Cada proyecto tiene demo
+            jugable, app en vivo y código abierto.
           </p>
           <p class="acciones">
-            <a class="boton" href="#trabajo">Ver los proyectos</a>
-            <a class="enlace" href="https://github.com/Gervasio02/Portafolio"
-              >Leer el código en GitHub ↗</a
+            <a class="boton" href="#niveles">▶ Empezar</a>
+            <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio"
+              >Ver código en GitHub ↗</a
             >
           </p>
         </div>
 
-        <aside class="ficha" aria-labelledby="ahora-titulo">
-          <h2 id="ahora-titulo">En este momento</h2>
-          <ul>
-            <li>
-              Mejorando este portafolio y automatizando sus despliegues en
-              Azure.
-            </li>
-            <li>
-              Aprendiendo a medir lo que importa: pruebas con bases reales,
-              concurrencia y tiempos de respuesta.
-            </li>
-            <!-- EDITA: agrega aquí lo que estés haciendo (curso, práctica, búsqueda de trabajo). -->
-          </ul>
-          <p class="ficha-pie">
-            Santiago, Chile ·
-            <time id="hora-local" datetime="">hora local</time>
-          </p>
+        <aside class="ficha" aria-labelledby="ficha-titulo">
+          <div class="ficha-cabeza">
+            <h2 id="ficha-titulo">Ficha del jugador</h2>
+            <span class="etiqueta">Online</span>
+          </div>
+          <dl class="ficha-datos">
+            <div><dt>Clase</dt><dd>Desarrollador full stack</dd></div>
+            <div><dt>Región</dt><dd>Santiago, Chile · <time id="hora-local">--:--</time></dd></div>
+            <div><dt>Misión actual</dt><dd>Mejorar este portafolio y automatizar sus despliegues</dd></div>
+            <!-- EDITA: agrega una fila con lo que estés haciendo (curso, práctica, búsqueda de trabajo). -->
+          </dl>
+          <div class="barras" aria-label="Lenguajes por cantidad de proyectos">
+            <p><span>JS / TS</span><span class="barra"><i style="--v: 100%"></i></span><b>6</b></p>
+            <p><span>Python</span><span class="barra azul"><i style="--v: 50%"></i></span><b>3</b></p>
+            <p><span>SQL</span><span class="barra rojo"><i style="--v: 100%"></i></span><b>6</b></p>
+          </div>
+          <p class="ficha-pie">Barras = proyectos de este repo que usan cada lenguaje.</p>
         </aside>
       </section>
 
-      <!-- ============ PROYECTOS ============ -->
-      <section id="trabajo" class="wrap trabajo" aria-labelledby="trabajo-titulo">
+      <!-- ============ NIVELES (PROYECTOS) ============ -->
+      <section id="niveles" class="wrap niveles" aria-labelledby="niveles-titulo">
         <header class="encabezado">
-          <h2 id="trabajo-titulo">Proyectos</h2>
+          <p class="hud">Selección de nivel</p>
+          <h2 id="niveles-titulo">Proyectos</h2>
           <p>
-            Cinco aplicaciones, cada una con un problema concreto. Las demos
-            usan datos ficticios y funcionan en tu navegador.
+            Cinco proyectos, cada uno con un jefe final: un problema técnico
+            concreto. Las demos usan datos ficticios y funcionan en tu
+            navegador.
           </p>
         </header>
 
-        <article class="entrada" id="taskflow">
-          <div class="entrada-meta">
-            <span class="numero">01</span>
-            <span>Gestión de trabajo</span>
-          </div>
-          <div class="entrada-texto">
-            <h3>TaskFlow</h3>
-            <p class="resumen">
-              Un tablero Kanban para equipos que preparan entregas y atienden
-              incidentes, con un panel que muestra qué se está atrasando.
-            </p>
-            <dl>
-              <dt>El problema</dt>
-              <dd>
-                Saber quién puede editar qué tablero, y que el orden de las
-                tarjetas no se rompa cuando dos personas las mueven a la vez.
-              </dd>
-              <dt>Lo que más me costó</dt>
-              <dd>
-                Mantener las posiciones consistentes con transacciones en
-                PostgreSQL y probar los permisos de dueño, editor y lector.
-              </dd>
-            </dl>
-            <p class="stack">React · Express · Prisma · PostgreSQL</p>
-            <p class="links">
-              <a href="taskflow/index.html#demo">Probar la demo →</a>
-              <a
-                href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
-                rel="noopener"
-                >App en vivo ↗</a
-              >
-              <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow"
-                >Código</a
-              >
-            </p>
-          </div>
-          <figure class="foto">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="capturas/taskflow-720.webp 720w, capturas/taskflow-1200.webp 1200w"
-                sizes="(max-width: 760px) 92vw, 460px"
-              />
-              <img
-                src="capturas/taskflow.png"
-                width="1440"
-                height="1068"
-                loading="lazy"
-                decoding="async"
-                alt="Centro de control de TaskFlow con avance y tarjetas vencidas"
-              />
-            </picture>
-            <figcaption>El centro de control, con datos de prueba.</figcaption>
-          </figure>
-        </article>
+        <div class="destacados">
+          <article class="carta carta-juego" id="snake" style="--c: var(--azul)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/snake-720.webp 720w, capturas/snake-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 540px" />
+                <img src="capturas/snake.png" width="1280" height="900" loading="lazy" decoding="async" alt="Pantalla de inicio de Snake con marcador y desafío diario" />
+              </picture>
+              <span class="sello">Juego</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 01</p>
+              <h3>Snake</h3>
+              <p>
+                El clásico de la serpiente con tres modos, desafío diario,
+                logros, controles táctiles y ranking. Se instala como app en el
+                teléfono.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Un ranking a prueba de trampas: el servidor vuelve a jugar tu
+                  partida con el mismo motor TypeScript y solo acepta el
+                  puntaje si coincide.
+                </dd>
+              </dl>
+              <p class="stack">React · TypeScript · Express · Prisma</p>
+              <p class="links">
+                <a class="boton" href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">▶ Jugar en línea</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/snake">Código</a>
+              </p>
+            </div>
+          </article>
 
-        <article class="entrada" id="reservaya">
-          <div class="entrada-meta">
-            <span class="numero">02</span>
-            <span>Reservas</span>
-          </div>
-          <div class="entrada-texto">
-            <h3>ReservaYa</h3>
-            <p class="resumen">
-              Reserva de canchas deportivas con tarifas por horario, comprobante
-              y cancelación.
-            </p>
-            <dl>
-              <dt>El problema</dt>
-              <dd>
-                Que nunca se asigne el mismo turno a dos personas, aunque las
-                dos confirmen en el mismo segundo.
-              </dd>
-              <dt>Lo que más me costó</dt>
-              <dd>
-                La concurrencia entre reservas y bloqueos de mantenimiento, y
-                manejar bien las fechas en la zona horaria de Santiago.
-              </dd>
-            </dl>
-            <p class="stack">React · FastAPI · SQLAlchemy · PostgreSQL</p>
-            <p class="links">
-              <a href="reservaya/index.html#demo">Probar la demo →</a>
-              <a
-                href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
-                rel="noopener"
-                >App en vivo ↗</a
-              >
-              <a
-                href="https://github.com/Gervasio02/Portafolio/tree/main/reservaya"
-                >Código</a
-              >
-            </p>
-          </div>
-          <figure class="foto">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="capturas/reservaya-cancha-720.webp 720w, capturas/reservaya-cancha-1200.webp 1200w"
-                sizes="(max-width: 760px) 92vw, 460px"
-              />
-              <img
-                src="capturas/reservaya-cancha.png"
-                width="1440"
-                height="1117"
-                loading="lazy"
-                decoding="async"
-                alt="Ficha de una cancha en ReservaYa junto al selector de horarios"
-              />
-            </picture>
-            <figcaption>Elegir cancha y turno.</figcaption>
-          </figure>
-        </article>
+          <article class="carta carta-juego" id="interrogatorio" style="--c: var(--morado)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/interrogatorio-720.webp 720w, capturas/interrogatorio-1200.webp 1180w" sizes="(max-width: 860px) 92vw, 540px" />
+                <img src="capturas/interrogatorio.png" width="1180" height="780" loading="lazy" decoding="async" alt="Expediente de Interrogatorio con pruebas y sospechosos" />
+              </picture>
+              <span class="sello">Juego · prototipo</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 02</p>
+              <h3>Interrogatorio</h3>
+              <p>
+                Un juego de deducción: abres un expediente, revisas pruebas,
+                interrogas a los sospechosos y buscas contradicciones antes de
+                acusar.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Que no se pueda hacer trampa: la verdad del caso queda en el
+                  servidor y el jugador solo ve lo que ha descubierto.
+                </dd>
+              </dl>
+              <p class="stack">React · FastAPI · SQLAlchemy · Python</p>
+              <p class="links">
+                <a class="boton" href="interrogatorio/index.html#demo">▶ Abrir un expediente</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio">Código</a>
+              </p>
+            </div>
+          </article>
+        </div>
 
-        <article class="entrada" id="tiendanova">
-          <div class="entrada-meta">
-            <span class="numero">03</span>
-            <span>Comercio electrónico</span>
-          </div>
-          <div class="entrada-texto">
-            <h3>TiendaNova</h3>
-            <p class="resumen">
-              Una tienda con catálogo, variantes, cupones, pedidos, devoluciones
-              y panel de administración. Los pagos son simulados.
-            </p>
-            <dl>
-              <dt>El problema</dt>
-              <dd>
-                Evitar la sobreventa y los pedidos duplicados cuando alguien
-                hace doble clic en «pagar».
-              </dd>
-              <dt>Lo que más me costó</dt>
-              <dd>
-                Un checkout idempotente que descuenta el inventario dentro de
-                una sola transacción, y devoluciones que no reponen stock dos
-                veces.
-              </dd>
-            </dl>
-            <p class="stack">Next.js · Auth.js · Prisma · PostgreSQL</p>
-            <p class="links">
-              <a href="tiendanova/index.html#demo">Probar la demo →</a>
-              <a
-                href="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
-                rel="noopener"
-                >App en vivo ↗</a
-              >
-              <a
-                href="https://github.com/Gervasio02/Portafolio/tree/main/tiendanova"
-                >Código</a
-              >
-            </p>
-          </div>
-          <figure class="foto">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="capturas/tiendanova-720.webp 720w, capturas/tiendanova-1200.webp 1200w"
-                sizes="(max-width: 760px) 92vw, 460px"
-              />
-              <img
-                src="capturas/tiendanova.jpg"
-                width="1420"
-                height="1160"
-                loading="lazy"
-                decoding="async"
-                alt="Portada del catálogo de TiendaNova"
-              />
-            </picture>
-            <figcaption>Portada y catálogo.</figcaption>
-          </figure>
-        </article>
+        <div class="rejilla">
+          <article class="carta" id="taskflow" style="--c: var(--morado)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/taskflow-720.webp 720w, capturas/taskflow-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/taskflow.png" width="1440" height="1068" loading="lazy" decoding="async" alt="Centro de control de TaskFlow con avance y tarjetas vencidas" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 03</p>
+              <h3>TaskFlow</h3>
+              <p>
+                Un tablero Kanban para equipos, con roles, SLA y un panel que
+                muestra qué se está atrasando.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Que el orden de las tarjetas no se rompa cuando dos personas
+                  las mueven a la vez, y que cada rol vea solo lo suyo.
+                </dd>
+              </dl>
+              <p class="stack">React · Express · Prisma · PostgreSQL</p>
+              <p class="links">
+                <a href="taskflow/index.html#demo">Probar la demo</a>
+                <a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow">Código</a>
+              </p>
+            </div>
+          </article>
 
-        <article class="entrada" id="snake">
-          <div class="entrada-meta">
-            <span class="numero">04</span>
-            <span>Juego</span>
-          </div>
-          <div class="entrada-texto">
-            <h3>Snake</h3>
-            <p class="resumen">
-              El clásico de la serpiente con tres modos, desafío diario,
-              logros, controles táctiles y ranking. Se puede instalar como app.
-            </p>
-            <dl>
-              <dt>El problema</dt>
-              <dd>
-                Un ranking en el que no se pueda hacer trampa mandando un
-                puntaje inventado.
-              </dd>
-              <dt>Lo que más me costó</dt>
-              <dd>
-                Compartir el mismo motor en TypeScript entre el navegador y el
-                servidor, para que el servidor vuelva a jugar la partida y
-                verifique el puntaje.
-              </dd>
-            </dl>
-            <p class="stack">React · TypeScript · Express · Prisma</p>
-            <p class="links">
-              <a
-                href="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/"
-                rel="noopener"
-                >Jugar en línea ↗</a
-              >
-              <a href="https://github.com/Gervasio02/Portafolio/tree/main/snake"
-                >Código</a
-              >
-            </p>
-          </div>
-          <figure class="foto">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="capturas/snake-720.webp 720w, capturas/snake-1200.webp 1200w"
-                sizes="(max-width: 760px) 92vw, 460px"
-              />
-              <img
-                src="capturas/snake.png"
-                width="1280"
-                height="900"
-                loading="lazy"
-                decoding="async"
-                alt="Pantalla de inicio de Snake con marcador y desafío diario"
-              />
-            </picture>
-            <figcaption>Pantalla de inicio y desafío del día.</figcaption>
-          </figure>
-        </article>
+          <article class="carta" id="reservaya" style="--c: var(--azul)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/reservaya-cancha-720.webp 720w, capturas/reservaya-cancha-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/reservaya-cancha.png" width="1440" height="1117" loading="lazy" decoding="async" alt="Ficha de una cancha en ReservaYa junto al selector de horarios" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 04</p>
+              <h3>ReservaYa</h3>
+              <p>
+                Reserva de canchas deportivas con tarifas por horario,
+                comprobante y cancelación.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  Dos personas confirman el mismo turno en el mismo segundo y
+                  solo una se lo puede quedar.
+                </dd>
+              </dl>
+              <p class="stack">React · FastAPI · SQLAlchemy · PostgreSQL</p>
+              <p class="links">
+                <a href="reservaya/index.html#demo">Probar la demo</a>
+                <a href="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/reservaya">Código</a>
+              </p>
+            </div>
+          </article>
 
-        <article class="entrada" id="interrogatorio">
-          <div class="entrada-meta">
-            <span class="numero">05</span>
-            <span>Juego de deducción · prototipo</span>
-          </div>
-          <div class="entrada-texto">
-            <h3>Interrogatorio</h3>
-            <p class="resumen">
-              Abres un expediente, revisas pruebas, interrogas a los
-              sospechosos y buscas contradicciones antes de acusar.
-            </p>
-            <dl>
-              <dt>El problema</dt>
-              <dd>
-                Que el jugador no pueda ver la solución, aunque toda la partida
-                pase por la API.
-              </dd>
-              <dt>Lo que más me costó</dt>
-              <dd>
-                Separar la verdad del caso de lo que el jugador puede saber, y
-                generar casos que se puedan resolver con lógica.
-              </dd>
-            </dl>
-            <p class="stack">React · FastAPI · SQLAlchemy · Python</p>
-            <p class="links">
-              <a href="interrogatorio/index.html#demo">Abrir un expediente →</a>
-              <a
-                href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio"
-                >Código</a
-              >
-            </p>
-          </div>
-          <figure class="foto">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="capturas/interrogatorio-720.webp 720w, capturas/interrogatorio-1200.webp 1180w"
-                sizes="(max-width: 760px) 92vw, 460px"
-              />
-              <img
-                src="capturas/interrogatorio.png"
-                width="1180"
-                height="780"
-                loading="lazy"
-                decoding="async"
-                alt="Expediente de Interrogatorio con pruebas y sospechosos"
-              />
-            </picture>
-            <figcaption>Un expediente abierto.</figcaption>
-          </figure>
-        </article>
+          <article class="carta" id="tiendanova" style="--c: var(--rojo)">
+            <figure class="carta-img">
+              <picture>
+                <source type="image/webp" srcset="capturas/tiendanova-720.webp 720w, capturas/tiendanova-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
+                <img src="capturas/tiendanova.jpg" width="1420" height="1160" loading="lazy" decoding="async" alt="Portada del catálogo de TiendaNova" />
+              </picture>
+              <span class="sello">App web</span>
+            </figure>
+            <div class="carta-cuerpo">
+              <p class="nivel">Nivel 05</p>
+              <h3>TiendaNova</h3>
+              <p>
+                Una tienda con variantes, cupones, pedidos, devoluciones y
+                panel de administración. Los pagos son simulados.
+              </p>
+              <dl>
+                <dt>Jefe final</dt>
+                <dd>
+                  El doble clic en «pagar»: el checkout es idempotente y
+                  descuenta el inventario en una sola transacción.
+                </dd>
+              </dl>
+              <p class="stack">Next.js · Auth.js · Prisma · PostgreSQL</p>
+              <p class="links">
+                <a href="tiendanova/index.html#demo">Probar la demo</a>
+                <a href="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">App en vivo ↗</a>
+                <a href="https://github.com/Gervasio02/Portafolio/tree/main/tiendanova">Código</a>
+              </p>
+            </div>
+          </article>
+        </div>
 
         <p class="aviso">
-          <strong>Nota:</strong> las apps en vivo se apagan cuando nadie las usa
-          para no gastar recursos. La primera visita puede tardar unos 30
-          segundos en cargar.
+          <strong>Cargando servidor…</strong> Las apps en vivo se apagan cuando
+          nadie juega para no gastar recursos. La primera visita puede tardar
+          unos 30 segundos.
         </p>
 
-        <div class="taller">
-          <h3>Además, en el taller</h3>
-          <p>
-            Tres herramientas más pequeñas que corren en local y comparten un
-            mismo servidor FastAPI:
-          </p>
+        <div class="extra">
+          <p class="hud">Contenido extra · se ejecuta en local</p>
           <ul>
-            <li>
-              <strong>DataLab</strong>: limpia archivos CSV y Excel y muestra
-              su calidad antes de usarlos.
-            </li>
-            <li>
-              <strong>DocFlow</strong>: extrae datos de facturas ficticias y
-              exige revisión humana antes de aprobar.
-            </li>
-            <li>
-              <strong>CloudOps</strong>: mide si las apps publicadas responden y
-              cuánto tardan.
-            </li>
+            <li><strong>DataLab</strong>: limpia archivos CSV y Excel y muestra su calidad.</li>
+            <li><strong>DocFlow</strong>: extrae datos de facturas ficticias con revisión humana.</li>
+            <li><strong>CloudOps</strong>: mide si las apps publicadas responden y cuánto tardan.</li>
           </ul>
           <p>
-            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs"
-              >Ver el código y cómo ejecutarlas</a
-            >
+            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs">Código y cómo ejecutarlas</a>
             ·
             <a href="proyectos/">Catálogo completo con filtros</a>
           </p>
         </div>
       </section>
 
-      <!-- ============ CÓMO TRABAJO ============ -->
-      <section class="wrap metodo" aria-labelledby="metodo-titulo">
+      <!-- ============ LOGROS ============ -->
+      <section id="logros" class="wrap logros" aria-labelledby="logros-titulo">
         <header class="encabezado">
-          <h2 id="metodo-titulo">Cómo trabajo</h2>
-          <p>Cuatro hábitos que intento mantener en todos los proyectos.</p>
+          <p class="hud">Logros desbloqueados</p>
+          <h2 id="logros-titulo">Logros</h2>
+          <p>Cifras medidas en las pruebas del repositorio, no decorativas.</p>
         </header>
-        <ol class="habitos">
+        <ul class="trofeos">
+          <li style="--c: var(--morado)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>98,9 %</strong>
+            <span>Cobertura de la API de TaskFlow</span>
+          </li>
+          <li style="--c: var(--azul)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>95,8 %</strong>
+            <span>Cobertura del backend de ReservaYa</span>
+          </li>
+          <li style="--c: var(--rojo)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>91,8 %</strong>
+            <span>Cobertura de la lógica de TiendaNova</span>
+          </li>
+          <li style="--c: var(--morado)">
+            <span class="trofeo" aria-hidden="true">★</span>
+            <strong>111</strong>
+            <span>Pruebas en el backend de Interrogatorio</span>
+          </li>
+        </ul>
+
+        <h3 class="sub">Reglas de la partida</h3>
+        <ol class="reglas">
           <li>
-            <h3>Las reglas viven en el servidor</h3>
-            <p>
-              La interfaz puede ocultar un botón, pero es la API la que decide
-              si tienes permiso. Nunca al revés.
-            </p>
+            <h4>Las reglas viven en el servidor</h4>
+            <p>La interfaz puede ocultar un botón, pero es la API la que decide si tienes permiso.</p>
           </li>
           <li>
-            <h3>La base de datos tiene la última palabra</h3>
-            <p>
-              Restricciones únicas y transacciones en PostgreSQL, en vez de
-              confiar en que dos peticiones nunca lleguen juntas.
-            </p>
+            <h4>La base de datos tiene la última palabra</h4>
+            <p>Restricciones únicas y transacciones en PostgreSQL, en vez de esperar que dos peticiones nunca choquen.</p>
           </li>
           <li>
-            <h3>Probar contra una base real</h3>
-            <p>
-              Las pruebas de API usan PostgreSQL de verdad, no un simulacro.
-              Así aparecen los errores que de otro modo verías en producción.
-            </p>
+            <h4>Probar contra una base real</h4>
+            <p>Las pruebas de API usan PostgreSQL de verdad, no un simulacro.</p>
           </li>
           <li>
-            <h3>Cada cambio pasa por CI</h3>
-            <p>
-              GitHub Actions prueba cada push. Si todo pasa, la app se despliega
-              sola en Azure, y si falla, sigue la versión anterior.
-            </p>
+            <h4>Cada cambio pasa por CI</h4>
+            <p>Si las pruebas pasan, la app se despliega sola en Azure; si fallan, sigue la versión anterior.</p>
           </li>
         </ol>
-
-        <div class="cifras" aria-label="Cobertura de pruebas medida">
-          <p><strong>98,9 %</strong> cobertura de la API de TaskFlow</p>
-          <p><strong>95,8 %</strong> cobertura del backend de ReservaYa</p>
-          <p><strong>91,8 %</strong> cobertura de la lógica de TiendaNova</p>
-          <p><strong>111</strong> pruebas en el backend de Interrogatorio</p>
-        </div>
       </section>
 
-      <!-- ============ BITÁCORA ============ -->
-      <section id="bitacora" class="wrap bitacora" aria-labelledby="bitacora-titulo">
+      <!-- ============ NOTAS DE PARCHE ============ -->
+      <section id="parches" class="wrap parches" aria-labelledby="parches-titulo">
         <header class="encabezado">
-          <h2 id="bitacora-titulo">Bitácora</h2>
-          <p>
-            Cómo fue creciendo el repositorio, sacado del historial de commits.
-          </p>
+          <p class="hud">Historial de versiones</p>
+          <h2 id="parches-titulo">Notas del parche</h2>
+          <p>Cómo fue creciendo el repositorio, según el historial de commits.</p>
         </header>
         <ol class="linea">
-          <li>
-            <time datetime="2026-11-22">22 nov</time>
-            <p>Primer commit. Ordeno las tres apps principales en un solo repositorio.</p>
-          </li>
-          <li>
-            <time datetime="2026-11-23">23 nov</time>
-            <p>
-              Primer despliegue en Azure. Ese mismo día se suman Snake e
-              Interrogatorio.
-            </p>
-          </li>
-          <li>
-            <time datetime="2026-11-23">23 nov</time>
-            <p>
-              Pruebas de migraciones y concurrencia contra PostgreSQL. TaskFlow
-              gana responsables, límites por columna, calendario y SLA.
-            </p>
-          </li>
-          <li>
-            <time datetime="2026-11-24">24 nov</time>
-            <p>
-              TiendaNova incorpora variantes y devoluciones. Snake suma
-              desafío diario y logros. Auditoría de dependencias sin
-              vulnerabilidades conocidas.
-            </p>
-          </li>
-          <li>
-            <time datetime="2026-11-25">25 nov</time>
-            <p>
-              Despliegue automático: cada push a <code>main</code> prueba la
-              app, publica la imagen y crea una revisión nueva en Azure.
-            </p>
-          </li>
-          <li>
-            <time datetime="2026-11-25">25 nov</time>
-            <p>Nueva portada, más simple y escrita en primera persona.</p>
-          </li>
+          <li><time datetime="2026-11-22">22 nov</time><p><b>#01</b> Primer commit: las tres apps principales en un solo repositorio.</p></li>
+          <li><time datetime="2026-11-23">23 nov</time><p><b>#02</b> Primer despliegue en Azure. Se suman Snake e Interrogatorio.</p></li>
+          <li><time datetime="2026-11-23">23 nov</time><p><b>#03</b> Pruebas de concurrencia en PostgreSQL. TaskFlow suma responsables, límites por columna, calendario y SLA.</p></li>
+          <li><time datetime="2026-11-24">24 nov</time><p><b>#04</b> Snake gana desafío diario y logros. TiendaNova, variantes y devoluciones. Auditoría de dependencias limpia.</p></li>
+          <li><time datetime="2026-11-25">25 nov</time><p><b>#05</b> Despliegue automático: cada push a <code>main</code> prueba, construye y publica una revisión nueva.</p></li>
+          <li><time datetime="2026-11-25">25 nov</time><p><b>#06</b> Nueva portada y publicación en GitHub Pages.</p></li>
         </ol>
-        <p>
-          <a href="https://github.com/Gervasio02/Portafolio/commits/main"
-            >Ver todos los commits ↗</a
-          >
-        </p>
+        <p><a href="https://github.com/Gervasio02/Portafolio/commits/main">Ver todos los commits ↗</a></p>
       </section>
 
-      <!-- ============ HERRAMIENTAS ============ -->
-      <section class="wrap herramientas" aria-labelledby="herr-titulo">
+      <!-- ============ EQUIPAMIENTO ============ -->
+      <section class="wrap equipo" aria-labelledby="equipo-titulo">
         <header class="encabezado">
-          <h2 id="herr-titulo">Con qué trabajo</h2>
+          <p class="hud">Inventario</p>
+          <h2 id="equipo-titulo">Equipamiento</h2>
           <p>Todo lo de esta lista aparece en al menos un proyecto de arriba.</p>
         </header>
-        <dl class="caja">
-          <div>
-            <dt>Lenguajes</dt>
-            <dd>JavaScript, TypeScript, Python, SQL, HTML y CSS</dd>
-          </div>
-          <div>
-            <dt>Frontend</dt>
-            <dd>React, Next.js y Vite</dd>
-          </div>
-          <div>
-            <dt>Backend</dt>
-            <dd>Node.js con Express, FastAPI y Auth.js</dd>
-          </div>
-          <div>
-            <dt>Datos</dt>
-            <dd>PostgreSQL, Prisma, SQLAlchemy, Alembic y SQLite</dd>
-          </div>
-          <div>
-            <dt>Pruebas</dt>
-            <dd>Jest, Vitest, pytest y Playwright</dd>
-          </div>
-          <div>
-            <dt>Entrega</dt>
-            <dd>Docker, GitHub Actions y Azure Container Apps</dd>
-          </div>
+        <dl class="inventario">
+          <div style="--c: var(--azul)"><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, SQL, HTML, CSS</dd></div>
+          <div style="--c: var(--morado)"><dt>Frontend</dt><dd>React, Next.js, Vite</dd></div>
+          <div style="--c: var(--rojo)"><dt>Backend</dt><dd>Node.js con Express, FastAPI, Auth.js</dd></div>
+          <div style="--c: var(--azul)"><dt>Datos</dt><dd>PostgreSQL, Prisma, SQLAlchemy, Alembic, SQLite</dd></div>
+          <div style="--c: var(--morado)"><dt>Pruebas</dt><dd>Jest, Vitest, pytest, Playwright</dd></div>
+          <div style="--c: var(--rojo)"><dt>Entrega</dt><dd>Docker, GitHub Actions, Azure Container Apps</dd></div>
         </dl>
       </section>
     </main>
 
     <footer id="contacto" class="wrap pie">
       <div>
-        <h2>¿Conversamos?</h2>
+        <p class="hud">¿Multijugador?</p>
+        <h2>Juguemos en equipo</h2>
         <!-- EDITA: agrega tu correo o LinkedIn si quieres que te contacten por ahí. -->
         <p>
           Si quieres comentar un proyecto o tienes una oportunidad en mente,
           encuéntrame en GitHub.
         </p>
         <p class="acciones">
-          <a class="boton" href="https://github.com/Gervasio02" rel="me"
-            >github.com/Gervasio02</a
-          >
+          <a class="boton" href="https://github.com/Gervasio02" rel="me">github.com/Gervasio02</a>
         </p>
       </div>
       <p class="colofon">
-        Este sitio está hecho con HTML, CSS y unas pocas líneas de JavaScript,
-        sin frameworks. El
-        <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal"
-          >código está en el repositorio</a
-        >. Última actualización: noviembre de 2026.
+        Hecho con HTML, CSS y unas pocas líneas de JavaScript, sin frameworks.
+        <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal">Código de esta página</a>.
+        Última actualización: noviembre de 2026.
       </p>
     </footer>
   </body>

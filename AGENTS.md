@@ -47,6 +47,9 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 - La portada (`portal/index.html`) es HTML estático escrito a mano.
   El catálogo (`portal/proyectos/`) se genera desde `portal/projects-data.js`.
   Si agregas o cambias un proyecto, actualiza **ambos**.
+- Estilo visual: estética gamer oscura (negro `#07070d`, azul `#2f8cff`,
+  morado `#8b5cf6`, rojo `#ff2d55`), definida en `portal/portada.css` (portada)
+  y `portal/tema.css` (páginas interiores). Reutiliza esas variables.
 - El texto de la portada está en primera persona y con tono humano: evita
   frases de marketing genéricas y no inventes datos personales. Los bloques
   marcados `<!-- EDITA: ... -->` los completa Gervasio.
