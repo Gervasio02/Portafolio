@@ -43,3 +43,41 @@ jobs:
           az acr login --name "$REGISTRY_NAME" --only-show-errors
           docker build --platform linux/amd64 -f snake/Dockerfile.api -t "$REGISTRY_SERVER/snake:$GITHUB_SHA" snake
           docker push "$REGISTRY_SERVER/snake:$GITHUB_SHA"
+      - name: Actualizar Container App y verificar salud
+        env:
+          REGISTRY_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
+        run: |
+          set -euo pipefail
+          az config set extension.use_dynamic_install=yes_without_prompt
+          container_app="snake-gervasio-std"
+          resource_id=$(az resource list \
+            --resource-type Microsoft.App/containerApps \
+            --query "[?name=='${container_app}'].id | [0]" \
+            --output tsv)
+          if [[ -z "$resource_id" ]]; then
+            echo "No se encontró la aplicación ${container_app}." >&2
+            exit 1
+          fi
+          resource_group=$(cut -d/ -f5 <<<"$resource_id")
+          az containerapp update \
+            --name "$container_app" \
+            --resource-group "$resource_group" \
+            --image "$REGISTRY_SERVER/snake:$GITHUB_SHA" \
+            --revision-suffix "${GITHUB_SHA:0:7}-${GITHUB_RUN_ID}" \
+            --only-show-errors
+          fqdn=$(az containerapp show \
+            --name "$container_app" \
+            --resource-group "$resource_group" \
+            --query properties.configuration.ingress.fqdn \
+            --output tsv)
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error --max-time 10 \
+              "https://${fqdn}/api/health" >/dev/null; then
+              printf 'Despliegue verificado: https://%s/api/health\n' "$fqdn" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "La nueva revisión no respondió en el tiempo esperado." >&2
+          exit 1

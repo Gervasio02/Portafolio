@@ -11,16 +11,19 @@ RUN npm ci --no-audit --no-fund
 
 FROM deps AS build
 COPY . .
-RUN npm run build
+RUN npm run build && npm prune --omit=dev --no-audit --no-fund
 
 FROM build AS setup
 CMD ["sh", "-c", "npm run db:migrate && npm run db:seed"]
 
 FROM base AS web
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
+COPY --from=build --chown=node:node /app/package*.json ./
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/prisma ./prisma
 COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
 USER node
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "npm run db:migrate && exec node server.js"]

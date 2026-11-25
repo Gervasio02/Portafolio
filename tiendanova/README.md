@@ -82,6 +82,14 @@ El reporte de cobertura queda en `coverage/index.html`. Si ya tienes Chromium in
 
 Vercel: <https://vercel.com/docs/deployments> · PostgreSQL: <https://www.postgresql.org/docs/> · Auth.js: <https://authjs.dev/>.
 
+## Despliegue en contenedor
+
+La etapa `web` del Dockerfile aplica `prisma migrate deploy` antes de iniciar
+Next.js. Configura `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET` y
+`AUTH_TRUST_HOST=true`; la revisión solo queda saludable después de aplicar el
+esquema. La etapa `setup` se mantiene para sembrar el catálogo o preparar una
+base nueva de forma explícita, sin sobrescribir stock ni cambios administrativos.
+
 ## Decisiones para explicar en una entrevista
 
 - **Rutas de servidor**. El listado y la ficha salen como HTML. El JS del carrito se usa para interacciones y almacenamiento del visitante.

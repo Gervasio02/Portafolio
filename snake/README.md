@@ -7,7 +7,7 @@ meta y una semilla estables para la fecha local.
 
 ## Ejecución
 
-Con Node.js 22 y PostgreSQL, copia `.env.example` a `.env`, configura los secretos y ejecuta `npm ci`, `npx prisma generate`, `npx prisma migrate deploy` y `npm run dev:api`. En otra terminal ejecuta `npm run dev`, con `VITE_API_URL=http://localhost:3001`. Con Docker, `docker compose up --build` sirve el juego en `http://localhost:8080`.
+Con Node.js 22 y PostgreSQL, copia `.env.example` a `.env`, configura los secretos y ejecuta `npm ci`, `npx prisma generate`, `npx prisma migrate deploy` y `npm run dev:api`. En otra terminal ejecuta `npm run dev`, con `VITE_API_URL=http://localhost:3001`. Con Docker, `docker compose up --build` sirve el juego en `http://localhost:8080`; la imagen de API aplica las migraciones antes de iniciar el servidor.
 
 `npm test` ejecuta las pruebas del motor, progreso y API; `npm run build`
 compila la interfaz. El resultado incluye manifiesto, icono y service worker para

@@ -1,6 +1,13 @@
 name: Publicar imágenes para Azure
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "taskflow/**"
+      - "reservaya/**"
+      - "tiendanova/**"
+      - ".github/workflows/azure-images.yml"
   workflow_dispatch:
     inputs:
       registry:
@@ -35,7 +42,7 @@ jobs:
           persist-credentials: false
 
       - name: Autenticar con Azure por OpenID Connect
-        if: inputs.registry == 'azure'
+        if: github.event_name == 'push' || inputs.registry == 'azure'
         uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
@@ -46,7 +53,7 @@ jobs:
         shell: bash
         env:
           APP_NAME: ${{ matrix.app }}
-          TARGET_REGISTRY: ${{ inputs.registry }}
+          TARGET_REGISTRY: ${{ inputs.registry || 'azure' }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AZURE_REGISTRY_NAME: ${{ vars.AZURE_REGISTRY_NAME }}
           AZURE_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
@@ -69,3 +76,50 @@ jobs:
           docker push "$image"
           digest=$(docker buildx imagetools inspect "$image" --format '{{.Manifest.Digest}}')
           printf 'Imagen de `%s`: `%s@%s`\n' "$APP_NAME" "${image%:*}" "$digest" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Actualizar Container App y verificar salud
+        if: github.event_name == 'push' || inputs.registry == 'azure'
+        shell: bash
+        env:
+          APP_NAME: ${{ matrix.app }}
+          AZURE_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
+        run: |
+          set -euo pipefail
+          az config set extension.use_dynamic_install=yes_without_prompt
+          container_app="${APP_NAME}-gervasio-std"
+          resource_id=$(az resource list \
+            --resource-type Microsoft.App/containerApps \
+            --query "[?name=='${container_app}'].id | [0]" \
+            --output tsv)
+          if [[ -z "$resource_id" ]]; then
+            echo "No se encontró la aplicación ${container_app}." >&2
+            exit 1
+          fi
+          resource_group=$(cut -d/ -f5 <<<"$resource_id")
+          image="${AZURE_REGISTRY_LOGIN_SERVER}/${APP_NAME}:${GITHUB_SHA}"
+          az containerapp update \
+            --name "$container_app" \
+            --resource-group "$resource_group" \
+            --image "$image" \
+            --revision-suffix "${GITHUB_SHA:0:7}-${GITHUB_RUN_ID}" \
+            --only-show-errors
+          fqdn=$(az containerapp show \
+            --name "$container_app" \
+            --resource-group "$resource_group" \
+            --query properties.configuration.ingress.fqdn \
+            --output tsv)
+          case "$APP_NAME" in
+            taskflow|reservaya) health_path="/api/health" ;;
+            tiendanova) health_path="/health" ;;
+          esac
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error --max-time 10 \
+              "https://${fqdn}${health_path}" >/dev/null; then
+              printf 'Despliegue verificado: https://%s%s\n' "$fqdn" "$health_path" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "La nueva revisión no respondió en el tiempo esperado." >&2
+          exit 1

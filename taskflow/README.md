@@ -173,11 +173,11 @@ administrada o existente:
 4. Si hay exactamente un proxy inverso de confianza delante de Express, define
    `TRUST_PROXY=1`. La aplicación sirve frontend y API desde el mismo origen
    por defecto; omite `APP_ORIGIN` en este caso.
-5. Antes de iniciar o actualizar la app, crea la imagen de migraciones con
-   `docker build --target db-tools -t taskflow-db-tools .` y ejecuta
-   `docker run --rm --env DATABASE_URL taskflow-db-tools` con la URL de la base
-   en el entorno de la máquina. La imagen de aplicación queda sin las
-   herramientas de migración. Compose automatiza este paso para desarrollo.
+5. La imagen de aplicación ejecuta `prisma migrate deploy` antes de abrir el
+   servidor, de modo que una revisión nueva no atiende tráfico con un esquema
+   antiguo. Si tu plataforma exige separar ese paso, crea la imagen de
+   migraciones con `docker build --target db-tools -t taskflow-db-tools .` y
+   ejecútala una sola vez antes de actualizar el servicio.
 6. Inicia la imagen de aplicación y comprueba `/api/health`. Registra un
    usuario y verifica crear y mover una tarjeta. Para habilitar la cuenta de
    demo, ejecuta previamente `NODE_ENV=production npm run db:seed` en un
