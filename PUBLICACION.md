@@ -1,76 +1,80 @@
 # Publicación del portafolio
 
-La portada (`portal/`) es un sitio estático: HTML, CSS y JavaScript sin build.
-Se puede alojar en cualquier servidor de archivos. Las aplicaciones completas
-(TaskFlow, ReservaYa, TiendaNova y Snake) ya se despliegan solas en Azure
-Container Apps; ver `GESTION_PORTAFOLIO.md`.
+| Parte                      | Dónde                                   | Cómo se actualiza                      |
+| -------------------------- | --------------------------------------- | -------------------------------------- |
+| Portada, CV y demos (`portal/`) | Azure Static Web Apps (plan Free) → **https://gervasio.sbs** | Push a `main` → flujo **Publicar portada** |
+| TaskFlow, ReservaYa, TiendaNova, Snake, Interrogatorio, Laboratorios | Azure Container Apps (`rg-portafolio-gervasio`) | Push a `main` en su carpeta → su flujo |
 
-## Opción recomendada: GitHub Pages (gratis, automático)
+Todo se edita desde GitHub (web, `github.dev` con la tecla `.`, GitHub
+Desktop, Codex o Claude) y se publica solo al llegar a `main`.
 
-Con esta opción editas la portada desde cualquier lugar (GitHub web, el
-teléfono, Codex o Claude) y se publica sola al llegar a `main`.
+## 1. Sitio estático en Azure (una vez)
 
-**Configuración (una sola vez):**
+1. Azure Portal → **Crear un recurso → Static Web App**.
+   - Grupo de recursos: `rg-portafolio-gervasio`.
+   - Nombre: `portafolio-gervasio`. Plan: **Free**.
+   - Origen de implementación: **Otro** (el flujo del repositorio publica).
+2. En el recurso: **Información general → Administrar token de implementación**.
+   Copia el token y guárdalo en GitHub: **Settings → Secrets and variables →
+   Actions → New repository secret**, nombre `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+3. En la pestaña **Variables** crea `AZURE_STATIC_WEB_APPS_READY` = `true`.
+4. GitHub → **Actions → Publicar portada → Run workflow** (rama `main`).
+   La portada queda en la URL `*.azurestaticapps.net` del recurso.
 
-1. Abre <https://github.com/Gervasio02/Portafolio/settings/pages>.
-2. En **Build and deployment → Source**, elige **GitHub Actions**.
-3. Ve a **Actions → Publicar portada → Run workflow** (rama `main`).
-4. Cuando termine, la portada queda en
-   **<https://gervasio02.github.io/Portafolio/>**.
+## 2. Dominio gervasio.sbs (DNS en Hostinger)
 
-**Después:** cada push a `main` que toque `portal/` ejecuta las pruebas de
-Playwright y, si pasan, publica la nueva versión en 1–2 minutos.
+En Azure: recurso Static Web App → **Dominios personalizados → Agregar →
+Dominio personalizado en otro DNS**.
 
-**Editar desde cualquier lugar:**
+**a) `www.gervasio.sbs`** (validación por CNAME)
 
-- En el navegador: abre el repositorio y pulsa la tecla `.` para abrir
-  `github.dev` (VS Code en la web). Edita `portal/index.html`, haz commit en una
-  rama y abre un pull request; al hacer merge se publica.
-- Desde Codex o Claude: pídeles el cambio; siguen las reglas de `AGENTS.md`
-  (rama + PR).
-- En el PC: GitHub Desktop → *Pull* → editar → *Commit* → *Push*.
+| Tipo  | Nombre | Apunta a                                  | TTL     |
+| ----- | ------ | ----------------------------------------- | ------- |
+| CNAME | `www`  | `<nombre>.azurestaticapps.net` (sin https) | 3600    |
 
-**Dominio propio (opcional):** en la misma página de Pages, escribe tu dominio
-en **Custom domain** y crea en tu proveedor DNS un registro `CNAME` hacia
-`gervasio02.github.io`. Activa **Enforce HTTPS** cuando aparezca.
+**b) `gervasio.sbs`** (dominio raíz; validación por TXT)
 
-## Opción alternativa: Azure Static Web Apps (plan Free)
+| Tipo  | Nombre | Valor                                          |
+| ----- | ------ | ---------------------------------------------- |
+| TXT   | `@`    | código que muestra Azure al agregar el dominio |
+| ALIAS | `@`    | `<nombre>.azurestaticapps.net`                 |
 
-Útil si quieres tener todo en Azure. El mismo flujo publica en ambos sitios si
-lo configuras:
+Si el editor DNS de Hostinger no ofrece `ALIAS`, borra el registro `A` que
+Hostinger crea por defecto para `@` y usa la opción **registro A** de Azure
+(Azure muestra la IP), o redirige `gervasio.sbs` → `https://www.gervasio.sbs`
+desde Hostinger (**Dominios → Redirigir**).
 
-1. En [Azure Portal](https://portal.azure.com/) crea un recurso
-   **Static Web Apps**, plan **Free**, origen **Other / Otro**.
-2. En el recurso: **Overview → Manage deployment token**. Copia el token a
-   GitHub: **Settings → Secrets and variables → Actions → Secrets**, con el
-   nombre `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-3. En **Actions → Variables**, crea `AZURE_STATIC_WEB_APPS_READY` = `true`.
-4. Ejecuta **Publicar portada** con *Run workflow*. Azure aplica además los
-   encabezados de seguridad de `portal/staticwebapp.config.json`.
+Hostinger: **hPanel → Dominios → gervasio.sbs → DNS / Nameservers**. Elimina
+los registros `A`/`CNAME` de estacionamiento que apunten a Hostinger para `@`
+y `www` antes de crear los nuevos. La propagación tarda de minutos a unas
+horas; Azure emite el certificado HTTPS automáticamente al validar.
 
-Documentación: [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/get-started-portal) ·
-[Token de despliegue](https://learn.microsoft.com/en-us/azure/static-web-apps/deployment-token-management).
+Documentación: [dominios en Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/custom-domain) ·
+[dominio raíz con DNS externo](https://learn.microsoft.com/azure/static-web-apps/apex-domain-external).
 
-## Otras opciones compatibles
+## 3. Apps sin espera
 
-Como `portal/` no necesita build, también sirve en Netlify, Cloudflare Pages o
-Vercel: conecta el repositorio y define **`portal`** como directorio de
-publicación, sin comando de build.
+Las Container Apps escalan a cero cuando nadie las usa (sin costo en
+reposo). `portal/despertar.js` las despierta en cuanto alguien abre la portada,
+el catálogo o una página de proyecto, y muestra «En línea» cuando ya
+responden. Si algún día prefieres que nunca se apaguen: en cada Container App,
+**Escala → Mínimo de réplicas = 1** (tiene costo mensual).
 
-## Después de cambiar de dirección
+## 4. Apps nuevas (Interrogatorio y Laboratorios)
 
-Cuando la portada tenga su URL definitiva:
+Sus flujos (`interrogatorio.yml`, `labs.yml`) usan
+`scripts/azure-desplegar-app.sh`: construyen la imagen, la suben al registro y,
+si la Container App no existe, la crean en el mismo entorno que Snake. El
+secreto `JWT_SECRET` de Interrogatorio se genera dentro del flujo; nadie lo ve.
 
-- Actualiza la fila **Portada** de `GESTION_PORTAFOLIO.md`.
-- Si usas CloudOps, define `PORTAL_URL` con la nueva dirección (ver
-  `labs/README.md`).
-- La dirección anterior en ChatGPT Sites deja de ser necesaria.
+## Comprobación final (usuarios finales)
 
-## Aplicaciones completas
+Desde un teléfono y un computador que no sean el tuyo:
 
-Siguen en Azure Container Apps (`rg-portafolio-gervasio`) y se actualizan solas
-con cada push a `main` en su carpeta. Se apagan sin tráfico: la primera visita
-tarda unos 30 segundos. Para evitarlo hay que fijar al menos una réplica
-mínima en cada Container App (*Scale → Min replicas = 1*), lo que tiene costo.
-DataLab, DocFlow y CloudOps se mantienen locales hasta disponer de HTTPS,
-identidades y una política de retención.
+1. Abre https://gervasio.sbs y espera a que los proyectos marquen «En línea».
+2. Snake: juega una partida y revisa el ranking.
+3. Interrogatorio: entra como invitado, interroga y acusa.
+4. TaskFlow, ReservaYa, TiendaNova: usa las credenciales de demo de cada README.
+5. Laboratorios: procesa los datos de ejemplo en DataLab, extrae una factura en
+   DocFlow y ejecuta una comprobación en CloudOps.
+6. Descarga el CV en PDF desde la sección de contacto.

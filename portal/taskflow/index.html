@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../tema.css">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <script src="../laboratorio.js" defer></script>
+  <script src="../despertar.js" defer></script>
 </head>
 <body class="project-page taskflow" data-demo="taskflow">
   <a class="skip" href="#demo">Saltar a la demo</a>
@@ -23,8 +24,8 @@
         <p class="eyebrow"><span></span> TaskFlow · Control de operaciones</p>
         <h1 id="project-title">Cada entrega tiene un estado claro.</h1>
         <p class="project-summary">Organiza el trabajo de un equipo que prepara entregas, atiende incidentes y necesita saber qué se está atrasando.</p>
-        <div class="project-links"><a class="hero-link" href="#demo">Probar TaskFlow</a><a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">Abrir aplicación completa ↗</a><a href="#recorrido">Cómo funciona</a></div>
-        <p class="nota-vivo">La app en vivo se apaga cuando nadie la usa: la primera carga puede tardar unos 30 segundos.</p>
+        <div class="project-links"><a class="hero-link" href="#demo">Probar TaskFlow</a><a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener" data-salud="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health">Abrir aplicación completa ↗ <span class="estado" data-estado></span></a><a href="#recorrido">Cómo funciona</a></div>
+        <p class="nota-vivo">Esta página despierta la app al abrirse; cuando veas «En línea», responde al instante.</p>
       </div>
       <figure>
         <img src="../capturas/taskflow-1200.webp" width="1200" height="890" alt="Centro de control de TaskFlow con métricas y distribución de tarjetas" fetchpriority="high">

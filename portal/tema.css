@@ -242,3 +242,33 @@ nav a:hover,
     justify-content: flex-start;
   }
 }
+
+/* indicador de estado de servidores (despertar.js) */
+.estado {
+  font: 600 0.75rem var(--mono);
+  color: var(--muted);
+}
+
+.estado::before {
+  content: "◌ ";
+}
+
+.estado[data-estado="despertando"] {
+  color: #fbbf24;
+}
+
+.estado[data-estado="lista"] {
+  color: #4ade80;
+}
+
+.estado[data-estado="lista"]::before {
+  content: "● ";
+}
+
+.estado[data-estado="error"] {
+  color: #ff7a93;
+}
+
+.estado:empty {
+  display: none;
+}

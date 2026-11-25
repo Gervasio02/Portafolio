@@ -1,7 +1,24 @@
 {
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
     "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "no-referrer"
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+  },
+  "routes": [
+    {
+      "route": "/cv/*.pdf",
+      "headers": { "Cache-Control": "public, max-age=3600" }
+    },
+    {
+      "route": "/capturas/*",
+      "headers": { "Cache-Control": "public, max-age=604800" }
+    }
+  ],
+  "responseOverrides": {
+    "404": { "rewrite": "/404.html", "statusCode": 404 }
+  },
+  "mimeTypes": {
+    "webmanifest": "application/manifest+json"
   }
 }

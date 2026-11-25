@@ -1,0 +1,244 @@
+/* CV: oscuro en pantalla (igual que la portada) y claro al imprimir o en PDF. */
+
+:root {
+  --fondo: #07070d;
+  --panel: #12121f;
+  --texto: #ecebff;
+  --suave: #a3a3c2;
+  --linea: #2a2a47;
+  --azul: #6cc4ff;
+  --morado: #8b5cf6;
+  --rojo: #ff2d55;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--texto);
+  background:
+    radial-gradient(50rem 25rem at 90% -5%, #8b5cf626, transparent 70%),
+    var(--fondo);
+  font: 0.98rem/1.55 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+a {
+  color: var(--azul);
+}
+
+.skip {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--morado);
+  color: #fff;
+  transform: translateY(-250%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+.barra {
+  width: min(860px, calc(100% - 2rem));
+  margin: 1.2rem auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font: 0.85rem var(--mono);
+}
+
+.descargar {
+  padding: 0.4rem 0.9rem;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, #2f8cff, var(--morado));
+}
+
+.hoja {
+  width: min(860px, calc(100% - 2rem));
+  margin: 1.2rem auto 3rem;
+  padding: clamp(1.2rem, 4vw, 2.6rem);
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--linea);
+  border-top: 3px solid var(--morado);
+}
+
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  line-height: 1.1;
+}
+
+.titulo {
+  margin: 0.3rem 0 0;
+  color: var(--azul);
+  font-weight: 600;
+}
+
+.contacto {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font: 0.85rem/1.7 var(--mono);
+  color: var(--suave);
+}
+
+h2 {
+  margin: 1.6rem 0 0.6rem;
+  font: 700 0.8rem var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rojo);
+}
+
+h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+h3 span {
+  font: 400 0.78rem var(--mono);
+  color: var(--suave);
+  margin-left: 0.4rem;
+}
+
+section p {
+  margin: 0.2rem 0 0;
+}
+
+.nota {
+  font-size: 0.85rem;
+  color: var(--suave);
+  margin-bottom: 0.6rem;
+}
+
+.proyectos,
+.lineas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.proyectos p,
+.lineas p {
+  color: var(--suave);
+  font-size: 0.92rem;
+}
+
+.lineas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fecha {
+  flex: none;
+  font: 0.8rem var(--mono);
+  color: var(--suave);
+  padding-top: 0.15rem;
+}
+
+.habilidades {
+  margin: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.habilidades div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.habilidades dt {
+  font: 700 0.78rem var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--azul);
+  padding-top: 0.15rem;
+}
+
+.habilidades dd {
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .lineas li {
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .fecha {
+    order: -1;
+  }
+
+  .habilidades div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
+/* Impresión / PDF: claro, sobrio y en una página A4 si es posible. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm;
+  }
+
+  :root {
+    --texto: #16161d;
+    --suave: #4a4a5c;
+    --linea: #d6d6e2;
+    --azul: #1f4fbf;
+    --rojo: #b0213f;
+  }
+
+  body {
+    background: #fff;
+    font-size: 10.5pt;
+  }
+
+  .no-imprimir,
+  .skip {
+    display: none;
+  }
+
+  .hoja {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+  }
+
+  h2 {
+    margin-top: 1rem;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  li,
+  section {
+    break-inside: avoid;
+  }
+}

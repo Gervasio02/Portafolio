@@ -4,8 +4,8 @@ Cinco aplicaciones y tres laboratorios de ingeniería informática, con datos
 ficticios y almacenamiento aislado. La portada en `portal/` presenta los
 proyectos en primera persona, con capturas, demos interactivas, un catálogo de
 ocho proyectos y una bitácora del repositorio. Abre `portal/index.html` para
-verla; se publica en <https://gervasio02.github.io/Portafolio/> (ver
-[PUBLICACION.md](PUBLICACION.md)).
+verla; se publica en <https://gervasio.sbs> (ver [PUBLICACION.md](PUBLICACION.md)).
+Incluye un CV web (`portal/cv.html`) y su versión PDF.
 
 | Aplicación                                 | Stack                                           | Decisión que conviene explicar en una entrevista                                                                         |
 | ------------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -38,7 +38,7 @@ secretos. Para que cada uno acceda al repositorio, autoriza la cuenta personal
 
 ## Operación y costos
 
-- **Portada**: sitio estático publicado con GitHub Pages desde `portal/` (gratis). También funciona en Azure Static Web Apps, Netlify o Cloudflare Pages.
+- **Portada**: sitio estático en Azure Static Web Apps (plan Free) con el dominio `gervasio.sbs`.
 - **TaskFlow, ReservaYa, Snake e Interrogatorio**: un servicio HTTPS por
   aplicación que ejecute su contenedor y una base autorizada cuando corresponda.
   Si el proveedor pausa servicios por inactividad, la primera solicitud puede

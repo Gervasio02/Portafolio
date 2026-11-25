@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Gervasio Torres, estudiante de ingeniería informática en Chile. Juegos y aplicaciones full stack con demo jugable, app en vivo y código abierto."
+      content="Gervasio Torres, analista programador y egresado de Ingeniería Informática (INACAP). Juegos y aplicaciones full stack con demo jugable, app en vivo y código abierto."
     />
     <meta name="theme-color" content="#07070d" />
     <meta property="og:title" content="Gervasio Torres · Portafolio" />
@@ -18,6 +18,7 @@
     <title>Gervasio Torres · Portafolio</title>
     <link rel="stylesheet" href="portada.css" />
     <script src="inicio.js" defer></script>
+    <script src="despertar.js" defer></script>
   </head>
   <body>
     <a class="skip" href="#niveles">Saltar a los proyectos</a>
@@ -30,7 +31,8 @@
       <nav aria-label="Principal">
         <a href="#niveles">Proyectos</a>
         <a href="#logros">Logros</a>
-        <a href="#parches">Parches</a>
+        <a href="#historia">Trayectoria</a>
+        <a href="cv.html">CV</a>
         <a href="proyectos/">Catálogo</a>
         <a href="#contacto">Contacto</a>
       </nav>
@@ -49,16 +51,18 @@
             de principio a fin.
           </h1>
           <p class="bajada">
-            Estudio ingeniería informática en Chile. Me gusta entender lo que
-            pasa detrás de la pantalla: cómo un servidor comprueba que tu
+            Soy analista programador titulado y egresado de Ingeniería
+            Informática en INACAP. Me gusta entender lo que pasa detrás de la
+            pantalla: cómo un servidor comprueba que tu
             puntaje en Snake es real, o qué ocurre cuando dos personas reservan
             la misma cancha en el mismo segundo. Cada proyecto tiene demo
             jugable, app en vivo y código abierto.
           </p>
           <p class="acciones">
             <a class="boton" href="#niveles">▶ Empezar</a>
+            <a class="boton boton-sec" href="cv.html">Ver mi CV</a>
             <a class="boton boton-sec" href="https://github.com/Gervasio02/Portafolio"
-              >Ver código en GitHub ↗</a
+              >Código en GitHub ↗</a
             >
           </p>
         </div>
@@ -69,10 +73,10 @@
             <span class="etiqueta">Online</span>
           </div>
           <dl class="ficha-datos">
-            <div><dt>Clase</dt><dd>Desarrollador full stack</dd></div>
-            <div><dt>Región</dt><dd>Santiago, Chile · <time id="hora-local">--:--</time></dd></div>
-            <div><dt>Misión actual</dt><dd>Mejorar este portafolio y automatizar sus despliegues</dd></div>
-            <!-- EDITA: agrega una fila con lo que estés haciendo (curso, práctica, búsqueda de trabajo). -->
+            <div><dt>Clase</dt><dd>Analista programador · Ingeniería Informática</dd></div>
+            <div><dt>Región</dt><dd>O'Higgins, Chile · <time id="hora-local">--:--</time></dd></div>
+            <div><dt>Misión actual</dt><dd>Práctica profesional en Tuniche: bots de automatización</dd></div>
+            <div><dt>Siguiente nivel</dt><dd>Título de Ingeniería Informática y primer empleo como desarrollador</dd></div>
           </dl>
           <div class="barras" aria-label="Lenguajes por cantidad de proyectos">
             <p><span>JS / TS</span><span class="barra"><i style="--v: 100%"></i></span><b>6</b></p>
@@ -96,7 +100,7 @@
         </header>
 
         <div class="destacados">
-          <article class="carta carta-juego" id="snake" style="--c: var(--azul)">
+          <article class="carta carta-juego" id="snake" data-salud="https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--azul)">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/snake-720.webp 720w, capturas/snake-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 540px" />
@@ -106,6 +110,7 @@
             </figure>
             <div class="carta-cuerpo">
               <p class="nivel">Nivel 01</p>
+              <p class="estado" data-estado aria-live="polite"></p>
               <h3>Snake</h3>
               <p>
                 El clásico de la serpiente con tres modos, desafío diario,
@@ -128,16 +133,17 @@
             </div>
           </article>
 
-          <article class="carta carta-juego" id="interrogatorio" style="--c: var(--morado)">
+          <article class="carta carta-juego" id="interrogatorio" data-salud="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health" style="--c: var(--morado)">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/interrogatorio-720.webp 720w, capturas/interrogatorio-1200.webp 1180w" sizes="(max-width: 860px) 92vw, 540px" />
                 <img src="capturas/interrogatorio.png" width="1180" height="780" loading="lazy" decoding="async" alt="Expediente de Interrogatorio con pruebas y sospechosos" />
               </picture>
-              <span class="sello">Juego · prototipo</span>
+              <span class="sello">Juego</span>
             </figure>
             <div class="carta-cuerpo">
               <p class="nivel">Nivel 02</p>
+              <p class="estado" data-estado aria-live="polite"></p>
               <h3>Interrogatorio</h3>
               <p>
                 Un juego de deducción: abres un expediente, revisas pruebas,
@@ -153,7 +159,8 @@
               </dl>
               <p class="stack">React · FastAPI · SQLAlchemy · Python</p>
               <p class="links">
-                <a class="boton" href="interrogatorio/index.html#demo">▶ Abrir un expediente</a>
+                <a class="boton" href="https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" rel="noopener">▶ Jugar en línea</a>
+                <a href="interrogatorio/index.html#demo">Demo rápida</a>
                 <a href="https://github.com/Gervasio02/Portafolio/tree/main/interrogatorio">Código</a>
               </p>
             </div>
@@ -161,7 +168,7 @@
         </div>
 
         <div class="rejilla">
-          <article class="carta" id="taskflow" style="--c: var(--morado)">
+          <article class="carta" id="taskflow" data-salud="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--morado)">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/taskflow-720.webp 720w, capturas/taskflow-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -171,6 +178,7 @@
             </figure>
             <div class="carta-cuerpo">
               <p class="nivel">Nivel 03</p>
+              <p class="estado" data-estado aria-live="polite"></p>
               <h3>TaskFlow</h3>
               <p>
                 Un tablero Kanban para equipos, con roles, SLA y un panel que
@@ -192,7 +200,7 @@
             </div>
           </article>
 
-          <article class="carta" id="reservaya" style="--c: var(--azul)">
+          <article class="carta" id="reservaya" data-salud="https://reservaya-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/health" style="--c: var(--azul)">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/reservaya-cancha-720.webp 720w, capturas/reservaya-cancha-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -202,6 +210,7 @@
             </figure>
             <div class="carta-cuerpo">
               <p class="nivel">Nivel 04</p>
+              <p class="estado" data-estado aria-live="polite"></p>
               <h3>ReservaYa</h3>
               <p>
                 Reserva de canchas deportivas con tarifas por horario,
@@ -223,7 +232,7 @@
             </div>
           </article>
 
-          <article class="carta" id="tiendanova" style="--c: var(--rojo)">
+          <article class="carta" id="tiendanova" data-salud="https://tiendanova-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health" style="--c: var(--rojo)">
             <figure class="carta-img">
               <picture>
                 <source type="image/webp" srcset="capturas/tiendanova-720.webp 720w, capturas/tiendanova-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 360px" />
@@ -233,6 +242,7 @@
             </figure>
             <div class="carta-cuerpo">
               <p class="nivel">Nivel 05</p>
+              <p class="estado" data-estado aria-live="polite"></p>
               <h3>TiendaNova</h3>
               <p>
                 Una tienda con variantes, cupones, pedidos, devoluciones y
@@ -256,24 +266,87 @@
         </div>
 
         <p class="aviso">
-          <strong>Cargando servidor…</strong> Las apps en vivo se apagan cuando
-          nadie juega para no gastar recursos. La primera visita puede tardar
-          unos 30 segundos.
+          <strong>Servidores en Azure.</strong> Las apps se apagan cuando nadie
+          las usa y esta página las despierta al abrirse: cuando veas «En línea»
+          en un proyecto, ya responde al instante.
         </p>
 
         <div class="extra">
-          <p class="hud">Contenido extra · se ejecuta en local</p>
+          <p class="hud">Contenido extra · herramientas</p>
           <ul>
             <li><strong>DataLab</strong>: limpia archivos CSV y Excel y muestra su calidad.</li>
             <li><strong>DocFlow</strong>: extrae datos de facturas ficticias con revisión humana.</li>
             <li><strong>CloudOps</strong>: mide si las apps publicadas responden y cuánto tardan.</li>
           </ul>
           <p>
-            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs">Código y cómo ejecutarlas</a>
+            <a class="boton" href="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/datalab" rel="noopener" data-salud="https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">▶ Abrir el taller <span class="estado" data-estado></span></a>
+            <a href="https://github.com/Gervasio02/Portafolio/tree/main/labs">Código</a>
             ·
             <a href="proyectos/">Catálogo completo con filtros</a>
           </p>
         </div>
+      </section>
+
+
+      <!-- ============ TRAYECTORIA ============ -->
+      <section id="historia" class="wrap historia" aria-labelledby="historia-titulo">
+        <header class="encabezado">
+          <p class="hud">Modo historia</p>
+          <h2 id="historia-titulo">Trayectoria</h2>
+          <p>Mi formación y la experiencia que la acompaña. El detalle completo está en <a href="cv.html">mi CV</a>.</p>
+        </header>
+        <div class="historia-grid">
+          <div>
+            <h3 class="sub">Experiencia en informática</h3>
+            <ol class="hitos">
+              <li style="--c: var(--azul)">
+                <span class="fecha">sep – nov 2026</span>
+                <h4>Práctica profesional · Tuniche</h4>
+                <p>Práctica enfocada en el desarrollo de bots de automatización.</p>
+              </li>
+              <li style="--c: var(--morado)">
+                <span class="fecha">ene – abr 2023</span>
+                <h4>Práctica informática · Centro de Negocios Sercotec</h4>
+                <p>Práctica en el área de informática del centro.</p>
+              </li>
+              <li style="--c: var(--rojo)">
+                <span class="fecha">nov 2026</span>
+                <h4>Proyecto personal · Este portafolio</h4>
+                <p>Cinco aplicaciones y tres herramientas con pruebas automatizadas, CI/CD y despliegue en Azure.</p>
+              </li>
+            </ol>
+          </div>
+          <div>
+            <h3 class="sub">Formación</h3>
+            <ol class="hitos">
+              <li style="--c: var(--morado)">
+                <span class="fecha">2023 – 2024</span>
+                <h4>Ingeniería Informática</h4>
+                <p>Universidad Tecnológica de Chile INACAP, Rancagua. Egresado, en proceso de titulación.</p>
+              </li>
+              <li style="--c: var(--azul)">
+                <span class="fecha">2019 – 2022</span>
+                <h4>Analista Programador · titulado</h4>
+                <p>Centro de Formación Técnica INACAP, Rancagua.</p>
+              </li>
+            </ol>
+            <h3 class="sub">Habilidades extra</h3>
+            <ul class="chips">
+              <li>Bases de datos relacionales y no relacionales</li>
+              <li>Automatización con bots</li>
+              <li>Mantenimiento de software y hardware</li>
+              <li>Office 365</li>
+              <li>Trabajo en equipo</li>
+              <li>Licencia clase B · movilización propia</li>
+            </ul>
+          </div>
+        </div>
+        <p class="nota-historia">
+          Antes de la informática trabajé en construcción, packing agrícola y
+          mantenimiento de bicicletas y máquinas. De ahí traigo la
+          responsabilidad, el trabajo en equipo y la costumbre de resolver
+          problemas con las manos.
+        </p>
       </section>
 
       <!-- ============ LOGROS ============ -->
@@ -367,14 +440,16 @@
       <div>
         <p class="hud">¿Multijugador?</p>
         <h2>Juguemos en equipo</h2>
-        <!-- EDITA: agrega tu correo o LinkedIn si quieres que te contacten por ahí. -->
         <p>
-          Si quieres comentar un proyecto o tienes una oportunidad en mente,
-          encuéntrame en GitHub.
+          Busco mi primer puesto como desarrollador. Si tienes una oportunidad
+          o quieres comentar un proyecto, escríbeme.
         </p>
         <p class="acciones">
-          <a class="boton" href="https://github.com/Gervasio02" rel="me">github.com/Gervasio02</a>
+          <a class="boton" href="mailto:Gervasiot19@gmail.com">Gervasiot19@gmail.com</a>
+          <a class="boton boton-sec" href="cv/Gervasio-Torres-CV.pdf" download>Descargar CV (PDF)</a>
+          <a class="boton boton-sec" href="https://github.com/Gervasio02" rel="me">GitHub ↗</a>
         </p>
+        <!-- EDITA: agrega tu LinkedIn aquí si tienes uno. -->
       </div>
       <p class="colofon">
         Hecho con HTML, CSS y unas pocas líneas de JavaScript, sin frameworks.

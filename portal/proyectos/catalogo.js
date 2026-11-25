@@ -69,13 +69,20 @@ function render() {
       if (external(url)) a.rel = "noopener";
       actions.append(a);
     }
-    let note = "Demo en el navegador · datos ficticios";
-    if (p.local)
-      note = `Se ejecuta en local: inicia el servidor de labs/ y abre ${p.run} (instrucciones en el README).`;
-    else if (p.live || external(p.demo || ""))
-      note =
-        "La app en vivo se apaga cuando nadie la usa: la primera carga puede tardar unos 30 segundos.";
-    body.append(actions, element("p", note, "catalog-note"));
+    const note = element(
+      "p",
+      p.health
+        ? "Servidor en Azure: "
+        : "Demo en el navegador · datos ficticios",
+      "catalog-note",
+    );
+    if (p.health) {
+      note.dataset.salud = p.health;
+      const estado = element("span", null, "estado");
+      estado.dataset.estado = "";
+      note.append(estado);
+    }
+    body.append(actions, note);
     const details = element("details");
     details.append(element("summary", "Objetivo, arquitectura y aprendizajes"));
     for (const [title, text] of [
@@ -88,6 +95,7 @@ function render() {
     card.append(body);
     $("projects").append(card);
   }
+  window.despertarApps?.($("projects"));
   if (!filtered.length)
     $("projects").append(
       element("p", "No hay resultados. Prueba otro filtro.", "catalog-empty"),

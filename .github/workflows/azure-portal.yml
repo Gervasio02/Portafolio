@@ -1,10 +1,9 @@
 name: Publicar portada
 
-# Prueba la portada (portal/) y la publica:
-#   - En GitHub Pages, siempre que haya un push a main que toque portal/.
-#     Requisito único: Settings → Pages → Source: "GitHub Actions".
-#   - En Azure Static Web Apps, solo si existe la variable
-#     AZURE_STATIC_WEB_APPS_READY=true y el secreto AZURE_STATIC_WEB_APPS_API_TOKEN.
+# Prueba la portada (portal/) y la publica en Azure Static Web Apps
+# (https://gervasio.sbs) en cada push a main que toque portal/.
+# Requisitos: secreto AZURE_STATIC_WEB_APPS_API_TOKEN y variable
+# AZURE_STATIC_WEB_APPS_READY=true en el repositorio.
 
 on:
   workflow_dispatch:
@@ -47,28 +46,6 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test
 
-  github-pages:
-    name: Publicar en GitHub Pages
-    needs: probar
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: portal
-      - id: deploy
-        uses: actions/deploy-pages@v4
 
   azure:
     name: Publicar en Azure Static Web Apps

@@ -8,18 +8,18 @@ Responde y escribe siempre en **español** (código, commits y documentación).
 
 ## Qué es este repositorio
 
-Portafolio de Gervasio Torres (estudiante de ingeniería informática, Chile).
+Portafolio de Gervasio Torres (analista programador y egresado de Ingeniería Informática, Chile).
 Cuenta de GitHub personal: `Gervasio02`. Nunca uses una cuenta de empresa.
 
 | Carpeta           | Stack                                        | Despliegue                        |
 | ----------------- | -------------------------------------------- | --------------------------------- |
-| `portal/`         | HTML, CSS y JS sin frameworks                | GitHub Pages (y Azure SWA opcional) |
+| `portal/`         | HTML, CSS y JS sin frameworks                | Azure Static Web Apps → https://gervasio.sbs |
 | `taskflow/`       | React, Express, Prisma, PostgreSQL           | Azure Container Apps              |
 | `reservaya/`      | React, FastAPI, SQLAlchemy, PostgreSQL       | Azure Container Apps              |
 | `tiendanova/`     | Next.js, Auth.js, Prisma, PostgreSQL         | Azure Container Apps              |
 | `snake/`          | React, TypeScript, Express, Prisma           | Azure Container Apps              |
-| `interrogatorio/` | React, FastAPI, SQLAlchemy                   | Sin desplegar (solo demo en portal) |
-| `labs/`           | FastAPI, Python, SQLite                      | Solo local                        |
+| `interrogatorio/` | React, FastAPI, SQLAlchemy                   | Azure Container Apps              |
+| `labs/`           | FastAPI, Python, SQLite (modo invitado)      | Azure Container Apps              |
 | `tests/interrogatorio/` | Playwright para todo `portal/`         | CI                                |
 
 URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICACION.md`.
@@ -40,8 +40,14 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 
 - Mantén el stack y el estilo de cada app; no mezcles frameworks entre proyectos.
 - `portal/` debe funcionar sin backend y sin pasos de build: abrir
-  `portal/index.html` tiene que bastar. Usa rutas **relativas** (se publica en
-  `https://gervasio02.github.io/Portafolio/`, no en la raíz del dominio).
+  `portal/index.html` tiene que bastar. Usa rutas **relativas** para que
+  funcione igual en local, en vistas previas y en https://gervasio.sbs.
+- `portal/despertar.js` despierta las apps de Azure al abrir una página: todo
+  enlace a una app en vivo lleva `data-salud="<url de salud>"` y un
+  `<span class="estado" data-estado>` para mostrar su estado.
+- El CV vive en `portal/cv.html` (+ `cv.css`). Si lo cambias, regenera
+  `portal/cv/Gervasio-Torres-CV.pdf` imprimiendo esa página a PDF (A4).
+  Nunca publiques RUT, dirección, teléfono ni fecha de nacimiento.
 - Imágenes del portal en `portal/capturas/`, en WebP (720 y 1200 px) con un
   PNG/JPG de respaldo solo cuando se use en `<picture>`.
 - La portada (`portal/index.html`) es HTML estático escrito a mano.
@@ -80,10 +86,12 @@ Antes de dar por terminado un cambio en `portal/`, revísalo en 1440, 390 y
 
 ## Despliegue (ojo: llegar a `main` publica)
 
-- Push a `main` con cambios en `taskflow/`, `reservaya/`, `tiendanova/` o
-  `snake/` → pruebas → imagen en Azure Container Registry → nueva revisión en
-  Azure Container Apps (grupo `rg-portafolio-gervasio`).
-- Push a `main` con cambios en `portal/` → pruebas Playwright → GitHub Pages.
+- Push a `main` con cambios en `taskflow/`, `reservaya/`, `tiendanova/`,
+  `snake/`, `interrogatorio/` o `labs/` → pruebas → imagen en Azure Container
+  Registry → nueva revisión en Azure Container Apps (grupo
+  `rg-portafolio-gervasio`). Las apps nuevas usan `scripts/azure-desplegar-app.sh`.
+- Push a `main` con cambios en `portal/` → pruebas Playwright → Azure Static
+  Web Apps (https://gervasio.sbs).
 - Nunca escribas tokens, secretos ni cadenas de conexión: los configura
   Gervasio en GitHub (Settings → Secrets and variables) o en Azure.
 
