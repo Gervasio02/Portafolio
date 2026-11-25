@@ -1,12 +1,18 @@
 # Snake
 
-Juego de Snake para el portafolio de Gervasio Torres. Se puede jugar como invitado y elegir entre tres modos. Las cuentas permiten guardar puntajes verificados y consultar el ranking y el historial.
+Juego de Snake para el portafolio de Gervasio Torres. Se puede jugar como
+invitado y elegir entre tres modos. Las cuentas permiten guardar puntajes
+verificados y consultar ranking, historial y logros. El desafío diario usa una
+meta y una semilla estables para la fecha local.
 
 ## Ejecución
 
 Con Node.js 22 y PostgreSQL, copia `.env.example` a `.env`, configura los secretos y ejecuta `npm ci`, `npx prisma generate`, `npx prisma migrate deploy` y `npm run dev:api`. En otra terminal ejecuta `npm run dev`, con `VITE_API_URL=http://localhost:3001`. Con Docker, `docker compose up --build` sirve el juego en `http://localhost:8080`.
 
-`npm test` ejecuta las pruebas disponibles y `npm run build` compila la interfaz.
+`npm test` ejecuta las pruebas del motor, progreso y API; `npm run build`
+compila la interfaz. El resultado incluye manifiesto, icono y service worker para
+instalación básica como PWA. El service worker no almacena respuestas de
+`/api/`.
 
 ## Arquitectura y seguridad
 
@@ -19,6 +25,11 @@ El motor de `src/engine.ts` es independiente del navegador y utiliza una semilla
 - `GET /api/profile`
 - `POST /api/games` y `GET /api/games/:id/replay`
 
-## Límites
+## Progreso y límites
 
-La repetición existe como datos de API, sin controles visuales. Faltan PWA, selector de temas, OpenAPI, pruebas completas de extremo a extremo, las metas de cobertura originales, datos de muestra, la estructura de monorepo y herramientas de calidad del requerimiento. La mejor marca local pertenece al navegador; el ranking global requiere el servidor y una sesión.
+La interfaz muestra avance de logros por puntaje, partidas y modos, además del
+desafío diario. La mejor marca y el desafío se conservan localmente para
+invitados; el ranking y el perfil global requieren el servidor y una sesión. La
+repetición se conserva como datos de API, todavía sin controles visuales de
+reproducción. La validación del servidor dificulta puntajes inventados, pero no
+impide automatizar una secuencia de movimientos válida.

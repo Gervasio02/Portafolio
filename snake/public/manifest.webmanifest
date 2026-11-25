@@ -1,0 +1,10 @@
+{
+  "name": "Snake · Gervasio Torres",
+  "short_name": "Snake",
+  "description": "Snake responsive con desafíos, logros y ranking verificable.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101926",
+  "theme_color": "#101926",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

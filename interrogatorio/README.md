@@ -2,7 +2,10 @@
 
 Prototipo de juego de misterio en español con API FastAPI, interfaz React y un motor determinista. El jugador entrevista sospechosos, presenta pruebas, guarda notas y formula una acusación. La verdad se genera en el servidor a partir de una semilla; las respuestas actuales también son deterministas y no consumen servicios de IA.
 
-> **Estado:** prototipo en desarrollo, todavía no listo para producción ni para integrar como proyecto terminado al portafolio. Consulta `docs/ESTADO.md` para el alcance pendiente. Las pistas actuales identifican directamente al culpable y los casos comparten una misma plantilla; la duración y dificultad deseadas aún no están validadas.
+> **Estado:** experiencia completa para demostración local y portafolio. No debe
+> exponerse públicamente sin los controles operativos descritos en “Seguridad y
+> límites conocidos”. El motor ofrece tres familias de expedientes con título,
+> resumen, cronología y conexiones o contradicciones entre evidencias.
 
 ## Inicio con Docker
 
@@ -45,7 +48,12 @@ flowchart LR
   API --> DB[(PostgreSQL o SQLite)]
 ```
 
-El motor construye el caso con una semilla y verifica ciertas invariantes. El servidor guarda el progreso y devuelve una vista pública. Las respuestas se seleccionan con reglas, no con un LLM: por ello no hay costes de tokens. SSE entrega actualmente la respuesta completa en un único evento; la interfaz espera a que termine antes de mostrarla.
+El motor construye el caso con una semilla y verifica sus invariantes. La semilla
+selecciona una de tres familias narrativas y mantiene reproducibles sospechosos,
+cronología, evidencias y culpable. El servidor guarda progreso y notas y devuelve
+solo la vista pública. Las respuestas se seleccionan con reglas, no con un LLM:
+por ello no hay costes de tokens. SSE entrega la respuesta completa en un único
+evento.
 
 ## API principal
 
@@ -62,4 +70,8 @@ Las contraseñas usan Argon2 y las entradas tienen límites básicos. El proyect
 
 ## Material para portafolio
 
-Añadir capturas en `docs/images/` y un GIF del flujo cuando esté terminado y revisado. No se ha desplegado esta versión. Antes de publicar, completar `docs/ESTADO.md`, verificar costes y disponibilidad de los proveedores de alojamiento y configurar claves y orígenes seguros.
+La interfaz y el flujo local fueron verificados en escritorio y a 390 px:
+creación de sesión invitada, apertura de expediente, cronología, conexiones de
+evidencias, pregunta y respuesta. No se ha desplegado esta versión. Antes de
+publicarla, configura claves y orígenes seguros, rate limiting, supervisión y una
+base PostgreSQL dedicada, y repite el flujo contra la URL resultante.
