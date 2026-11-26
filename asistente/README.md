@@ -12,7 +12,7 @@ páginas (botón «Pregúntame»).
 
 ```
 pregunta ─▶ normalizar ─▶ rasgos (palabras, pares, trigramas)
-         ─▶ hashing FNV-1a a 2048 posiciones ─▶ capa oculta (48, ReLU)
+         ─▶ hashing FNV-1a a 2048 posiciones ─▶ capa oculta (96, ReLU)
          ─▶ softmax sobre las intenciones ─▶ respuesta o «no sé»
 ```
 
@@ -20,7 +20,7 @@ pregunta ─▶ normalizar ─▶ rasgos (palabras, pares, trigramas)
 | --- | --- |
 | `conocimiento.yml` | Intenciones: palabras clave, ejemplos de preguntas y respuesta. **Es lo que se edita para enseñarle.** |
 | `caracteristicas.py` | Texto → vector. Tiene un gemelo exacto en `portal/asistente/red.js`. |
-| `entrenar.py` | Perceptrón multicapa con retropropagación y Adam escritos a mano. Exporta `portal/asistente/modelo.json` (pesos en int8, ~150 KB). |
+| `entrenar.py` | Perceptrón multicapa con retropropagación y Adam escritos a mano. Exporta `portal/asistente/modelo.json` (pesos en int8, ~290 KB). |
 | `tests/` | Datos válidos, paridad Python/JavaScript y acierto ≥ 85 % con preguntas que la red nunca vio. |
 | `portal/asistente.js` / `.css` | El chat. Carga la red y el modelo solo al abrirse. |
 | `portal/asistente/` | Página «Cómo funciono» con métricas y un probador en vivo. |
