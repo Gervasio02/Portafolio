@@ -1,12 +1,12 @@
 :root {
-  --fondo: #151413;
-  --superficie: #1c1b19;
-  --borde: #2e2c29;
-  --texto: #ece7df;
-  --suave: #a39d93;
-  --acento: #e3a13b;
-  --ok: #8fbf8a;
-  --error: #e07a64;
+  --fondo: #0b0812;
+  --superficie: #14101f;
+  --borde: #2c2140;
+  --texto: #f1ecfa;
+  --suave: #b3a8c9;
+  --acento: #ff2e63;
+  --ok: #4ee6a3;
+  --error: #ff6b81;
   color-scheme: dark;
 }
 
@@ -59,7 +59,7 @@ button {
   border: 1px solid var(--acento);
   border-radius: 6px;
   background: var(--acento);
-  color: #151413;
+  color: #0b0812;
   font-weight: 600;
   cursor: pointer;
 }

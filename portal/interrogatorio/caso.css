@@ -1,9 +1,9 @@
 .case-page {
-  --accent: #aee2d9;
-  --case-surface: #1e2927;
-  --case-deep: #15211f;
-  --case-line: #425852;
-  background: radial-gradient(ellipse 40rem 23rem at 90% 8rem, #233831, transparent 80%), var(--bg);
+  --accent: #c084fc;
+  --case-surface: #14101f;
+  --case-deep: #0b0812;
+  --case-line: #33264a;
+  background: radial-gradient(ellipse 40rem 23rem at 90% 8rem, #2a1745, transparent 80%), var(--bg);
 }
 
 .case-hero {

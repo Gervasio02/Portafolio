@@ -57,11 +57,16 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 - La portada (`portal/index.html`) es HTML estático escrito a mano.
   El catálogo (`portal/proyectos/`) se genera desde `portal/projects-data.js`.
   Si agregas o cambias un proyecto, actualiza **ambos**.
-- Estilo visual: sobrio y oscuro. Carbón cálido `#151413`, superficies
-  `#1c1b19`, texto crema `#ece7df`, un solo acento ámbar `#e3a13b`.
-  Tipografía IBM Plex Sans/Mono servida desde `portal/fuentes/`. Sin
-  degradados, brillos, cortes en diagonal ni texto en mayúsculas sostenidas.
-  Variables en `portal/portada.css` (portada) y `portal/tema.css` (interiores).
+- Estilo visual: oscuro y de estilo gamer. Fondo negro violáceo `#0b0812`,
+  superficies `#14101f`, texto `#f1ecfa`, acento rojo neón `#ff2e63` y
+  morado neón `#a855f7`/`#c084fc` como segundo color. Los brillos
+  (`box-shadow`/`text-shadow`) se reservan para lo interactivo y las cifras;
+  sin texto en mayúsculas sostenidas. Tipografía IBM Plex Sans/Mono servida
+  desde `portal/fuentes/`. Variables en `portal/portada.css` (portada) y
+  `portal/tema.css` (interiores). El CV impreso (PDF) mantiene su estilo claro para impresión.
+- `portal/animaciones.js` anima la portada (consola que escribe y aparición al
+  hacer scroll con cifras que cuentan). Todo debe verse igual sin JavaScript y
+  respetar `prefers-reduced-motion`.
 - El texto está en primera persona, concreto y con tono humano: cuenta qué
   hace cada proyecto y qué fue lo difícil. Evita frases de marketing, jerga
   vacía y datos personales que Gervasio no haya entregado. Los bloques
