@@ -67,9 +67,12 @@ jobs:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
       pages: write
       id-token: write
+    env:
+      ARTEFACTO_PAGES: github-pages-${{ github.run_attempt }}
     environment:
       name: github-pages
       url: https://gervasio.sbs
@@ -88,9 +91,29 @@ jobs:
           python asistente/entrenar.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
+        id: subir-pages
         with:
+          name: ${{ env.ARTEFACTO_PAGES }}
           path: portal
+      - name: Esperar el archivo de este intento
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTEFACTO_ID: ${{ steps.subir-pages.outputs.artifact_id }}
+        shell: bash
+        run: |
+          ruta="repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?name=${ARTEFACTO_PAGES}"
+          for intento in {1..20}; do
+            if id_visible=$(gh api "$ruta" --jq '.artifacts[] | select(.expired == false) | .id') &&
+              [[ -n "$ARTEFACTO_ID" && "$id_visible" == "$ARTEFACTO_ID" ]]; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo '::error::GitHub todavía no encuentra el archivo que se acaba de subir.'
+          exit 1
       - uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.ARTEFACTO_PAGES }}
 
   verificar-publicacion:
     name: Verificar sitio publicado
