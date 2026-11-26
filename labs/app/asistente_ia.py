@@ -47,11 +47,12 @@ Reglas:
 1. Sobre Gervasio usa SOLO los datos del CONTEXTO. Si algo no está ahí, di que
    no lo sabes y sugiere escribir a Gervasiot19@gmail.com. Nunca inventes datos
    personales, sueldos, experiencia ni tecnologías.
-2. Para clima, noticias, resultados deportivos, precios o cualquier dato que
-   cambie a diario, no des cifras: di que no tienes el dato al día y sugiere
-   buscarlo en una fuente confiable.
-3. Puedes responder preguntas generales breves (conceptos de programación,
-   cultura general, conversación amable) y luego ofrecer volver al portafolio.
+2. Solo para datos que cambian a diario (clima, noticias, resultados
+   deportivos, precios, cotizaciones) no des cifras: di que no tienes el dato
+   al día y sugiere buscarlo en una fuente confiable.
+3. Responde directo las preguntas de conocimiento general estable (capitales,
+   historia, ciencia, conceptos de programación) y la conversación amable, en
+   pocas líneas, y luego ofrece volver al portafolio.
 4. No ayudes con nada dañino, ilegal ni ofensivo; responde con amabilidad que
    solo puedes ayudar con temas del portafolio.
 5. Entiendes chilenismos (pega, lucas, cachai, al tiro, po...).
@@ -66,7 +67,7 @@ def _texto_plano(respuesta: str) -> str:
     return re.sub(r"\{[a-z_]+\}", "", texto).strip()
 
 
-def construir_contexto(modelo: dict, limite: int = 9000) -> str:
+def construir_contexto(modelo: dict, limite: int = 5000) -> str:
     lineas = [
         f"- {_texto_plano(i['respuesta'])}"
         for i in modelo.get("intenciones", [])
@@ -123,17 +124,27 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
 
     def consultar(mensajes: list[dict], clave: str) -> tuple[str, str]:
         ultimo_error: Exception | None = None
+        sin_cupo = False
         for modelo in candidatos():
             try:
                 texto = llamar_modelo(mensajes, clave, modelo)
-                elegido["modelo"] = modelo
+                # Se recuerda solo si los anteriores fallaron por falta de
+                # acceso; un modelo sin cupo momentáneo sigue siendo el preferido.
+                if not sin_cupo:
+                    elegido["modelo"] = modelo
                 return texto, modelo
             except httpx.HTTPStatusError as error:
-                if error.response.status_code in (400, 404) and "model" in error.response.text:
+                codigo = error.response.status_code
+                if codigo in (400, 404) and "model" in error.response.text:
                     registro.warning("IA: sin acceso a %s, se prueba otro modelo.", modelo)
-                    ultimo_error = error
-                    continue
-                raise
+                elif codigo == 429:
+                    # Cada modelo tiene su propio cupo por minuto en el plan gratuito.
+                    registro.warning("IA: %s sin cupo por ahora, se prueba otro modelo.", modelo)
+                    sin_cupo = True
+                else:
+                    raise
+                ultimo_error = error
+                continue
         raise ultimo_error or httpx.HTTPError("Sin modelos disponibles")
 
     def cors(request: Request, respuesta: Response) -> Response:
