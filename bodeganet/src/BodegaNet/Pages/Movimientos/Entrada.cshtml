@@ -1,15 +1,15 @@
 @page
 @model EntradaModel
 @{
-    ViewData["Title"] = "Registrar entrada";
+    ViewData["Title"] = "Recibir productos";
 }
 <div class="titulo-pagina">
-    <h1>Registrar entrada</h1>
+    <h1>Recibir productos</h1>
     <a href="/Movimientos">Volver a movimientos</a>
 </div>
 <div class="rejilla-form">
     <form method="post" class="tarjeta formulario" novalidate>
-        <p class="tenue">Una compra o recepción. El costo promedio del producto en esa bodega se recalcula con el costo unitario que indiques.</p>
+        <p class="tenue">Elige qué llegó, en qué bodega se guardará y cuánto costó cada unidad.</p>
         <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
         <div class="campo">
             <label asp-for="Datos.ProductoId"></label>
@@ -21,6 +21,7 @@
             <select asp-for="Datos.BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
             <span asp-validation-for="Datos.BodegaId" class="error"></span>
         </div>
+        <p id="disponibilidad" class="disponibilidad" role="status" aria-atomic="true"></p>
         <div class="campos-2">
             <div class="campo">
                 <label asp-for="Datos.Cantidad"></label>

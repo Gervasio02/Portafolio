@@ -1,15 +1,15 @@
 @page
 @model TransferenciaModel
 @{
-    ViewData["Title"] = "Transferir entre bodegas";
+    ViewData["Title"] = "Mover entre bodegas";
 }
 <div class="titulo-pagina">
-    <h1>Transferir entre bodegas</h1>
+    <h1>Mover entre bodegas</h1>
     <a href="/Movimientos">Volver a movimientos</a>
 </div>
 <div class="rejilla-form">
     <form method="post" class="tarjeta formulario" novalidate>
-        <p class="tenue">La salida del origen y la entrada al destino se guardan en la misma transacción: o quedan las dos, o ninguna. El destino recibe el costo promedio del origen.</p>
+        <p class="tenue">Indica de qué bodega salen las unidades y a qué bodega deben llegar.</p>
         <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
         <div class="campo">
             <label asp-for="Datos.ProductoId"></label>
@@ -28,6 +28,7 @@
                 <span asp-validation-for="Datos.DestinoId" class="error"></span>
             </div>
         </div>
+        <p id="disponibilidad" class="disponibilidad" role="status" aria-atomic="true"></p>
         <div class="campo">
             <label asp-for="Datos.Cantidad"></label>
             <input asp-for="Datos.Cantidad" type="number" min="1" step="1" inputmode="numeric" />

@@ -1,16 +1,17 @@
 @model List<FilaExistencia>
+<script src="~/js/disponibilidad.js" asp-append-version="true" defer></script>
 @if (Model.Count > 0)
 {
-    <aside class="tarjeta">
-        <h2>Saldo actual</h2>
+    <noscript><aside class="tarjeta">
+        <h2>Unidades disponibles</h2>
         <ul class="saldos">
             @foreach (var s in Model)
             {
                 <li>
                     <span>@s.Bodega</span>
-                    <span><strong>@Formato.Numero(s.Cantidad) @s.Unidad</strong> · prom. @Formato.Costo(s.CostoPromedio)</span>
+                    <strong>@Formato.Numero(s.Cantidad) @s.Unidad</strong>
                 </li>
             }
         </ul>
-    </aside>
+    </aside></noscript>
 }

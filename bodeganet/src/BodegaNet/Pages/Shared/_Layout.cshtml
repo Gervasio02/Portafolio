@@ -1,7 +1,15 @@
 @{
     var autenticado = User.Identity?.IsAuthenticated == true;
     var ruta = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
-    string Activo(string prefijo) => ruta == prefijo || (prefijo != "/Index" && ruta.StartsWith(prefijo + "/")) ? "activo" : "";
+    var navegacion = new (string Pagina, string Grupo, string Nombre)[]
+    {
+        ("/Index", "/Index", "Inicio"),
+        ("/Productos/Index", "/Productos", "Productos"),
+        ("/Bodegas/Index", "/Bodegas", "Bodegas"),
+        ("/Movimientos/Index", "/Movimientos", "Movimientos"),
+        ("/Kardex", "/Kardex", "Historial"),
+        ("/Alertas", "/Alertas", "Alertas"),
+    };
 }
 <!DOCTYPE html>
 <html lang="es-CL">
@@ -24,17 +32,15 @@
         @if (autenticado)
         {
             <nav class="menu" aria-label="Principal">
-                <a class="@Activo("/Index")" href="/">Panel</a>
-                <a class="@Activo("/Productos")" href="/Productos">Productos</a>
-                <a class="@Activo("/Bodegas")" href="/Bodegas">Bodegas</a>
-                <a class="@Activo("/Movimientos")" href="/Movimientos">Movimientos</a>
-                <a class="@Activo("/Kardex")" href="/Kardex">Kardex</a>
-                <a class="@Activo("/Alertas")" href="/Alertas">Alertas</a>
-                <a class="@Activo("/Api")" href="/Api">API</a>
+                @foreach (var (pagina, grupo, nombre) in navegacion)
+                {
+                    var seleccion = ruta == pagina ? "page" : ruta.StartsWith(grupo + "/", StringComparison.Ordinal) ? "location" : null;
+                    <a asp-page="@pagina" aria-current="@seleccion">@nombre</a>
+                }
             </nav>
             <form class="sesion" method="post" asp-page="/Salir">
                 <span class="usuario">@User.Nombre() <span class="rol">@User.Rol()</span></span>
-                <button type="submit" class="boton boton-fantasma boton-chico">Salir</button>
+                <button type="submit" class="boton boton-fantasma boton-chico">Cerrar sesión</button>
             </form>
         }
     </header>
@@ -46,8 +52,7 @@
         @RenderBody()
     </main>
     <footer class="pie">
-        <p>Demo con datos ficticios. La base se reinicia cuando el servidor se apaga por inactividad.</p>
-        <p>ASP.NET Core 10 · Razor Pages · EF Core · <a href="/openapi/v1.json">OpenAPI</a></p>
+        <p>Modo de prueba con datos ficticios. Los cambios de la demo pueden perderse al reiniciar.</p>
     </footer>
 </body>
 </html>

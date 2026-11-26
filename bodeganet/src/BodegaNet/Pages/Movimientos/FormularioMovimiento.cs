@@ -22,6 +22,25 @@ public abstract class FormularioMovimiento : PageModel
     /// <summary>Saldos actuales para mostrar junto al formulario.</summary>
     public List<FilaExistencia> Saldos { get; private set; } = [];
 
+    public async Task<IActionResult> OnGetDisponibilidadAsync(int productoId, int bodegaId, CancellationToken ct)
+    {
+        var unidad = await Db.Productos.AsNoTracking()
+            .Where(p => p.Id == productoId && p.Activo)
+            .Select(p => p.Unidad)
+            .SingleOrDefaultAsync(ct);
+        if (unidad is null || !await Db.Bodegas.AnyAsync(b => b.Id == bodegaId, ct))
+        {
+            return NotFound();
+        }
+
+        var cantidad = await Db.Existencias.AsNoTracking()
+            .Where(e => e.ProductoId == productoId && e.BodegaId == bodegaId)
+            .Select(e => e.Cantidad)
+            .SingleOrDefaultAsync(ct);
+        Response.Headers.CacheControl = "no-store";
+        return new JsonResult(new { cantidad, unidad });
+    }
+
     protected async Task CargarOpcionesAsync(int? productoId, CancellationToken ct)
     {
         OpcionesProductos = await Db.Productos.AsNoTracking()

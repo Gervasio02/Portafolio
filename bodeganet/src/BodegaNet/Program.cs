@@ -94,7 +94,10 @@ app.MapGet("/health", (HttpContext http) =>
     return TypedResults.Ok(new { estado = "ok", servicio = "bodeganet" });
 }).AllowAnonymous().ExcludeFromDescription();
 
-app.MapOpenApi().AllowAnonymous();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi().AllowAnonymous();
+}
 app.MapearApi();
 app.MapRazorPages();
 

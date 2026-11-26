@@ -30,7 +30,7 @@ public sealed class EntradaModel(BodegaDbContext db, ServicioInventario inventar
 
         var productoId = Datos.ProductoId!.Value;
         var bodegaId = Datos.BodegaId!.Value;
-        return await RegistrarAsync(productoId, bodegaId, "Entrada registrada. El costo promedio se recalculó.", () =>
+        return await RegistrarAsync(productoId, bodegaId, "Entrada registrada. Puedes ver las unidades disponibles en el historial.", () =>
             inventario.RegistrarEntradaAsync(
                 new SolicitudEntrada(productoId, bodegaId, Datos.Cantidad!.Value, Datos.CostoUnitario!.Value, Datos.Referencia),
                 User.Nombre(), null, ct), ct);

@@ -126,6 +126,11 @@ dotnet format BodegaNet.sln --verify-no-changes
 
 ## API
 
+La referencia de integración se mantiene en este repositorio. Si ejecutas
+BodegaNet localmente con el entorno `Development`, el documento OpenAPI está
+en `/openapi/v1.json`. El despliegue público conserva las rutas de integración
+descritas a continuación y presenta una interfaz enfocada en el uso de bodega.
+
 La API usa la misma cookie que la interfaz; primero inicia sesión con
 `POST /api/sesion` (`{"correo": "...", "clave": "..."}`). Sin sesión responde
 401 y sin permiso, 403. Los errores de negocio responden `application/problem+json`
@@ -136,7 +141,12 @@ con el detalle en español (409 si falta stock).
 | `GET` | `/api/resumen`, `/api/productos`, `/api/bodegas`, `/api/existencias?bodegaId=`, `/api/alertas` | Cualquiera con sesión |
 | `GET` | `/api/kardex?productoId=&bodegaId=` y `/api/kardex.csv?...` | Cualquiera con sesión |
 | `POST` | `/api/productos` | Administrador |
-| `POST` | `/api/movimientos/entrada`, `/salida`, `/ajuste`, `/transferencia` | Administrador o Bodeguero |
+| `POST` | `/api/movimientos/entrada`, `/api/movimientos/salida`, `/api/movimientos/ajuste`, `/api/movimientos/transferencia` | Administrador o Bodeguero |
+
+Desde la pantalla de inicio, «Entrar como invitado» abre las tareas habituales
+con datos de ejemplo. Los formularios de movimiento muestran las unidades
+disponibles al seleccionar un producto y una bodega. La vista «Historial por
+producto» conserva la exportación del kardex.
 
 ## Despliegue
 

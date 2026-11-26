@@ -1,17 +1,17 @@
 @page
 @model KardexModel
 @{
-    ViewData["Title"] = "Kardex";
+    ViewData["Title"] = "Historial por producto";
     var ultimo = Model.Filas.LastOrDefault();
 }
 <div class="titulo-pagina">
-    <h1>Kardex</h1>
+    <h1>Historial por producto</h1>
     @if (Model.Producto is not null && Model.Bodega is not null && User.PuedeMover())
     {
         <div class="acciones-movimiento">
-            <a class="boton" href="/Movimientos/Entrada?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">+ Entrada</a>
-            <a class="boton boton-secundario" href="/Movimientos/Salida?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">− Salida</a>
-            <a class="boton boton-secundario" href="/Movimientos/Transferencia?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">⇄ Transferir</a>
+            <a class="boton" asp-page="/Movimientos/Entrada" asp-route-productoId="@Model.Producto.Id" asp-route-bodegaId="@Model.Bodega.Id">Recibir productos</a>
+            <a class="boton boton-secundario" asp-page="/Movimientos/Salida" asp-route-productoId="@Model.Producto.Id" asp-route-bodegaId="@Model.Bodega.Id">Entregar productos</a>
+            <a class="boton boton-secundario" asp-page="/Movimientos/Transferencia" asp-route-productoId="@Model.Producto.Id" asp-route-bodegaId="@Model.Bodega.Id">Mover entre bodegas</a>
         </div>
     }
 </div>
@@ -25,20 +25,20 @@
         <select asp-for="BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
     </div>
     <div class="acciones">
-        <button type="submit" class="boton boton-secundario">Ver kardex</button>
+        <button type="submit" class="boton boton-secundario">Consultar historial</button>
     </div>
 </form>
 
 @if (Model.Producto is null)
 {
     <section class="tarjeta">
-        <p>Elige un producto y una bodega para ver su kardex: cada entrada recalcula el costo promedio ponderado y cada salida se valoriza a ese promedio.</p>
+        <p>Elige un producto y una bodega para ver sus entradas, salidas y unidades restantes.</p>
     </section>
 }
 else if (Model.Bodega is null)
 {
     <section class="tarjeta">
-        <p><strong>@Model.Producto.Sku</strong> @Model.Producto.Nombre todavía no tiene movimientos. Elige una bodega para registrar su primera entrada.</p>
+        <p>Elige una bodega de la lista para consultar el historial de <strong>@Model.Producto.Nombre</strong>.</p>
     </section>
 }
 else
