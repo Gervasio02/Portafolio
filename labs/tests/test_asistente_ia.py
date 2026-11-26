@@ -78,3 +78,24 @@ def test_contexto_usa_las_respuestas_del_modelo_publicado():
         {"id": "cv", "respuesta": "Mira mi [CV](cv.html) hoy {fecha}."},
     ]}
     assert construir_contexto(modelo) == "- Mira mi CV hoy ."
+
+
+def test_si_no_hay_acceso_a_un_modelo_prueba_el_siguiente(client, monkeypatch):
+    monkeypatch.setenv("ASISTENTE_IA_CLAVE", "clave-falsa")
+    monkeypatch.delenv("ASISTENTE_IA_MODELO", raising=False)
+    usados = []
+
+    def falso(mensajes, clave, modelo):
+        usados.append(modelo)
+        if modelo == "llama-3.3-70b-versatile":
+            peticion = asistente_ia.httpx.Request("POST", asistente_ia.URL_GROQ)
+            cuerpo = '{"error":{"code":"model_not_found","message":"The model does not exist"}}'
+            respuesta = asistente_ia.httpx.Response(404, text=cuerpo, request=peticion)
+            raise asistente_ia.httpx.HTTPStatusError("404", request=peticion, response=respuesta)
+        return "Hola desde otro modelo."
+
+    monkeypatch.setattr(asistente_ia, "llamar_modelo", falso)
+    datos = client.post(URL, content=pregunta(), headers=ORIGEN).json()
+    assert datos == {"respuesta": "Hola desde otro modelo.", "modelo": "openai/gpt-oss-120b"}
+    client.post(URL, content=pregunta(), headers=ORIGEN)
+    assert usados == ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-120b"]
