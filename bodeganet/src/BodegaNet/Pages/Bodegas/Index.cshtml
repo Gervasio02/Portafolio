@@ -1,0 +1,63 @@
+@page
+@model BodegaNet.Pages.Bodegas.IndexModel
+@{
+    ViewData["Title"] = "Bodegas";
+}
+<div class="titulo-pagina">
+    <h1>Bodegas</h1>
+    @if (User.EsAdministrador())
+    {
+        <a class="boton" href="/Bodegas/Nueva">+ Nueva bodega</a>
+    }
+</div>
+<nav class="bodegas" aria-label="Bodegas">
+    @foreach (var b in Model.Bodegas)
+    {
+        <a class="tarjeta bodega @(b.BodegaId == Model.Seleccionada?.BodegaId ? "activa" : "")" href="/Bodegas?bodegaId=@b.BodegaId"
+           aria-current="@(b.BodegaId == Model.Seleccionada?.BodegaId ? "page" : null)">
+            <span class="bodega-codigo">@b.Codigo</span>
+            <strong>@b.Nombre</strong>
+            <span class="tenue">@b.Comuna</span>
+            <span class="bodega-valor">@Formato.Pesos(b.Valor)</span>
+            <span class="tenue">@Formato.Numero(b.Unidades) unidades</span>
+        </a>
+    }
+</nav>
+@if (Model.Seleccionada is not null)
+{
+    <section class="tarjeta">
+        <h2>Existencias en @Model.Seleccionada.Nombre</h2>
+        @if (Model.Existencias.Count == 0)
+        {
+            <p class="tenue">Esta bodega todavía no tiene stock.</p>
+        }
+        else
+        {
+            <div class="tabla">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">SKU</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col" class="num">Cantidad</th>
+                            <th scope="col" class="num">Costo prom.</th>
+                            <th scope="col" class="num">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.Existencias)
+                        {
+                            <tr>
+                                <td><a href="/Kardex?productoId=@e.ProductoId&amp;bodegaId=@e.BodegaId">@e.Sku</a></td>
+                                <td>@e.Producto</td>
+                                <td class="num">@Formato.Numero(e.Cantidad) @e.Unidad</td>
+                                <td class="num">@Formato.Costo(e.CostoPromedio)</td>
+                                <td class="num">@Formato.Pesos(e.Valor)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}

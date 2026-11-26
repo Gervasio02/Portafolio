@@ -1,0 +1,39 @@
+@page
+@model AjusteModel
+@{
+    ViewData["Title"] = "Registrar ajuste";
+}
+<div class="titulo-pagina">
+    <h1>Registrar ajuste</h1>
+    <a href="/Movimientos">Volver a movimientos</a>
+</div>
+<div class="rejilla-form">
+    <form method="post" class="tarjeta formulario" novalidate>
+        <p class="tenue">Corrige el saldo después de un conteo físico. Un sobrante entra al costo promedio vigente; un faltante no puede dejar el stock bajo cero.</p>
+        <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+        <div class="campo">
+            <label asp-for="Datos.ProductoId"></label>
+            <select asp-for="Datos.ProductoId" asp-items="Model.OpcionesProductos"><option value="">Elige un producto</option></select>
+            <span asp-validation-for="Datos.ProductoId" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.BodegaId"></label>
+            <select asp-for="Datos.BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
+            <span asp-validation-for="Datos.BodegaId" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Cantidad"></label>
+            <input asp-for="Datos.Cantidad" type="number" step="1" inputmode="numeric" />
+            <span asp-validation-for="Datos.Cantidad" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Motivo"></label>
+            <input asp-for="Datos.Motivo" placeholder="Conteo cíclico de noviembre" />
+            <span asp-validation-for="Datos.Motivo" class="error"></span>
+        </div>
+        <div class="acciones">
+            <button type="submit" class="boton">Registrar ajuste</button>
+        </div>
+    </form>
+    <partial name="_Saldos" model="Model.Saldos" />
+</div>

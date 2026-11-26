@@ -1,0 +1,46 @@
+@page
+@model ApiModel
+@{
+    ViewData["Title"] = "API REST";
+    var origen = $"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}";
+}
+<div class="titulo-pagina">
+    <h1>API REST</h1>
+    <a class="boton boton-secundario" href="/openapi/v1.json">Documento OpenAPI</a>
+</div>
+<section class="tarjeta">
+    <p>La interfaz y la API usan las mismas reglas: todo pasa por el servicio de inventario. La API usa la misma cookie de sesión; desde un script, primero inicia sesión con <code>POST /api/sesion</code>. Sin sesión responde 401 y sin permiso, 403.</p>
+    <div class="tabla">
+        <table>
+            <thead>
+                <tr><th scope="col">Método</th><th scope="col">Ruta</th><th scope="col">Qué hace</th><th scope="col">Rol</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>POST</td><td><code>/api/sesion</code></td><td>Inicia sesión con correo y clave.</td><td>Público</td></tr>
+                <tr><td>GET</td><td><code>/api/resumen</code></td><td>Valor del inventario, por bodega, alertas y últimos movimientos.</td><td>Cualquiera</td></tr>
+                <tr><td>GET</td><td><code>/api/productos</code></td><td>Productos con stock total y valor.</td><td>Cualquiera</td></tr>
+                <tr><td>POST</td><td><code>/api/productos</code></td><td>Crea un producto.</td><td>Administrador</td></tr>
+                <tr><td>GET</td><td><code>/api/bodegas</code></td><td>Bodegas registradas.</td><td>Cualquiera</td></tr>
+                <tr><td>GET</td><td><code>/api/existencias?bodegaId=</code></td><td>Saldo y costo promedio por producto y bodega.</td><td>Cualquiera</td></tr>
+                <tr><td>GET</td><td><code>/api/alertas</code></td><td>Productos bajo el stock mínimo.</td><td>Cualquiera</td></tr>
+                <tr><td>GET</td><td><code>/api/kardex?productoId=&amp;bodegaId=</code></td><td>Kardex en JSON.</td><td>Cualquiera</td></tr>
+                <tr><td>GET</td><td><code>/api/kardex.csv?productoId=&amp;bodegaId=</code></td><td>Kardex en CSV.</td><td>Cualquiera</td></tr>
+                <tr><td>POST</td><td><code>/api/movimientos/entrada</code></td><td>Entrada con costo unitario.</td><td>Bodeguero</td></tr>
+                <tr><td>POST</td><td><code>/api/movimientos/salida</code></td><td>Salida al costo promedio vigente.</td><td>Bodeguero</td></tr>
+                <tr><td>POST</td><td><code>/api/movimientos/ajuste</code></td><td>Ajuste por conteo (cantidad con signo y motivo).</td><td>Bodeguero</td></tr>
+                <tr><td>POST</td><td><code>/api/movimientos/transferencia</code></td><td>Transferencia atómica entre bodegas.</td><td>Bodeguero</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<section class="tarjeta">
+    <h2>Ejemplo con curl</h2>
+    <pre><code>curl -c sesion.txt -H "Content-Type: application/json" \
+  -d '{"correo":"bodega@@bodeganet.test","clave":"Bodega.Demo2026"}' \
+  @origen/api/sesion
+
+curl -b sesion.txt -H "Content-Type: application/json" \
+  -d '{"productoId":1,"bodegaId":1,"cantidad":5,"referencia":"Guía 100"}' \
+  @origen/api/movimientos/salida</code></pre>
+    <p class="tenue">Si no hay stock suficiente, la salida responde 409 con el detalle en español y no cambia nada.</p>
+</section>

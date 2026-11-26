@@ -1,0 +1,38 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+<section class="login">
+    <div class="login-intro">
+        <h1>Inventario y kardex sin planillas</h1>
+        <p>BodegaNet registra entradas, salidas, ajustes y transferencias entre bodegas. Cada salida se valoriza al costo promedio ponderado vigente y el stock nunca queda negativo.</p>
+        <ul class="lista-puntos">
+            <li>Kardex por producto y bodega, exportable a CSV.</li>
+            <li>Alertas de stock bajo el mínimo.</li>
+            <li>API REST documentada con OpenAPI.</li>
+        </ul>
+    </div>
+    <div class="tarjeta login-caja">
+        <h2>Entrar</h2>
+        <form method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="campo">
+                <label asp-for="Datos.Correo">Correo</label>
+                <input asp-for="Datos.Correo" type="email" autocomplete="username" />
+                <span asp-validation-for="Datos.Correo" class="error"></span>
+            </div>
+            <div class="campo">
+                <label asp-for="Datos.Clave">Clave</label>
+                <input asp-for="Datos.Clave" type="password" autocomplete="current-password" />
+                <span asp-validation-for="Datos.Clave" class="error"></span>
+            </div>
+            <div class="acciones">
+                <button type="submit" class="boton">Entrar</button>
+                <button type="submit" class="boton boton-secundario" asp-page-handler="Invitado" formnovalidate>Entrar como invitado</button>
+            </div>
+        </form>
+        <p class="tenue">El invitado entra con rol Bodeguero: puede registrar movimientos, pero no crear productos ni bodegas. Las cuentas de demo están en el README del proyecto.</p>
+    </div>
+</section>

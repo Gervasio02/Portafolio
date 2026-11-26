@@ -1,0 +1,46 @@
+@page
+@model EntradaModel
+@{
+    ViewData["Title"] = "Registrar entrada";
+}
+<div class="titulo-pagina">
+    <h1>Registrar entrada</h1>
+    <a href="/Movimientos">Volver a movimientos</a>
+</div>
+<div class="rejilla-form">
+    <form method="post" class="tarjeta formulario" novalidate>
+        <p class="tenue">Una compra o recepción. El costo promedio del producto en esa bodega se recalcula con el costo unitario que indiques.</p>
+        <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+        <div class="campo">
+            <label asp-for="Datos.ProductoId"></label>
+            <select asp-for="Datos.ProductoId" asp-items="Model.OpcionesProductos"><option value="">Elige un producto</option></select>
+            <span asp-validation-for="Datos.ProductoId" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.BodegaId"></label>
+            <select asp-for="Datos.BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
+            <span asp-validation-for="Datos.BodegaId" class="error"></span>
+        </div>
+        <div class="campos-2">
+            <div class="campo">
+                <label asp-for="Datos.Cantidad"></label>
+                <input asp-for="Datos.Cantidad" type="number" min="1" step="1" inputmode="numeric" />
+                <span asp-validation-for="Datos.Cantidad" class="error"></span>
+            </div>
+            <div class="campo">
+                <label asp-for="Datos.CostoUnitario"></label>
+                <input asp-for="Datos.CostoUnitario" type="number" min="0.01" step="0.01" inputmode="decimal" />
+                <span asp-validation-for="Datos.CostoUnitario" class="error"></span>
+            </div>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Referencia"></label>
+            <input asp-for="Datos.Referencia" placeholder="Factura 1234" />
+            <span asp-validation-for="Datos.Referencia" class="error"></span>
+        </div>
+        <div class="acciones">
+            <button type="submit" class="boton">Registrar entrada</button>
+        </div>
+    </form>
+    <partial name="_Saldos" model="Model.Saldos" />
+</div>

@@ -1,0 +1,64 @@
+@page
+@model BodegaNet.Pages.Productos.IndexModel
+@{
+    ViewData["Title"] = "Productos";
+}
+<div class="titulo-pagina">
+    <h1>Productos</h1>
+    @if (User.EsAdministrador())
+    {
+        <a class="boton" href="/Productos/Editar">+ Nuevo producto</a>
+    }
+</div>
+<section class="tarjeta">
+    <div class="tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">SKU</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Unidad</th>
+                    <th scope="col" class="num">Stock total</th>
+                    <th scope="col" class="num">Mínimo</th>
+                    <th scope="col" class="num">Valor</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col"><span class="oculto">Acciones</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Filas)
+                {
+                    <tr>
+                        <td><strong>@p.Sku</strong></td>
+                        <td>@p.Nombre</td>
+                        <td>@p.Unidad</td>
+                        <td class="num">@Formato.Numero(p.StockTotal)</td>
+                        <td class="num">@Formato.Numero(p.StockMinimo)</td>
+                        <td class="num">@Formato.Pesos(p.Valor)</td>
+                        <td>
+                            @if (!p.Activo)
+                            {
+                                <span class="etiqueta">Inactivo</span>
+                            }
+                            else if (p.BajoMinimo)
+                            {
+                                <span class="etiqueta etiqueta-alerta">Bajo mínimo</span>
+                            }
+                            else
+                            {
+                                <span class="etiqueta etiqueta-ok">OK</span>
+                            }
+                        </td>
+                        <td class="nowrap">
+                            <a href="/Kardex?productoId=@p.Id">Kardex</a>
+                            @if (User.EsAdministrador())
+                            {
+                                <text> · </text><a href="/Productos/Editar/@p.Id">Editar</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

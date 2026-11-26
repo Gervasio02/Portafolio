@@ -1,0 +1,14 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+<section class="tarjeta estrecha">
+    <h1>Algo salió mal</h1>
+    <p>Ocurrió un error inesperado al procesar la solicitud. Vuelve al panel e inténtalo de nuevo.</p>
+    @if (!string.IsNullOrEmpty(Model.IdSolicitud))
+    {
+        <p class="tenue">Código de la solicitud: <code>@Model.IdSolicitud</code></p>
+    }
+    <p><a class="boton" href="/">Volver al panel</a></p>
+</section>

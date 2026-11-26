@@ -1,0 +1,39 @@
+@page
+@model SalidaModel
+@{
+    ViewData["Title"] = "Registrar salida";
+}
+<div class="titulo-pagina">
+    <h1>Registrar salida</h1>
+    <a href="/Movimientos">Volver a movimientos</a>
+</div>
+<div class="rejilla-form">
+    <form method="post" class="tarjeta formulario" novalidate>
+        <p class="tenue">Un despacho o consumo. Se valoriza al costo promedio vigente y se rechaza si no hay stock suficiente en la bodega.</p>
+        <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+        <div class="campo">
+            <label asp-for="Datos.ProductoId"></label>
+            <select asp-for="Datos.ProductoId" asp-items="Model.OpcionesProductos"><option value="">Elige un producto</option></select>
+            <span asp-validation-for="Datos.ProductoId" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.BodegaId"></label>
+            <select asp-for="Datos.BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
+            <span asp-validation-for="Datos.BodegaId" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Cantidad"></label>
+            <input asp-for="Datos.Cantidad" type="number" min="1" step="1" inputmode="numeric" />
+            <span asp-validation-for="Datos.Cantidad" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Referencia"></label>
+            <input asp-for="Datos.Referencia" placeholder="Guía de despacho 5678" />
+            <span asp-validation-for="Datos.Referencia" class="error"></span>
+        </div>
+        <div class="acciones">
+            <button type="submit" class="boton">Registrar salida</button>
+        </div>
+    </form>
+    <partial name="_Saldos" model="Model.Saldos" />
+</div>
