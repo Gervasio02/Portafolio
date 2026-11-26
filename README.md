@@ -1,6 +1,6 @@
 # Portafolio de Gervasio Torres
 
-Cinco aplicaciones y tres laboratorios de ingeniería informática, con datos
+Seis aplicaciones y tres laboratorios de ingeniería informática, con datos
 ficticios y almacenamiento aislado. La portada en `portal/` presenta los
 proyectos en primera persona, con capturas, demos interactivas, un catálogo de
 ocho proyectos y una bitácora del repositorio. Abre `portal/index.html` para
@@ -15,6 +15,7 @@ Incluye un CV web (`portal/cv.html`) y su versión PDF.
 | [Snake](snake/README.md)                   | React, TypeScript, Express, Prisma y PostgreSQL | Reproduce la partida en el servidor para validar puntajes y conserva desafíos, logros e historial.                       |
 | [Interrogatorio](interrogatorio/README.md) | React, FastAPI, SQLAlchemy y PostgreSQL/SQLite  | Genera expedientes deterministas con cronología y conexiones de evidencias sin depender de un modelo externo.            |
 | [Laboratorios](labs/README.md)             | FastAPI, Python y SQLite                        | DataLab, DocFlow y CloudOps mantienen resultados, auditoría e identidad aislada sin inventar telemetría.                 |
+| [BodegaNet](bodeganet/README.md)           | .NET 10, ASP.NET Core, EF Core y PostgreSQL/SQLite | Kardex con costo promedio ponderado. Un token de concurrencia y un CHECK impiden el stock negativo aunque lleguen dos salidas a la vez. |
 
 ## Ejecutar en el computador
 
