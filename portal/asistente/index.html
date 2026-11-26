@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cómo funciona el asistente del portafolio: una red neuronal programada desde cero en Python y JavaScript, entrenada con preguntas de reclutadores.">
+  <meta name="theme-color" content="#0b0812">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://gervasio.sbs/asistente/">
+  <meta property="og:title" content="Pregúntale a mi portafolio · Gervasio Torres">
+  <meta property="og:description" content="Una red neuronal hecha a mano que responde preguntas sobre mi portafolio, directo en el navegador.">
+  <meta property="og:type" content="website"><meta property="og:url" content="https://gervasio.sbs/asistente/"><meta property="og:site_name" content="Portafolio de Gervasio Torres"><meta property="og:locale" content="es_CL">
+  <meta property="og:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Portafolio de desarrollo de Gervasio Torres"><meta name="twitter:card" content="summary_large_image">
+  <title>Pregúntale a mi portafolio · Gervasio Torres</title>
+  <link rel="stylesheet" href="../fuentes/fuentes.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tema.css">
+  <link rel="stylesheet" href="pagina.css">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../site.webmanifest">
+  <script src="red.js" defer></script>
+  <script src="pagina.js" defer></script>
+  <script src="../analitica.js" defer></script>
+  <link rel="stylesheet" href="../asistente.css" />
+  <script src="../asistente.js" defer></script>
+</head>
+<body class="project-page">
+  <a class="skip" href="#probador">Saltar al probador</a>
+  <header class="shell top">
+    <a class="brand" href="../index.html" aria-label="GT Gervasio Torres, inicio">Gervasio Torres</a>
+    <nav aria-label="Principal"><a href="../index.html#niveles">Proyectos</a><a href="../proyectos/">Catálogo</a><a aria-current="page" href="./">Asistente</a></nav>
+  </header>
+
+  <main class="shell red-pagina">
+    <section class="red-lead" aria-labelledby="red-titulo">
+      <p class="eyebrow">Pregúntale a mi portafolio</p>
+      <h1 id="red-titulo">Una red neuronal hecha a mano.</h1>
+      <p class="project-summary">
+        El chat de este sitio no usa ChatGPT ni ninguna API externa. Es un
+        perceptrón multicapa que programé desde cero: lo entreno en Python con
+        NumPy (escribí la retropropagación y el optimizador Adam a mano) y lo
+        ejecuto en tu navegador con JavaScript. Tu pregunta nunca sale de tu
+        equipo para ser respondida.
+      </p>
+      <p class="red-acciones"><a class="red-boton" href="#preguntame">Abrir el chat</a><a href="#probador">Ver cómo piensa</a></p>
+    </section>
+
+    <section class="red-bloque" aria-labelledby="arq-titulo">
+      <h2 id="arq-titulo">Qué pasa con tu pregunta</h2>
+      <ol class="red-flujo">
+        <li><strong>Normalizo</strong><span>Minúsculas, sin tildes ni signos. Quito palabras vacías como «el» o «para».</span></li>
+        <li><strong>Extraigo rasgos</strong><span>Raíces de palabras, pares de palabras y trigramas de letras (toleran errores de tipeo).</span></li>
+        <li><strong>Hashing trick</strong><span>Cada rasgo cae en una de <b data-metrica="entrada">2048</b> posiciones con FNV-1a: no necesito guardar un vocabulario.</span></li>
+        <li><strong>Capa oculta</strong><span><b data-metrica="oculta">48</b> neuronas con activación ReLU combinan esos rasgos.</span></li>
+        <li><strong>Softmax</strong><span>Una probabilidad para cada una de las <b data-metrica="salida">44</b> intenciones que conoce.</span></li>
+        <li><strong>Respondo o pregunto</strong><span>Si la probabilidad más alta no supera el umbral, admito que no sé y guardo la pregunta para aprenderla.</span></li>
+      </ol>
+    </section>
+
+    <section class="red-bloque" aria-labelledby="metricas-titulo">
+      <h2 id="metricas-titulo">Cómo quedó el último entrenamiento</h2>
+      <div class="red-metricas" id="metricas">
+        <p><strong data-metrica="exactitud_validacion">–</strong><span>acierto con preguntas que no vio al entrenar</span></p>
+        <p><strong data-metrica="intenciones">–</strong><span>intenciones</span></p>
+        <p><strong data-metrica="ejemplos">–</strong><span>preguntas escritas a mano</span></p>
+        <p><strong data-metrica="ejemplos_aumentados">–</strong><span>ejemplos tras el aumento de datos</span></p>
+      </div>
+      <figure class="red-curva">
+        <div id="curva" role="img" aria-label="Curva de pérdida durante el entrenamiento"></div>
+        <figcaption>Pérdida (entropía cruzada, escala logarítmica) a lo largo de las épocas: baja a medida que la red aprende. Entrenado el <time id="creado">–</time>.</figcaption>
+      </figure>
+    </section>
+
+    <section class="red-bloque" id="probador" aria-labelledby="probador-titulo">
+      <h2 id="probador-titulo">Mira cómo piensa</h2>
+      <p>Escribe una pregunta y verás, letra a letra, las cinco intenciones más probables según la red.</p>
+      <label class="red-oculto" for="prueba">Pregunta de prueba</label>
+      <input id="prueba" type="text" maxlength="200" placeholder="Ej.: ¿sabes trabajar con bases de datos?" autocomplete="off">
+      <p class="red-rasgos" id="rasgos" aria-live="polite"></p>
+      <ol class="red-top" id="top" aria-live="polite"></ol>
+    </section>
+
+    <section class="red-bloque" aria-labelledby="aprende-titulo">
+      <h2 id="aprende-titulo">Cómo sigue aprendiendo</h2>
+      <ol class="red-ciclo">
+        <li>Si no sabe responder, o alguien marca «no me sirvió», la pregunta se guarda de forma anónima.</li>
+        <li>La reviso en mi panel privado y la agrego como ejemplo en <code>asistente/conocimiento.yml</code>.</li>
+        <li>Al subir el cambio, GitHub Actions vuelve a entrenar la red, corre las pruebas y publica el modelo nuevo.</li>
+      </ol>
+      <p>
+        Lo más difícil fue que Python y JavaScript conviertan el texto en
+        exactamente el mismo vector: una tilde tratada distinto bastaba para
+        que la red respondiera otra cosa. Una prueba automática compara ambos
+        lados en cada cambio.
+        <a href="https://github.com/Gervasio02/Portafolio/tree/main/asistente" target="_blank" rel="noopener noreferrer">Ver el código</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="shell footer"><span>Asistente · Gervasio Torres</span><a href="../index.html">Volver al portafolio</a></footer>
+</body>
+</html>

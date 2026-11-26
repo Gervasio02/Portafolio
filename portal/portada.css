@@ -1082,3 +1082,13 @@ a:hover {
     transform: none;
   }
 }
+
+.aviso-asistente {
+  margin: 1.2rem 0 0;
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+}
+
+.aviso-asistente a {
+  color: var(--morado-fuerte);
+}

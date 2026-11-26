@@ -20,6 +20,7 @@ Cuenta de GitHub personal: `Gervasio02`. Nunca uses una cuenta de empresa.
 | `snake/`          | React, TypeScript, Express, Prisma           | Azure Container Apps              |
 | `interrogatorio/` | React, FastAPI, SQLAlchemy                   | Azure Container Apps              |
 | `labs/`           | FastAPI, Python, SQLite (modo invitado)      | Azure Container Apps              |
+| `asistente/`      | Red neuronal en Python/NumPy (chat del portal) | Se entrena en CI y se publica con `portal/` |
 | `tests/interrogatorio/` | Playwright para todo `portal/`         | CI                                |
 
 URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICACION.md`.
@@ -49,6 +50,12 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
   `labs/app/analitica.py`). Inclúyelo en toda página pública nueva; nunca en
   `portal/panel/`, que es privado (`noindex`, fuera del sitemap y con clave en
   el secreto `PANEL_CLAVE`). Enlaces que no deben contarse: `data-no-contar`.
+- `portal/asistente.js` es el chat «Pregúntale a mi portafolio»: va en toda
+  página pública (con `asistente.css`). Su conocimiento está en
+  `asistente/conocimiento.yml` (solo datos reales de Gervasio); si cambias
+  textos del portafolio que el asistente cita (proyectos, cifras, stack,
+  formación), actualiza también ese archivo. `asistente/caracteristicas.py`
+  y `portal/asistente/red.js` deben calcular el mismo vector.
 - El CV vive en `portal/cv.html` (+ `cv.css`). Si lo cambias, regenera
   `portal/cv/Gervasio-Torres-CV.pdf` imprimiendo esa página a PDF (A4).
   Nunca publiques RUT, dirección, teléfono ni fecha de nacimiento.
@@ -89,6 +96,7 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 | Snake                | `snake`: `npm ci && npm test && npm run build`                        |
 | Interrogatorio       | `interrogatorio/backend`: `python -m pytest`; `interrogatorio/frontend`: `npm run build` |
 | Labs                 | `labs`: `python -m pytest -q`                                         |
+| Asistente            | raíz: `pip install -r asistente/requirements.txt && python -m pytest -q asistente/tests` |
 
 Si no puedes ejecutar algo (por ejemplo, falta PostgreSQL), dilo en el PR con
 el comando exacto. CI (`.github/workflows/`) corre todo en cada push y PR.
