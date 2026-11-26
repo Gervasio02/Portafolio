@@ -43,7 +43,7 @@ clave en la cabecera `Authorization: Bearer <clave>`.
 | Variable           | Para qué                                                            |
 | ------------------ | ------------------------------------------------------------------- |
 | `PANEL_CLAVE`      | Clave del panel. Sin ella el panel responde 503 (cerrado).          |
-| `ANALITICA_DB_URL` | PostgreSQL donde guardar las visitas (esquema `analitica`). Sin ella usa la SQLite de Labs, que se pierde al apagarse el contenedor. |
+| `ANALITICA_DB_URL` | PostgreSQL donde guardar las visitas (esquema `analitica`). Acepta cadenas de Prisma (quita `schema` y otros parámetros que no son de libpq). Sin ella, o si no conecta, usa la SQLite de Labs, que se pierde al apagarse el contenedor. |
 | `PANEL_ORIGENES`   | Orígenes que pueden enviar visitas y abrir el panel (por defecto `https://gervasio.sbs,https://www.gervasio.sbs`). |
 
 En producción las dos primeras salen de los secretos de GitHub con el mismo

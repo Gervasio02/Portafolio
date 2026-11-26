@@ -14,6 +14,7 @@ sobreviven a los reinicios del contenedor) o en el SQLite de los laboratorios.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import secrets
 import sqlite3
@@ -21,7 +22,7 @@ import time
 from collections import Counter, defaultdict, deque
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException, Request
@@ -45,14 +46,43 @@ def _texto(valor, limite: int) -> str:
     return "".join(c for c in valor.strip() if c.isprintable())[:limite]
 
 
+registro = logging.getLogger("labs.analitica")
+
+# Parámetros que entiende libpq. Las cadenas de Prisma traen otros
+# (schema, connection_limit, pgbouncer...) que psycopg rechaza.
+PARAMETROS_LIBPQ = {
+    "sslmode", "sslrootcert", "sslcert", "sslkey", "connect_timeout",
+    "application_name", "target_session_attrs", "channel_binding",
+}
+
+
+def limpiar_url(url: str) -> str:
+    """Deja una cadena de conexión PostgreSQL aceptable para psycopg."""
+    partes = urlsplit(url)
+    consulta = [(k, v) for k, v in parse_qsl(partes.query) if k in PARAMETROS_LIBPQ]
+    return urlunsplit(partes._replace(query=urlencode(consulta)))
+
+
 class Almacen:
-    """Guarda y lee eventos en PostgreSQL o SQLite con la misma interfaz."""
+    """Guarda y lee eventos en PostgreSQL o SQLite con la misma interfaz.
+
+    Si PostgreSQL no responde al arrancar, usa SQLite para que Labs siga
+    funcionando (las visitas de ese período no sobreviven a un reinicio).
+    """
 
     def __init__(self, sqlite_path: str):
-        self.url = os.getenv("ANALITICA_DB_URL", "").strip()
+        crudo = os.getenv("ANALITICA_DB_URL", "").strip()
         self.sqlite_path = sqlite_path
-        self.postgres = self.url.startswith(("postgres://", "postgresql://"))
-        self._crear()
+        self.postgres = crudo.startswith(("postgres://", "postgresql://"))
+        self.url = limpiar_url(crudo) if self.postgres else ""
+        try:
+            self._crear()
+        except Exception as error:  # noqa: BLE001 - cualquier fallo de conexión
+            if not self.postgres:
+                raise
+            registro.warning("Analítica: PostgreSQL no disponible (%s); se usa SQLite.", type(error).__name__)
+            self.postgres = False
+            self._crear()
 
     @contextmanager
     def _conexion(self):

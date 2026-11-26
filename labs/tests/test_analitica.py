@@ -153,3 +153,19 @@ def test_rechaza_preguntas_invalidas_o_de_otro_origen(client):
     assert client.post(url, content="x" * 2000, headers=ORIGEN).status_code == 413
     preflight = client.options(url, headers={"Origin": "https://gervasio.sbs", "Access-Control-Request-Method": "POST"})
     assert preflight.headers["access-control-allow-origin"] == "https://gervasio.sbs"
+
+
+def test_limpia_parametros_de_prisma():
+    from app.analitica import limpiar_url
+
+    url = "postgresql://u:p@servidor:5432/base?schema=public&sslmode=require&connection_limit=5"
+    assert limpiar_url(url) == "postgresql://u:p@servidor:5432/base?sslmode=require"
+
+
+def test_si_postgres_no_responde_usa_sqlite(tmp_path, monkeypatch):
+    monkeypatch.setenv("ANALITICA_DB_URL", "postgresql://nadie:nada@127.0.0.1:1/base?connect_timeout=1")
+    monkeypatch.setenv("PANEL_CLAVE", "clave-de-prueba")
+    monkeypatch.setenv("RATE_LIMIT", "off")
+    cliente = TestClient(create_app(str(tmp_path / "a.db"), targets={"demo": "http://x"}))
+    assert cliente.post("/api/visitas", content=evento(), headers=ORIGEN).status_code == 204
+    assert cliente.get("/api/panel/resumen", headers=autorizado()).json()["totales"]["vistas_hoy"] == 1
