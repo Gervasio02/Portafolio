@@ -73,6 +73,8 @@ intenciones:
   - id: asistente
     claves: [bot, chatbot, red neuronal, inteligencia artificial, cómo funcionas, quién eres, modelo, entrenamiento del chat]
     ejemplos:
+      - ¿cómo sabes lo que respondes?
+      - ¿de dónde sacas las respuestas?
       - ¿quién eres?
       - ¿eres un bot?
       - ¿eres chatgpt?
@@ -94,8 +96,11 @@ intenciones:
     sugerencias: [presentacion, proyectos]
 
   - id: presentacion
-    claves: [quién es gervasio, perfil, resumen, preséntate, háblame de ti, candidato]
+    claves: [nombre, cómo te llamas, full stack, fullstack, quién es gervasio, perfil, resumen, preséntate, háblame de ti, candidato]
     ejemplos:
+      - ¿cómo te llamas?
+      - ¿cuál es tu nombre completo?
+      - ¿te consideras full stack?
       - ¿quién es gervasio?
       - háblame de ti
       - cuéntame de gervasio
@@ -117,8 +122,10 @@ intenciones:
     sugerencias: [proyectos, stack, formacion]
 
   - id: formacion
-    claves: [estudios, título, titulado, carrera, universidad, inacap, ingeniería, analista programador, educación]
+    claves: [certificación, certificaciones, cursos, estudios, título, titulado, carrera, universidad, inacap, ingeniería, analista programador, educación]
     ejemplos:
+      - ¿tienes certificaciones?
+      - ¿has hecho cursos?
       - ¿qué estudiaste?
       - ¿dónde estudiaste?
       - ¿cuál es tu formación?
@@ -138,8 +145,11 @@ intenciones:
     sugerencias: [experiencia, stack]
 
   - id: experiencia
-    claves: [experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
+    claves: [sercotec, tiempo programando, desde cuándo programas, experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
     ejemplos:
+      - ¿desde cuándo programas?
+      - ¿cuánto tiempo llevas programando?
+      - ¿qué hiciste en sercotec?
       - ¿qué experiencia tienes?
       - ¿tienes experiencia laboral?
       - ¿dónde has trabajado?
@@ -197,7 +207,7 @@ intenciones:
     sugerencias: [fortalezas, experiencia]
 
   - id: stack
-    claves: [lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
+    claves: [javascript, lenguaje principal, lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
     ejemplos:
       - ¿qué tecnologías usas?
       - ¿cuál es tu stack?
@@ -212,16 +222,18 @@ intenciones:
       - ¿qué frameworks conoces?
       - conocimientos técnicos
     respuesta: >-
-      Lenguajes: JavaScript, TypeScript, Python, SQL, HTML y CSS. En frontend
-      uso React, Next.js y Vite; en backend Node.js con Express, FastAPI y
-      Auth.js; en datos PostgreSQL, SQLite, Prisma, SQLAlchemy y Alembic.
-      Pruebo con Jest, Vitest, pytest y Playwright, y entrego con Git, Docker,
+      Lenguajes: JavaScript, TypeScript, Python, C#, SQL, HTML y CSS. En frontend
+      uso React, Next.js y Vite; en backend Node.js con Express, FastAPI,
+      ASP.NET Core y Auth.js; en datos PostgreSQL, SQLite, Prisma, SQLAlchemy,
+      Alembic y Entity Framework. Pruebo con Jest, Vitest, pytest, xUnit y
+      Playwright, y entrego con Git, Docker,
       GitHub Actions y Azure Container Apps.
     sugerencias: [frontend, backend, pruebas]
 
   - id: frontend
     claves: [react, next.js, nextjs, frontend, front, interfaz, css, html, vite, typescript, responsive, diseño web]
     ejemplos:
+      - ¿tienes experiencia con typescript?
       - ¿sabes react?
       - ¿qué tal tu frontend?
       - ¿manejas next.js?
@@ -240,8 +252,11 @@ intenciones:
     sugerencias: [backend, portafolio_hecho]
 
   - id: backend
-    claves: [backend, api, apis rest, node, node.js, express, fastapi, python, django, servidor]
+    claves: [microservicios, arquitectura de software, backend, api, apis rest, node, node.js, express, fastapi, python, django, servidor]
     ejemplos:
+      - ¿has usado python en tus proyectos?
+      - ¿tienes experiencia con node?
+      - ¿has hecho microservicios o apis?
       - ¿sabes backend?
       - ¿haces apis?
       - ¿manejas node?
@@ -263,6 +278,7 @@ intenciones:
   - id: bases_datos
     claves: [sql, postgresql, postgres, base de datos, orm, prisma, sqlalchemy, migraciones, mysql, sqlite, mongodb]
     ejemplos:
+      - ¿tienes experiencia en sql?
       - ¿sabes sql?
       - ¿qué bases de datos manejas?
       - ¿sabes postgresql?
@@ -279,7 +295,8 @@ intenciones:
       livianas. Uso Prisma en Node y SQLAlchemy con Alembic en Python para
       modelos y migraciones. Me gusta que la base proteja los datos: por
       ejemplo, en ReservaYa una restricción impide dos reservas del mismo
-      turno aunque lleguen al mismo segundo.
+      turno aunque lleguen al mismo segundo. También uso Entity Framework
+      Core con C# en BodegaNet.
     sugerencias: [concurrencia, reservaya]
 
   - id: pruebas
@@ -305,8 +322,11 @@ intenciones:
     sugerencias: [devops, buenas_practicas]
 
   - id: devops
-    claves: [docker, azure, nube, cloud, ci/cd, github actions, despliegue, deploy, contenedores, aws, kubernetes]
+    claves: [experiencia con docker, contenedores docker, docker, azure, nube, cloud, ci/cd, github actions, despliegue, deploy, contenedores, aws, kubernetes]
     ejemplos:
+      - ¿tienes experiencia con contenedores?
+      - ¿tienes experiencia en la nube?
+      - ¿has trabajado con kubernetes?
       - ¿sabes docker?
       - ¿sabes azure?
       - ¿has desplegado aplicaciones?
@@ -365,7 +385,7 @@ intenciones:
     sugerencias: [pruebas, interrogatorio]
 
   - id: ia
-    claves: [chatgpt, copilot, codex, claude, programar con ia, machine learning, usas ia]
+    claves: [inteligencia artificial para programar, ia generativa, chatgpt, copilot, codex, claude, programar con ia, machine learning, usas ia]
     ejemplos:
       - ¿usas inteligencia artificial para programar?
       - ¿usas chatgpt?
@@ -400,13 +420,14 @@ intenciones:
       Tengo aplicaciones completas con demo pública: TaskFlow (Kanban para
       equipos), ReservaYa (reserva de canchas), TiendaNova (comercio
       electrónico), Snake (juego con ranking verificado) e Interrogatorio
-      (juego de deducción), más tres herramientas en FastAPI: DataLab,
-      DocFlow y CloudOps. Todas están en el [catálogo](proyectos/).
+      (juego de deducción) y BodegaNet (inventario y kardex en .NET), más
+      tres herramientas en FastAPI: DataLab, DocFlow y CloudOps. Todas están en el [catálogo](proyectos/).
     sugerencias: [proyecto_destacado, taskflow, tiendanova]
 
   - id: proyecto_destacado
-    claves: [mejor proyecto, proyecto favorito, más orgulloso, más complejo, cuál ver primero]
+    claves: [logro, mayor logro, mejor proyecto, proyecto favorito, más orgulloso, más complejo, cuál ver primero]
     ejemplos:
+      - ¿cuál es tu mayor logro?
       - ¿cuál es tu mejor proyecto?
       - ¿de qué proyecto estás más orgulloso?
       - ¿cuál me recomiendas ver primero?
@@ -561,6 +582,8 @@ intenciones:
   - id: desafio
     claves: [desafío, reto, problema difícil, bug, depurar, debug, situación difícil]
     ejemplos:
+      - ¿qué es lo más complicado que has programado?
+      - ¿cuál proyecto te costó más trabajo?
       - ¿cuál ha sido tu mayor desafío?
       - cuéntame de un problema difícil que resolviste
       - ¿cómo resuelves problemas?
@@ -592,12 +615,16 @@ intenciones:
       Sí, es un tema que aparece en varios proyectos: restricciones únicas
       para que dos reservas no tomen el mismo turno (ReservaYa), checkout
       idempotente con descuento de stock en la misma transacción
-      (TiendaNova) y reordenamiento transaccional del tablero (TaskFlow).
+      (TiendaNova), reordenamiento transaccional del tablero (TaskFlow) y
+      concurrencia optimista para que el stock nunca quede negativo
+      (BodegaNet).
     sugerencias: [reservaya, tiendanova, taskflow]
 
   - id: fortalezas
     claves: [puntos fuertes, lo mejor de ti, fortalezas, virtudes, habilidades blandas, soft skills, trabajo en equipo, compañero, qué te diferencia]
     ejemplos:
+      - ¿cómo trabajas bajo presión?
+      - ¿cómo te llevas con tu equipo?
       - ¿cuáles son tus fortalezas?
       - ¿en qué eres bueno?
       - habilidades blandas
@@ -647,6 +674,8 @@ intenciones:
   - id: por_que_contratar
     claves: [elegirte, escogerte, por qué elegirte, contratarte, por qué tú, aportas, valor, buen candidato, convénceme]
     ejemplos:
+      - ¿por qué quieres trabajar aquí?
+      - ¿por qué postulas a este cargo?
       - ¿por qué debería contratarte?
       - ¿qué aportas a la empresa?
       - ¿por qué tú?
@@ -665,6 +694,8 @@ intenciones:
   - id: busca
     claves: [qué buscas, puesto, cargo, rol, trabajo de desarrollador, junior, pasantía, empleo]
     ejemplos:
+      - ¿buscas trabajo o práctica?
+      - ¿te interesa un puesto junior?
       - ¿qué tipo de trabajo buscas?
       - ¿qué puesto buscas?
       - ¿estás buscando trabajo?
@@ -696,8 +727,10 @@ intenciones:
     sugerencias: [modalidad, contacto]
 
   - id: modalidad
-    claves: [teletrabajo, trabajo a distancia, remoto, presencial, híbrido, trasladarse, viajar, auto, licencia de conducir, movilización]
+    claves: [mudarte, cambiarte de ciudad, reubicarte, relocalizarte, teletrabajo, trabajo a distancia, remoto, presencial, híbrido, trasladarse, viajar, auto, licencia de conducir, movilización]
     ejemplos:
+      - ¿estarías dispuesto a cambiarte de ciudad?
+      - ¿te mudarías por trabajo?
       - ¿trabajas remoto?
       - ¿presencial o remoto?
       - ¿aceptas trabajo híbrido?
@@ -743,8 +776,11 @@ intenciones:
     sugerencias: [contacto, busca]
 
   - id: contacto
-    claves: [contacto, correo, email, mail, teléfono, número, whatsapp, linkedin, escribirte, entrevista]
+    claves: [agendar, llamada, videollamada, coordinar entrevista, contacto, correo, email, mail, teléfono, número, whatsapp, linkedin, escribirte, entrevista]
     ejemplos:
+      - ¿podemos agendar una entrevista?
+      - ¿podemos coordinar una llamada?
+      - ¿podemos hablar por videollamada?
       - ¿cómo te contacto?
       - ¿cuál es tu correo?
       - ¿tienes email?
@@ -824,11 +860,89 @@ intenciones:
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [contacto, presentacion]
 
+  - id: otros_lenguajes
+    claves: [java, php, go, golang, kotlin, swift, ruby, c++, angular, vue, laravel, spring]
+    ejemplos:
+      - ¿sabes java?
+      - ¿sabes php?
+      - ¿conoces angular?
+      - ¿has usado vue?
+      - ¿sabes go?
+      - ¿manejas kotlin?
+      - ¿programas en ruby?
+    respuesta: >-
+      Mi stack principal es JavaScript/TypeScript y Python, y también trabajo
+      con C# y .NET (BodegaNet). No tengo proyectos en Java, PHP o Go, pero
+      los fundamentos que uso a diario (programación orientada a objetos,
+      SQL, APIs REST, pruebas y Docker) se transfieren, y aprendo rápido lo
+      que el equipo necesite.
+    sugerencias: [stack, bodeganet]
+
+  - id: bodeganet
+    claves: [bodeganet, .net, dotnet, c#, csharp, asp.net, entity framework, razor, inventario, kardex, bodega, stock, costo promedio]
+    ejemplos:
+      - háblame de bodeganet
+      - ¿sabes .net?
+      - ¿programas en c#?
+      - ¿tienes algún proyecto en .net?
+      - ¿has usado entity framework?
+      - el sistema de inventario
+      - ¿qué es el kardex?
+      - ¿sabes asp.net core?
+      - ¿cómo evitas el stock negativo?
+    respuesta: >-
+      BodegaNet es un control de inventario y kardex hecho en C# con .NET 10:
+      ASP.NET Core (Razor Pages y una API REST documentada con OpenAPI),
+      Entity Framework Core y PostgreSQL. Registra entradas con costo,
+      salidas, ajustes y transferencias entre bodegas, y valoriza el kardex
+      con costo promedio ponderado. Lo difícil fue que el stock nunca quede
+      negativo aunque lleguen dos salidas a la vez: concurrencia optimista
+      dentro de una transacción con reintentos y una restricción en la base;
+      una prueba lanza 10 salidas simultáneas y comprueba que solo pasan las
+      que caben. [Ver el código](https://github.com/Gervasio02/Portafolio/tree/main/bodeganet).
+    sugerencias: [concurrencia, otros_lenguajes]
+
+  - id: metodologias
+    claves: [scrum, ágil, agile, metodologías ágiles, kanban, sprints, jira, trello]
+    ejemplos:
+      - ¿conoces metodologías ágiles?
+      - ¿sabes scrum?
+      - ¿has trabajado con sprints?
+      - ¿usas jira?
+      - ¿cómo organizas tu trabajo?
+      - ¿cómo planificas un proyecto?
+    respuesta: >-
+      En mis proyectos trabajo con un flujo de equipo: una rama por tema, pull
+      request, revisión con integración continua y despliegue automático. Si
+      tu equipo usa Scrum u otra metodología, me adapto; prefiero contarte el
+      detalle en una conversación.
+    sugerencias: [git, contacto]
+
+  - id: motivacion
+    claves: [motiva, motivación, cinco años, futuro, metas, pasión, por qué programas]
+    ejemplos:
+      - ¿qué te motiva?
+      - ¿dónde te ves en cinco años?
+      - ¿cuáles son tus metas?
+      - ¿por qué te gusta programar?
+      - ¿qué quieres lograr?
+      - ¿por qué elegiste la informática?
+    respuesta: >-
+      Me motiva construir aplicaciones completas que la gente pueda usar de
+      verdad, desde la pantalla hasta la base de datos, y ver que funcionan
+      bien en producción. En los próximos años quiero crecer como
+      desarrollador full stack en un equipo donde pueda aportar y seguir
+      aprendiendo.
+    sugerencias: [busca, aprendizaje]
+
   # Ejemplos de temas ajenos al portafolio: le enseñan a la red a no
   # forzar una respuesta cuando la pregunta no tiene que ver.
   - id: fuera_de_tema
     claves: [clima, fútbol, receta, chiste, película, serie, política, matemáticas, poema, dólar]
     ejemplos:
+      - ¿juegas videojuegos?
+      - ¿cuál es tu juego favorito?
+      - ¿te gusta el fútbol?
       - ¿qué tiempo hace hoy?
       - ¿quién ganó el partido?
       - dame una receta de pan

@@ -52,8 +52,8 @@
         <li><strong>Normalizo</strong><span>Minúsculas, sin tildes ni signos. Quito palabras vacías como «el» o «para».</span></li>
         <li><strong>Extraigo rasgos</strong><span>Raíces de palabras, pares de palabras y trigramas de letras (toleran errores de tipeo).</span></li>
         <li><strong>Hashing trick</strong><span>Cada rasgo cae en una de <b data-metrica="entrada">2048</b> posiciones con FNV-1a: no necesito guardar un vocabulario.</span></li>
-        <li><strong>Capa oculta</strong><span><b data-metrica="oculta">48</b> neuronas con activación ReLU combinan esos rasgos.</span></li>
-        <li><strong>Softmax</strong><span>Una probabilidad para cada una de las <b data-metrica="salida">44</b> intenciones que conoce.</span></li>
+        <li><strong>Capa oculta</strong><span><b data-metrica="oculta">96</b> neuronas con activación ReLU combinan esos rasgos.</span></li>
+        <li><strong>Softmax</strong><span>Una probabilidad para cada una de las <b data-metrica="salida">48</b> intenciones que conoce.</span></li>
         <li><strong>Respondo o pregunto</strong><span>Si la probabilidad más alta no supera el umbral, admito que no sé y guardo la pregunta para aprenderla.</span></li>
       </ol>
     </section>

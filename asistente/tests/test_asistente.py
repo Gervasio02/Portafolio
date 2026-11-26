@@ -49,6 +49,10 @@ PREGUNTAS_NUEVAS = [
     ("muchas gracias por la info", "gracias"),
     ("¿tienes perfil de github?", "github"),
     ("¿cómo evitas que dos personas reserven la misma cancha?", "reservaya"),
+    ("¿tienes experiencia programando en c#?", "bodeganet"),
+    ("¿usas scrum en tus proyectos?", "metodologias"),
+    ("¿qué metas tienes como desarrollador?", "motivacion"),
+    ("¿sabes programar en java?", "otros_lenguajes"),
 ]
 
 

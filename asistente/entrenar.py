@@ -7,11 +7,11 @@ Uso (desde la raíz del repositorio):
 La red es un perceptrón multicapa escrito a mano con NumPy:
 
     entrada (2048, rasgos de la pregunta)
-      -> capa oculta (48 neuronas, ReLU, dropout en entrenamiento)
+      -> capa oculta (96 neuronas, ReLU, dropout en entrenamiento)
       -> salida (una neurona por intención, softmax)
 
 Se entrena con descenso de gradiente Adam sobre entropía cruzada con
-regularización L2. Las derivadas están escritas a mano (retropropagación).
+suavizado de etiquetas y regularización L2. Las derivadas están escritas a mano (retropropagación).
 """
 
 from __future__ import annotations
@@ -36,14 +36,16 @@ RAIZ = AQUI.parent
 CONOCIMIENTO = AQUI / "conocimiento.yml"
 SALIDA = RAIZ / "portal" / "asistente" / "modelo.json"
 
-OCULTA = 48
+OCULTA = 96
 EPOCAS = 220
 APRENDIZAJE = 0.01
 L2 = 1e-4
-DROPOUT = 0.25
+DROPOUT = 0.3
 SEMILLA = 2026
+# Suavizado de etiquetas: evita que la red se confíe al 100 % cuando se equivoca.
+SUAVIZADO = 0.1
 # Bajo este nivel de confianza el asistente admite que no sabe.
-UMBRAL = 0.45
+UMBRAL = 0.35
 
 RELLENOS = [
     "oye", "dime", "me gustaría saber", "quisiera saber", "una pregunta",
@@ -150,13 +152,14 @@ class Red:
         h_d = h * mascara
         prob = self.softmax(h_d @ self.p["W2"] + self.p["b2"])
 
-        perdida = -np.log(prob[np.arange(n), y] + 1e-9).mean()
+        k = prob.shape[1]
+        objetivo = np.full_like(prob, SUAVIZADO / k)
+        objetivo[np.arange(n), y] += 1 - SUAVIZADO
+        perdida = -(objetivo * np.log(prob + 1e-9)).sum(axis=1).mean()
         perdida += L2 / 2 * (np.sum(self.p["W1"] ** 2) + np.sum(self.p["W2"] ** 2))
 
         # Retropropagación (derivadas escritas a mano).
-        dz2 = prob.copy()
-        dz2[np.arange(n), y] -= 1
-        dz2 /= n
+        dz2 = (prob - objetivo) / n
         grad = {
             "W2": h_d.T @ dz2 + L2 * self.p["W2"],
             "b2": dz2.sum(axis=0),
