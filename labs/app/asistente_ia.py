@@ -16,6 +16,7 @@ con OpenAI).
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import time
@@ -27,6 +28,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
 
 from .analitica import _origenes
+
+registro = logging.getLogger("labs.asistente_ia")
 
 URL_GROQ = "https://api.groq.com/openai/v1/chat/completions"
 MODELO_POR_DEFECTO = "llama-3.3-70b-versatile"
@@ -164,7 +167,12 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
         modelo = os.getenv("ASISTENTE_IA_MODELO", MODELO_POR_DEFECTO)
         try:
             texto = llamar_modelo(mensajes, clave, modelo).strip()
-        except (httpx.HTTPError, KeyError, IndexError, ValueError):
+        except httpx.HTTPStatusError as error:
+            # Solo el código y el mensaje del proveedor; nunca la clave.
+            registro.warning("IA: el proveedor respondió %s: %s", error.response.status_code, error.response.text[:300])
+            return cors(request, JSONResponse({"detail": "La IA no respondió", "codigo": error.response.status_code}, status_code=502))
+        except (httpx.HTTPError, KeyError, IndexError, ValueError) as error:
+            registro.warning("IA: fallo al consultar el proveedor (%s)", type(error).__name__)
             return cors(request, JSONResponse({"detail": "La IA no respondió"}, status_code=502))
         # Quita razonamientos que algunos modelos devuelven entre etiquetas.
         texto = re.sub(r"<think>.*?</think>", "", texto, flags=re.S).strip()[:1200]
