@@ -82,6 +82,12 @@ pasa como `DATABASE_URL` solo si existe; las migraciones se aplican al arrancar.
    final del pie de la portada). Marca «No contar mis visitas» para no inflar
    las cifras.
 
+## 6. Asistente del portafolio
+
+No necesita configuración: el modelo se entrena en GitHub Actions al publicar
+la portada. Para enseñarle, revisa la sección «Asistente» del panel privado y
+edita `asistente/conocimiento.yml` (detalle en `asistente/README.md`).
+
 ## Comprobación final (usuarios finales)
 
 Desde un teléfono y un computador que no sean el tuyo:

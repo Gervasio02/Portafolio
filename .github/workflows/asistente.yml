@@ -1,0 +1,36 @@
+name: Asistente
+
+# Prueba la red neuronal del asistente: datos válidos, paridad entre Python
+# y JavaScript y que generalice a preguntas nuevas. La publicación del modelo
+# reentrenado la hace el flujo «Publicar portada».
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ["asistente/**", "portal/asistente/red.js", ".github/workflows/asistente.yml"]
+  pull_request:
+    paths: ["asistente/**", "portal/asistente/red.js", ".github/workflows/asistente.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  probar:
+    name: Probar la red
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: asistente/requirements.txt
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: pip install -r asistente/requirements.txt
+      - run: python -m pytest -q asistente/tests
+      - name: Informe de entrenamiento
+        run: python asistente/entrenar.py --informe --salida /tmp/modelo.json >> "$GITHUB_STEP_SUMMARY"

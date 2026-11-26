@@ -1,0 +1,256 @@
+/* Página «Cómo funciono» del asistente. */
+
+.red-pagina {
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0 4rem;
+}
+
+.red-lead {
+  max-width: 48rem;
+  margin-bottom: 3.5rem;
+}
+
+.red-lead h1 {
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  line-height: 1.05;
+  margin: 0.5rem 0 1.2rem;
+  overflow-wrap: break-word;
+}
+
+.red-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.4rem;
+  margin-top: 1.6rem;
+}
+
+.red-acciones a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.red-boton {
+  padding: 0 1.2rem;
+  color: #12030a;
+  font-weight: 600;
+  text-decoration: none;
+  background: #ff2e63;
+  border-radius: 6px;
+}
+
+.red-boton:hover {
+  color: #12030a;
+  box-shadow: 0 0 18px rgb(255 46 99 / 45%);
+}
+
+.red-bloque {
+  margin-bottom: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgb(168 85 247 / 25%);
+}
+
+.red-bloque h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 1.2rem;
+}
+
+.red-bloque > p {
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+.red-flujo {
+  list-style: none;
+  counter-reset: paso;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+}
+
+.red-flujo li {
+  counter-increment: paso;
+  padding: 1rem 1.1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.red-flujo li::before {
+  content: counter(paso, decimal-leading-zero);
+  display: block;
+  font: 600 0.8rem var(--mono);
+  color: #ff2e63;
+}
+
+.red-flujo strong {
+  display: block;
+  margin: 0.2rem 0 0.3rem;
+}
+
+.red-flujo span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.red-flujo b {
+  color: #c084fc;
+  font-family: var(--mono);
+}
+
+.red-metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.red-metricas p {
+  margin: 0;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.red-metricas strong {
+  display: block;
+  font: 600 1.8rem var(--mono);
+  text-shadow: 0 0 16px rgb(168 85 247 / 55%);
+}
+
+.red-metricas span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.red-curva {
+  margin: 0;
+}
+
+.red-curva div {
+  height: 160px;
+  padding: 0.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.red-curva svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.red-curva .linea {
+  fill: none;
+  stroke: #ff2e63;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.red-curva .area {
+  fill: rgb(168 85 247 / 15%);
+}
+
+.red-curva figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+#prueba {
+  width: 100%;
+  max-width: 40rem;
+  min-height: 48px;
+  padding: 0 0.9rem;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  background: var(--panel);
+  border: 1px solid #a855f7;
+  border-radius: 8px;
+}
+
+#prueba:focus {
+  outline: 2px solid #c084fc;
+  outline-offset: 2px;
+}
+
+.red-rasgos {
+  min-height: 1.5em;
+  font: 0.82rem var(--mono);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.red-top {
+  list-style: none;
+  max-width: 40rem;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.red-top li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.8rem;
+  font-size: 0.92rem;
+}
+
+.red-top b {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.red-top i {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(168 85 247 / 55%);
+  transition: width 0.2s ease;
+}
+
+.red-top li.gana i {
+  background: #ff2e63;
+  box-shadow: 0 0 12px rgb(255 46 99 / 45%);
+}
+
+.red-top li.duda i {
+  background: #ffc857;
+}
+
+.red-top .nota {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.red-ciclo {
+  max-width: 62ch;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.red-ciclo li {
+  margin-bottom: 0.5rem;
+}
+
+.red-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .red-top i {
+    transition: none;
+  }
+}

@@ -229,7 +229,7 @@ def create_app(database=None, targets=None):
                 status_code=429,
                 headers={"Retry-After": "60"},
             )
-        public = request.url.path in ("/api/guest", "/api/visitas") or request.url.path.startswith(
+        public = request.url.path in ("/api/guest", "/api/visitas", "/api/asistente/preguntas") or request.url.path.startswith(
             "/api/panel/"
         )
         if (
@@ -253,7 +253,10 @@ def create_app(database=None, targets=None):
                     headers={"WWW-Authenticate": "Bearer"},
                 )
             request.state.owner = owner
-        if request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path != "/api/visitas":
+        if request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path not in (
+            "/api/visitas",
+            "/api/asistente/preguntas",
+        ):
             origin = request.headers.get("origin")
             if origin and urlsplit(origin).netloc != request.headers.get("host"):
                 return Response("Origen no permitido", status_code=403)

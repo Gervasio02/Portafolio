@@ -10,6 +10,7 @@ const paginas = [
   '/tiendanova/',
   '/interrogatorio/',
   '/cv.html',
+  '/asistente/',
 ];
 
 const canonicas = new Map([
@@ -21,6 +22,7 @@ const canonicas = new Map([
   ['/tiendanova/', 'https://gervasio.sbs/tiendanova/'],
   ['/interrogatorio/', 'https://gervasio.sbs/interrogatorio/'],
   ['/cv.html', 'https://gervasio.sbs/cv.html'],
+  ['/asistente/', 'https://gervasio.sbs/asistente/'],
 ]);
 
 const hashDinamicos = new Set([

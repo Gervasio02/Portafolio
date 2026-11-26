@@ -1,0 +1,854 @@
+# Conocimiento del asistente «Pregúntale a mi portafolio».
+#
+# Cada intención tiene:
+#   id:          nombre corto, único, sin espacios.
+#   claves:      palabras sueltas que delatan la intención (tecnologías,
+#                nombres de proyectos, sinónimos). La red también las aprende.
+#   ejemplos:    formas en que alguien podría preguntarlo. Mientras más
+#                variadas, mejor aprende la red (mínimo 6).
+#   respuesta:   lo que contesta el asistente, en primera persona.
+#                Enlaces con el formato [texto](ruta). Las rutas son
+#                relativas a la raíz del sitio (ej.: cv.html, taskflow/).
+#   sugerencias: (opcional) ids de otras intenciones para ofrecer después.
+#
+# Para enseñarle algo nuevo: agrega ejemplos a una intención existente o
+# crea una intención nueva, y guarda. Al llegar a main, GitHub Actions
+# vuelve a entrenar la red y publica el modelo (ver asistente/README.md).
+#
+# Regla: solo información real que Gervasio haya entregado. Si no hay
+# dato, la respuesta invita a escribir por correo.
+
+intenciones:
+  - id: saludo
+    claves: [hola, buenas, saludos, hey, qué tal, buen día]
+    ejemplos:
+      - hola
+      - buenas
+      - buenos días
+      - buenas tardes
+      - hola, ¿cómo estás?
+      - hey
+      - qué tal
+      - saludos
+      - holi
+      - hola gervasio
+    respuesta: >-
+      ¡Hola! Soy el asistente del portafolio de Gervasio. Puedes preguntarme
+      por sus proyectos, las tecnologías que usa, su formación o cómo
+      contactarlo.
+    sugerencias: [presentacion, proyectos, stack]
+
+  - id: despedida
+    claves: [chao, adiós, hasta luego, nos vemos, bye, me despido]
+    ejemplos:
+      - chao
+      - adiós
+      - nos vemos
+      - hasta luego
+      - eso es todo
+      - me voy
+      - bye
+      - hasta pronto
+    respuesta: >-
+      ¡Gracias por pasar! Si quieres seguir la conversación con Gervasio,
+      escríbele a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+
+  - id: gracias
+    claves: [gracias, genial, perfecto, excelente, buenísimo, vale, ok]
+    ejemplos:
+      - gracias
+      - muchas gracias
+      - te pasaste
+      - genial, gracias
+      - perfecto
+      - buenísimo
+      - excelente respuesta
+      - ok gracias
+      - vale
+    respuesta: >-
+      ¡De nada! ¿Quieres saber algo más? Puedo contarte de un proyecto en
+      particular o de cómo lo construyó.
+    sugerencias: [proyecto_destacado, contacto]
+
+  - id: asistente
+    claves: [bot, chatbot, red neuronal, inteligencia artificial, cómo funcionas, quién eres, modelo, entrenamiento del chat]
+    ejemplos:
+      - ¿quién eres?
+      - ¿eres un bot?
+      - ¿eres chatgpt?
+      - ¿cómo funcionas?
+      - ¿qué eres?
+      - ¿eres una inteligencia artificial?
+      - ¿cómo te entrenaron?
+      - ¿qué tecnología usas para responder?
+      - ¿eres una red neuronal?
+      - cómo está hecho este chat
+      - ¿usas una api de openai?
+    respuesta: >-
+      Soy una red neuronal pequeña que Gervasio programó desde cero: un
+      perceptrón multicapa escrito en Python con NumPy, sin librerías de
+      machine learning. Se entrena con las preguntas que suelen hacer los
+      reclutadores y corre completa en tu navegador, así que no envía tu
+      conversación a ningún servicio externo. El detalle está en
+      [cómo funciono](asistente/).
+    sugerencias: [presentacion, proyectos]
+
+  - id: presentacion
+    claves: [quién es gervasio, perfil, resumen, preséntate, háblame de ti, candidato]
+    ejemplos:
+      - ¿quién es gervasio?
+      - háblame de ti
+      - cuéntame de gervasio
+      - preséntate
+      - ¿quién eres tú, gervasio?
+      - resume tu perfil
+      - ¿cuál es tu perfil?
+      - dame un resumen del candidato
+      - ¿a qué te dedicas?
+      - ¿qué haces?
+      - cuéntame sobre el desarrollador
+      - descríbete en pocas palabras
+    respuesta: >-
+      Soy Gervasio Torres, analista programador titulado y egresado de
+      Ingeniería Informática en INACAP Rancagua. Terminé mi práctica
+      profesional en Tuniche desarrollando bots de automatización y ahora
+      busco mi primer puesto como desarrollador full stack. Me gusta
+      trabajar en toda la aplicación: la interfaz, la API y la base de datos.
+    sugerencias: [proyectos, stack, formacion]
+
+  - id: formacion
+    claves: [estudios, título, titulado, carrera, universidad, inacap, ingeniería, analista programador, educación]
+    ejemplos:
+      - ¿qué estudiaste?
+      - ¿dónde estudiaste?
+      - ¿cuál es tu formación?
+      - ¿tienes título?
+      - ¿estás titulado?
+      - ¿eres ingeniero?
+      - ¿qué carrera tienes?
+      - estudios
+      - ¿en qué universidad estudiaste?
+      - ¿terminaste la universidad?
+      - ¿tienes título profesional?
+      - educación
+    respuesta: >-
+      Soy analista programador titulado del CFT INACAP Rancagua (2019–2022)
+      y egresado de Ingeniería Informática en la Universidad Tecnológica de
+      Chile INACAP, Rancagua (2023–2024), hoy en proceso de titulación.
+    sugerencias: [experiencia, stack]
+
+  - id: experiencia
+    claves: [experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
+    ejemplos:
+      - ¿qué experiencia tienes?
+      - ¿tienes experiencia laboral?
+      - ¿dónde has trabajado?
+      - cuéntame tu experiencia
+      - ¿has trabajado como programador?
+      - ¿cuántos años de experiencia tienes?
+      - experiencia profesional
+      - ¿en qué empresas has estado?
+      - ¿has hecho prácticas?
+      - trayectoria laboral
+    respuesta: >-
+      Hice mi práctica profesional en Tuniche (sep–nov 2026), donde
+      desarrollé bots de automatización, y antes una práctica informática en
+      el Centro de Negocios Sercotec (2023). Además construí los proyectos de
+      este portafolio con pruebas automatizadas, integración continua y
+      despliegue en Azure. Antes de programar trabajé en construcción, packing
+      agrícola y mantenimiento de bicicletas y máquinas.
+    sugerencias: [practica_tuniche, proyectos, por_que_contratar]
+
+  - id: practica_tuniche
+    claves: [tuniche, práctica profesional, bots, automatización, rpa, automatizar procesos]
+    ejemplos:
+      - ¿qué hiciste en tuniche?
+      - háblame de tu práctica
+      - ¿en qué consistió tu práctica profesional?
+      - bots de automatización
+      - ¿qué bots hiciste?
+      - ¿tienes experiencia en automatización?
+      - ¿dónde hiciste la práctica?
+      - ¿ya terminaste la práctica?
+      - rpa
+      - ¿sabes automatizar procesos?
+    respuesta: >-
+      Hice mi práctica profesional en Tuniche entre septiembre y noviembre de
+      2026 y ya la terminé. Ahí desarrollé bots de automatización. Si quieres
+      el detalle de esos procesos, prefiero contártelo en una conversación:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [experiencia, disponibilidad]
+
+  - id: experiencia_previa
+    claves: [antes de programar, otros trabajos, construcción, packing, bicicletas, máquinas, empleos anteriores]
+    ejemplos:
+      - ¿qué hacías antes de programar?
+      - ¿has tenido otros trabajos?
+      - trabajos anteriores fuera de la informática
+      - ¿trabajaste en construcción?
+      - ¿qué otros empleos tuviste?
+      - experiencia no relacionada con ti
+      - ¿siempre fuiste programador?
+    respuesta: >-
+      Trabajé en construcción, en packing agrícola y reparando bicicletas y
+      máquinas. De esos trabajos saqué algo que uso todos los días
+      programando: si algo falla, se revisa pieza por pieza hasta encontrar
+      la causa. También me dejaron responsabilidad y trabajo en equipo.
+    sugerencias: [fortalezas, experiencia]
+
+  - id: stack
+    claves: [lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
+    ejemplos:
+      - ¿qué tecnologías usas?
+      - ¿cuál es tu stack?
+      - ¿qué lenguajes sabes?
+      - ¿en qué lenguajes programas?
+      - ¿qué herramientas manejas?
+      - tecnologías que dominas
+      - ¿con qué trabajas?
+      - skills técnicas
+      - ¿qué sabes hacer?
+      - habilidades técnicas
+      - ¿qué frameworks conoces?
+      - conocimientos técnicos
+    respuesta: >-
+      Lenguajes: JavaScript, TypeScript, Python, SQL, HTML y CSS. En frontend
+      uso React, Next.js y Vite; en backend Node.js con Express, FastAPI y
+      Auth.js; en datos PostgreSQL, SQLite, Prisma, SQLAlchemy y Alembic.
+      Pruebo con Jest, Vitest, pytest y Playwright, y entrego con Git, Docker,
+      GitHub Actions y Azure Container Apps.
+    sugerencias: [frontend, backend, pruebas]
+
+  - id: frontend
+    claves: [react, next.js, nextjs, frontend, front, interfaz, css, html, vite, typescript, responsive, diseño web]
+    ejemplos:
+      - ¿sabes react?
+      - ¿qué tal tu frontend?
+      - ¿manejas next.js?
+      - ¿haces interfaces?
+      - experiencia en frontend
+      - ¿sabes css?
+      - ¿haces diseño responsive?
+      - ¿sabes typescript?
+      - ¿con qué haces el front?
+      - ¿trabajas con vite?
+    respuesta: >-
+      Uso React en TaskFlow, ReservaYa, Snake e Interrogatorio, y Next.js en
+      TiendaNova, casi siempre con TypeScript. Me preocupo de que funcione en
+      el teléfono y sea accesible. Esta misma página la hice a mano con HTML,
+      CSS y JavaScript, sin frameworks, revisada en anchos de 320 a 1440 px.
+    sugerencias: [backend, portafolio_hecho]
+
+  - id: backend
+    claves: [backend, api, apis rest, node, node.js, express, fastapi, python, django, servidor]
+    ejemplos:
+      - ¿sabes backend?
+      - ¿haces apis?
+      - ¿manejas node?
+      - ¿sabes express?
+      - ¿qué tal tu backend?
+      - ¿haces apis rest?
+      - experiencia en servidor
+      - ¿sabes fastapi?
+      - ¿programas en python?
+      - ¿qué usas para el servidor?
+      - ¿sabes django?
+    respuesta: >-
+      Hago APIs REST con Node.js y Express (TaskFlow, Snake) y con Python y
+      FastAPI (ReservaYa, Interrogatorio y las herramientas DataLab, DocFlow
+      y CloudOps). Pongo las reglas de negocio y los permisos en la API, no
+      en la pantalla, y las cubro con pruebas.
+    sugerencias: [bases_datos, pruebas, concurrencia]
+
+  - id: bases_datos
+    claves: [sql, postgresql, postgres, base de datos, orm, prisma, sqlalchemy, migraciones, mysql, sqlite, mongodb]
+    ejemplos:
+      - ¿sabes sql?
+      - ¿qué bases de datos manejas?
+      - ¿sabes postgresql?
+      - ¿usas orm?
+      - ¿sabes prisma?
+      - ¿manejas sqlalchemy?
+      - ¿sabes modelar bases de datos?
+      - ¿haces migraciones?
+      - ¿trabajas con mysql?
+      - ¿bases no relacionales?
+      - experiencia con bases de datos
+    respuesta: >-
+      Trabajo sobre todo con PostgreSQL, y con SQLite en herramientas
+      livianas. Uso Prisma en Node y SQLAlchemy con Alembic en Python para
+      modelos y migraciones. Me gusta que la base proteja los datos: por
+      ejemplo, en ReservaYa una restricción impide dos reservas del mismo
+      turno aunque lleguen al mismo segundo.
+    sugerencias: [concurrencia, reservaya]
+
+  - id: pruebas
+    claves: [tests, testing, pruebas, cobertura, jest, vitest, pytest, playwright, pruebas unitarias, e2e, tdd]
+    ejemplos:
+      - ¿haces pruebas?
+      - ¿escribes tests?
+      - ¿qué cobertura tienen tus proyectos?
+      - ¿haces testing?
+      - ¿sabes pruebas unitarias?
+      - ¿usas playwright?
+      - pruebas automatizadas
+      - ¿cómo aseguras la calidad?
+      - ¿sabes tdd?
+      - ¿haces pruebas end to end?
+      - calidad del código
+    respuesta: >-
+      Sí, cada proyecto tiene pruebas automáticas que corren en cada cambio:
+      98,9 % de cobertura en la API de TaskFlow, 95,8 % en el backend de
+      ReservaYa, 111 pruebas en el backend de Interrogatorio y pruebas de
+      punta a punta con Playwright en TiendaNova y en este portafolio. Uso
+      Jest, Vitest, pytest y Playwright.
+    sugerencias: [devops, buenas_practicas]
+
+  - id: devops
+    claves: [docker, azure, nube, cloud, ci/cd, github actions, despliegue, deploy, contenedores, aws, kubernetes]
+    ejemplos:
+      - ¿sabes docker?
+      - ¿sabes azure?
+      - ¿has desplegado aplicaciones?
+      - ¿usas ci/cd?
+      - ¿sabes github actions?
+      - ¿dónde están publicadas tus apps?
+      - ¿sabes cloud?
+      - ¿manejas la nube?
+      - ¿sabes aws?
+      - despliegue continuo
+      - devops
+      - ¿cómo publicas tus proyectos?
+    respuesta: >-
+      Todas las apps corren en contenedores Docker en Azure Container Apps.
+      Cada cambio que llega a main pasa por GitHub Actions: pruebas, imagen
+      en Azure Container Registry y una revisión nueva que se verifica sola.
+      Las apps se apagan cuando nadie las usa para no gastar, y esta página
+      las despierta al abrirse. El portafolio se publica en GitHub Pages con
+      dominio propio.
+    sugerencias: [portafolio_hecho, pruebas]
+
+  - id: git
+    claves: [git, github, ramas, pull request, merge, control de versiones, commits]
+    ejemplos:
+      - ¿sabes git?
+      - ¿usas github?
+      - ¿trabajas con ramas?
+      - ¿haces pull requests?
+      - control de versiones
+      - ¿sabes hacer merge?
+      - ¿cómo organizas tu código?
+    respuesta: >-
+      Uso Git y GitHub a diario: una rama por tema, pull request hacia main y
+      la integración continua revisa todo antes de fusionar. Todo el código
+      está en [GitHub](https://github.com/Gervasio02/Portafolio).
+    sugerencias: [devops, buenas_practicas]
+
+  - id: buenas_practicas
+    claves: [seguridad, secretos, credenciales, validación, owasp, código limpio, buenas prácticas, proteger api]
+    ejemplos:
+      - ¿cómo escribes código limpio?
+      - buenas prácticas
+      - ¿te preocupas de la seguridad?
+      - ¿cómo manejas los secretos?
+      - ¿qué tan seguro es tu código?
+      - ¿validas los datos?
+      - seguridad en tus aplicaciones
+      - ¿sabes de owasp?
+      - ¿cómo proteges una api?
+    respuesta: >-
+      Valido todo en el servidor, separo permisos por rol, nunca dejo
+      credenciales en el código (van en variables de entorno y secretos),
+      pongo límites de peticiones en lo público y uso políticas de seguridad
+      de contenido en el sitio. Las pruebas y el análisis de dependencias
+      corren en cada cambio.
+    sugerencias: [pruebas, interrogatorio]
+
+  - id: ia
+    claves: [chatgpt, copilot, codex, claude, programar con ia, machine learning, usas ia]
+    ejemplos:
+      - ¿usas inteligencia artificial para programar?
+      - ¿usas chatgpt?
+      - ¿usas copilot?
+      - ¿programas con ia?
+      - ¿esto lo hizo una ia?
+      - ¿sabes machine learning?
+      - ¿sabes de redes neuronales?
+      - ¿qué opinas de la ia?
+    respuesta: >-
+      Sí, trabajo con asistentes de IA (Codex y Claude) como apoyo, igual que
+      con cualquier herramienta: yo decido la arquitectura, reviso lo que
+      proponen y todo pasa por pruebas antes de publicarse. Para entender
+      cómo funcionan por dentro, programé desde cero la red neuronal de este
+      chat.
+    sugerencias: [asistente, buenas_practicas]
+
+  - id: proyectos
+    claves: [proyectos, aplicaciones, demos, qué has construido, trabajos realizados, portafolio de proyectos]
+    ejemplos:
+      - ¿qué proyectos tienes?
+      - muéstrame tus proyectos
+      - ¿qué has construido?
+      - portafolio
+      - lista de proyectos
+      - ¿en qué has trabajado?
+      - ¿qué aplicaciones hiciste?
+      - ¿cuántos proyectos tienes?
+      - trabajos realizados
+      - ¿tienes demos?
+    respuesta: >-
+      Tengo aplicaciones completas con demo pública: TaskFlow (Kanban para
+      equipos), ReservaYa (reserva de canchas), TiendaNova (comercio
+      electrónico), Snake (juego con ranking verificado) e Interrogatorio
+      (juego de deducción), más tres herramientas en FastAPI: DataLab,
+      DocFlow y CloudOps. Todas están en el [catálogo](proyectos/).
+    sugerencias: [proyecto_destacado, taskflow, tiendanova]
+
+  - id: proyecto_destacado
+    claves: [mejor proyecto, proyecto favorito, más orgulloso, más complejo, cuál ver primero]
+    ejemplos:
+      - ¿cuál es tu mejor proyecto?
+      - ¿de qué proyecto estás más orgulloso?
+      - ¿cuál me recomiendas ver primero?
+      - proyecto favorito
+      - ¿cuál fue el más difícil?
+      - ¿cuál es el proyecto más complejo?
+      - si tuviera que ver uno solo
+      - ¿cuál representa mejor tu trabajo?
+    respuesta: >-
+      Si tienes poco tiempo, mira TaskFlow: es el más cercano a un sistema de
+      empresa, con roles, SLA, panel de control y 98,9 % de cobertura en la
+      API. Si te interesa la lógica difícil, Snake: el servidor vuelve a
+      jugar cada partida para que nadie haga trampa en el ranking.
+    sugerencias: [taskflow, snake, desafio]
+
+  - id: taskflow
+    claves: [taskflow, kanban, tablero, tareas, sla, gestión de equipos]
+    ejemplos:
+      - háblame de taskflow
+      - ¿qué es taskflow?
+      - el kanban
+      - tablero de tareas
+      - ¿cómo funciona taskflow?
+      - proyecto de gestión de equipos
+      - taskflow stack
+      - ¿qué fue lo difícil en taskflow?
+    respuesta: >-
+      TaskFlow es un tablero Kanban para equipos que preparan entregas y
+      atienden incidentes; el panel muestra lo atrasado según el SLA de cada
+      tarjeta. Lo difícil fue que el orden no se rompa cuando dos personas
+      mueven tarjetas a la vez: las reordeno en una transacción en PostgreSQL
+      y los permisos (dueño, editor, lector) se validan en la API. Hecho con
+      React, Express, Prisma y PostgreSQL. [Ver TaskFlow](taskflow/).
+    sugerencias: [reservaya, concurrencia]
+
+  - id: reservaya
+    claves: [reservaya, reservas, canchas, turnos, reserva duplicada]
+    ejemplos:
+      - háblame de reservaya
+      - ¿qué es reservaya?
+      - reserva de canchas
+      - el sistema de reservas
+      - ¿cómo evitas reservas duplicadas?
+      - reservaya stack
+      - proyecto con fastapi
+    respuesta: >-
+      ReservaYa reserva canchas deportivas con tarifas según el horario,
+      comprobante, cancelación y un panel de ocupación. Lo difícil: dos
+      personas confirman el mismo turno en el mismo segundo. Una restricción
+      en la base garantiza que solo una se lo quede y la otra recibe un
+      mensaje claro; además cuidé las fechas con la zona horaria de Chile.
+      Hecho con React, FastAPI, SQLAlchemy y PostgreSQL. [Ver ReservaYa](reservaya/).
+    sugerencias: [tiendanova, bases_datos]
+
+  - id: tiendanova
+    claves: [tiendanova, tienda, ecommerce, e-commerce, checkout, carrito, pagos, comercio electrónico]
+    ejemplos:
+      - háblame de tiendanova
+      - ¿qué es tiendanova?
+      - la tienda online
+      - ecommerce
+      - comercio electrónico
+      - ¿cómo funciona el checkout?
+      - ¿sabes hacer una tienda?
+      - proyecto con next.js
+    respuesta: >-
+      TiendaNova es una tienda con catálogo, variantes, cupones, pedidos y
+      devoluciones, más un panel de inventario (los pagos son simulados). Lo
+      difícil fue el doble clic en «pagar»: el checkout es idempotente y el
+      stock se descuenta en la misma transacción, así nunca se cobra dos
+      veces ni se vende más de lo que hay. Hecho con Next.js, Auth.js, Prisma
+      y PostgreSQL. [Ver TiendaNova](tiendanova/).
+    sugerencias: [snake, concurrencia]
+
+  - id: snake
+    claves: [snake, serpiente, juego, ranking, trampas, pwa, videojuego]
+    ejemplos:
+      - háblame de snake
+      - el juego de la serpiente
+      - ¿qué es snake?
+      - ¿cómo evitas trampas en el ranking?
+      - proyecto de juego
+      - ¿hiciste un juego?
+      - pwa
+    respuesta: >-
+      Snake es el clásico de la serpiente con tres modos, desafío diario,
+      logros y ranking; funciona en el teléfono y se instala como app. Lo
+      difícil: un ranking sin trampas. El navegador no manda el puntaje sino
+      la partida, y el servidor la vuelve a jugar con el mismo motor en
+      TypeScript. Hecho con React, TypeScript, Express y Prisma.
+      [Ver en la portada](index.html#snake).
+    sugerencias: [interrogatorio, desafio]
+
+  - id: interrogatorio
+    claves: [interrogatorio, detective, deducción, sospechosos, expediente, caso policial]
+    ejemplos:
+      - háblame de interrogatorio
+      - el juego de detectives
+      - juego de deducción
+      - ¿qué es interrogatorio?
+      - ¿cómo evitas que se filtre la solución?
+      - el caso policial
+    respuesta: >-
+      Interrogatorio es un juego de deducción: abres un expediente, revisas
+      pruebas, interrogas sospechosos y buscas contradicciones. Lo difícil
+      fue que la solución no se filtre: el caso se genera en el servidor a
+      partir de una semilla y la API solo entrega lo que ya descubriste.
+      Tiene límites de peticiones y 111 pruebas en el backend. Hecho con
+      React, FastAPI y SQLAlchemy. [Ver Interrogatorio](interrogatorio/).
+    sugerencias: [laboratorios, buenas_practicas]
+
+  - id: laboratorios
+    claves: [datalab, docflow, cloudops, csv, excel, facturas, ocr, monitoreo, procesamiento de datos, limpieza de datos]
+    ejemplos:
+      - ¿qué es datalab?
+      - ¿qué es docflow?
+      - ¿qué es cloudops?
+      - herramientas pequeñas
+      - las utilidades
+      - ¿tienes algo de procesamiento de datos?
+      - ¿haces ocr?
+      - limpieza de datos
+      - extracción de facturas
+      - monitoreo
+    respuesta: >-
+      Son tres herramientas que comparten un servidor FastAPI: DataLab limpia
+      archivos CSV y Excel y muestra la calidad de cada columna; DocFlow
+      extrae datos de facturas ficticias (texto, PDF u OCR) y exige revisión
+      humana antes de aprobar; CloudOps mide si las apps del portafolio
+      responden y registra incidentes. Cada visitante entra con una sesión
+      temporal que se borra a las 24 horas.
+    sugerencias: [backend, devops]
+
+  - id: portafolio_hecho
+    claves: [esta página, este sitio, portafolio web, plantilla, github pages, dominio, cómo hiciste la web]
+    ejemplos:
+      - ¿cómo hiciste esta página?
+      - ¿con qué está hecho el portafolio?
+      - ¿usaste una plantilla?
+      - ¿dónde está alojado este sitio?
+      - ¿cómo publicaste la página?
+      - ¿esta web usa framework?
+      - el código de esta página
+    respuesta: >-
+      La hice a mano con HTML, CSS y JavaScript, sin frameworks ni plantilla.
+      Se publica en GitHub Pages con el dominio gervasio.sbs, pasa pruebas
+      con Playwright en cada cambio y despierta las apps de Azure al abrirse.
+      Las animaciones y este chat también son JavaScript propio.
+      [Código de la página](https://github.com/Gervasio02/Portafolio/tree/main/portal).
+    sugerencias: [asistente, devops]
+
+  - id: desafio
+    claves: [desafío, reto, problema difícil, bug, depurar, debug, situación difícil]
+    ejemplos:
+      - ¿cuál ha sido tu mayor desafío?
+      - cuéntame de un problema difícil que resolviste
+      - ¿cómo resuelves problemas?
+      - un bug difícil
+      - ¿qué haces cuando algo falla?
+      - ¿cómo depuras?
+      - háblame de un reto técnico
+      - situación difícil
+    respuesta: >-
+      Lo que más me ha costado son los casos en que dos cosas pasan al mismo
+      tiempo: dos reservas del mismo turno, dos clics en «pagar», dos personas
+      moviendo tarjetas. Los resolví moviendo la regla a la base de datos
+      (restricciones y transacciones) y escribiendo pruebas que repiten la
+      situación. Mi forma de depurar viene de reparar máquinas: aislar y
+      revisar pieza por pieza hasta encontrar la causa.
+    sugerencias: [concurrencia, pruebas]
+
+  - id: concurrencia
+    claves: [concurrencia, transacciones, idempotencia, condición de carrera, race condition, bloqueos, duplicados]
+    ejemplos:
+      - ¿sabes manejar concurrencia?
+      - condiciones de carrera
+      - ¿qué es la idempotencia?
+      - ¿usas transacciones?
+      - ¿cómo evitas datos duplicados?
+      - race conditions
+      - bloqueos en base de datos
+    respuesta: >-
+      Sí, es un tema que aparece en varios proyectos: restricciones únicas
+      para que dos reservas no tomen el mismo turno (ReservaYa), checkout
+      idempotente con descuento de stock en la misma transacción
+      (TiendaNova) y reordenamiento transaccional del tablero (TaskFlow).
+    sugerencias: [reservaya, tiendanova, taskflow]
+
+  - id: fortalezas
+    claves: [puntos fuertes, lo mejor de ti, fortalezas, virtudes, habilidades blandas, soft skills, trabajo en equipo, compañero, qué te diferencia]
+    ejemplos:
+      - ¿cuáles son tus fortalezas?
+      - ¿en qué eres bueno?
+      - habilidades blandas
+      - ¿trabajas bien en equipo?
+      - ¿cómo eres como compañero?
+      - virtudes
+      - ¿qué te diferencia?
+      - soft skills
+    respuesta: >-
+      Soy constante y ordenado: termino lo que empiezo y lo dejo probado.
+      Resuelvo problemas de forma práctica, aprendo rápido lo que el proyecto
+      necesita y vengo de trabajos donde el trabajo en equipo y la
+      responsabilidad eran obligatorios.
+    sugerencias: [debilidades, por_que_contratar]
+
+  - id: debilidades
+    claves: [debilidades, defectos, puntos débiles, qué te falta, qué no sabes, mejorar]
+    ejemplos:
+      - ¿cuáles son tus debilidades?
+      - ¿en qué debes mejorar?
+      - puntos débiles
+      - ¿qué te falta aprender?
+      - defectos
+      - ¿qué no sabes hacer?
+    respuesta: >-
+      Todavía no he trabajado en un equipo de desarrollo grande con procesos
+      de empresa. Lo compenso trabajando como si lo hiciera: ramas, pull
+      requests, pruebas, integración continua y documentación en cada
+      proyecto. Y sigo aprendiendo tecnologías que piden las empresas.
+    sugerencias: [aprendizaje, fortalezas]
+
+  - id: aprendizaje
+    claves: [aprender, aprendiendo, actualizado, cursos, estudiar más, próximos pasos]
+    ejemplos:
+      - ¿qué estás aprendiendo?
+      - ¿cómo aprendes cosas nuevas?
+      - ¿te gusta aprender?
+      - ¿qué quieres aprender?
+      - ¿cómo te mantienes actualizado?
+      - próximos pasos
+    respuesta: >-
+      Aprendo construyendo: cada proyecto del portafolio me obligó a resolver
+      algo nuevo, desde transacciones concurrentes hasta despliegue en la
+      nube. Lo más reciente fue programar esta red neuronal desde cero.
+    sugerencias: [asistente, proyectos]
+
+  - id: por_que_contratar
+    claves: [elegirte, escogerte, por qué elegirte, contratarte, por qué tú, aportas, valor, buen candidato, convénceme]
+    ejemplos:
+      - ¿por qué debería contratarte?
+      - ¿qué aportas a la empresa?
+      - ¿por qué tú?
+      - convénceme
+      - ¿qué valor agregas?
+      - ¿por qué eres un buen candidato?
+      - ¿qué te hace distinto a otros juniors?
+    respuesta: >-
+      Porque ya trabajo como se trabaja en un equipo: aplicaciones completas
+      con pruebas, integración continua y despliegue en la nube, y puedes
+      verificarlo abriendo cualquiera de los proyectos. Aprendo rápido, cuido
+      los detalles que evitan errores en producción y tengo muchas ganas de
+      aportar desde el primer día.
+    sugerencias: [proyecto_destacado, contacto]
+
+  - id: busca
+    claves: [qué buscas, puesto, cargo, rol, trabajo de desarrollador, junior, pasantía, empleo]
+    ejemplos:
+      - ¿qué tipo de trabajo buscas?
+      - ¿qué puesto buscas?
+      - ¿estás buscando trabajo?
+      - ¿qué cargo te interesa?
+      - ¿buscas trabajo de desarrollador?
+      - ¿frontend o backend?
+      - ¿te interesa una pasantía?
+      - ¿qué rol quieres?
+    respuesta: >-
+      Busco mi primer puesto como desarrollador full stack, o con foco en
+      frontend o backend. Me interesan equipos donde pueda aportar y seguir
+      aprendiendo.
+    sugerencias: [disponibilidad, modalidad, contacto]
+
+  - id: disponibilidad
+    claves: [disponibilidad, cuándo empiezas, disponible, fecha de inicio, inmediata, trabajando actualmente]
+    ejemplos:
+      - ¿cuándo puedes empezar?
+      - ¿tienes disponibilidad?
+      - ¿estás disponible?
+      - ¿estás trabajando actualmente?
+      - fecha de inicio
+      - ¿puedes empezar de inmediato?
+      - ¿cuál es tu disponibilidad horaria?
+    respuesta: >-
+      Ya terminé mi práctica profesional y estoy buscando trabajo. Para
+      coordinar fechas, escríbeme a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [modalidad, contacto]
+
+  - id: modalidad
+    claves: [teletrabajo, trabajo a distancia, remoto, presencial, híbrido, trasladarse, viajar, auto, licencia de conducir, movilización]
+    ejemplos:
+      - ¿trabajas remoto?
+      - ¿presencial o remoto?
+      - ¿aceptas trabajo híbrido?
+      - ¿te puedes trasladar?
+      - ¿puedes viajar a santiago?
+      - modalidad de trabajo
+      - ¿tienes auto?
+      - ¿tienes licencia de conducir?
+      - ¿tienes movilización?
+    respuesta: >-
+      Vivo en la Región de O'Higgins y tengo licencia de conducir clase B con
+      movilización propia. La modalidad (remota, híbrida o presencial) la
+      conversamos según el puesto: [escríbeme](mailto:Gervasiot19@gmail.com).
+    sugerencias: [ubicacion, contacto]
+
+  - id: ubicacion
+    claves: [dónde vives, ubicación, ciudad, región, comuna, chile, de dónde eres]
+    ejemplos:
+      - ¿dónde vives?
+      - ¿de dónde eres?
+      - ubicación
+      - ¿en qué ciudad estás?
+      - ¿eres de chile?
+      - ¿en qué región vives?
+      - ¿vives en santiago?
+    respuesta: >-
+      Estoy en la Región de O'Higgins, Chile.
+    sugerencias: [modalidad, contacto]
+
+  - id: sueldo
+    claves: [sueldo, salario, renta, pretensiones, expectativa salarial, cuánto cobras, remuneración]
+    ejemplos:
+      - ¿cuánto quieres ganar?
+      - pretensiones de renta
+      - ¿cuál es tu expectativa salarial?
+      - ¿cuánto cobras?
+      - sueldo esperado
+      - ¿cuánto pides?
+      - renta líquida
+    respuesta: >-
+      Eso prefiero conversarlo directamente según el cargo y sus condiciones.
+      Escríbeme a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [contacto, busca]
+
+  - id: contacto
+    claves: [contacto, correo, email, mail, teléfono, número, whatsapp, linkedin, escribirte, entrevista]
+    ejemplos:
+      - ¿cómo te contacto?
+      - ¿cuál es tu correo?
+      - ¿tienes email?
+      - quiero contactarte
+      - ¿me das tu número?
+      - ¿tienes teléfono?
+      - ¿cómo te escribo?
+      - datos de contacto
+      - quiero entrevistarte
+      - ¿tienes linkedin?
+    respuesta: >-
+      La mejor forma es por correo:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com). También puedes
+      revisar mi [GitHub](https://github.com/Gervasio02) y descargar mi
+      [CV en PDF](cv/Gervasio-Torres-CV.pdf).
+    sugerencias: [cv, disponibilidad]
+
+  - id: cv
+    claves: [cv, currículum, curriculum, hoja de vida, resume, pdf]
+    ejemplos:
+      - ¿tienes cv?
+      - currículum
+      - descargar cv
+      - ¿me puedes mandar tu curriculum?
+      - hoja de vida
+      - resume
+      - ¿dónde está tu cv?
+    respuesta: >-
+      Aquí está: puedes [verlo en línea](cv.html) o
+      [descargarlo en PDF](cv/Gervasio-Torres-CV.pdf).
+    sugerencias: [contacto, experiencia]
+
+  - id: github
+    claves: [github, código fuente, repositorio, código público, ver tu código]
+    ejemplos:
+      - ¿tienes github?
+      - ¿dónde está tu código?
+      - repositorio
+      - ¿puedo ver el código?
+      - ¿tu código es público?
+      - código fuente
+    respuesta: >-
+      Sí, todo es público en
+      [github.com/Gervasio02](https://github.com/Gervasio02). El repositorio
+      del portafolio tiene cada proyecto con sus pruebas y flujos de
+      despliegue.
+    sugerencias: [git, proyectos]
+
+  - id: idiomas
+    claves: [inglés, english, idiomas, nivel de inglés, inglés técnico]
+    ejemplos:
+      - ¿hablas inglés?
+      - ¿qué nivel de inglés tienes?
+      - idiomas
+      - ¿sabes inglés técnico?
+      - do you speak english?
+      - ¿lees documentación en inglés?
+    respuesta: >-
+      No lo incluí en el portafolio todavía. Pregúntamelo por correo y te
+      cuento: [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [contacto]
+
+  - id: datos_personales
+    claves: [edad, años tienes, rut, dirección, casado, hijos, fecha de nacimiento, datos personales]
+    ejemplos:
+      - ¿cuántos años tienes?
+      - ¿cuál es tu rut?
+      - ¿dónde vives exactamente?
+      - ¿cuál es tu dirección?
+      - ¿estás casado?
+      - ¿tienes hijos?
+      - fecha de nacimiento
+      - edad
+    respuesta: >-
+      No publico datos personales en el portafolio. Si los necesitas para un
+      proceso de selección, escríbeme a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [contacto, presentacion]
+
+  # Ejemplos de temas ajenos al portafolio: le enseñan a la red a no
+  # forzar una respuesta cuando la pregunta no tiene que ver.
+  - id: fuera_de_tema
+    claves: [clima, fútbol, receta, chiste, película, serie, política, matemáticas, poema, dólar]
+    ejemplos:
+      - ¿qué tiempo hace hoy?
+      - ¿quién ganó el partido?
+      - dame una receta de pan
+      - ¿cuánto es 2 más 2?
+      - cuéntame un chiste
+      - ¿cuál es la capital de francia?
+      - ¿qué película me recomiendas?
+      - ¿cómo está el dólar?
+      - escribe un poema
+      - ¿cuál es el sentido de la vida?
+      - recomiéndame una serie
+      - ¿a qué hora cierra el banco?
+      - ¿qué opinas del gobierno?
+      - ¿quién va a ganar el mundial?
+      - traduce esto al inglés
+      - ¿cómo se hace un asado?
+      - ayúdame con mi tarea de matemáticas
+      - ¿cuál es tu color favorito?
+    respuesta: >-
+      Eso no lo sé: solo conozco el portafolio de Gervasio. Puedo contarte de
+      sus proyectos, su formación, las tecnologías que usa o cómo
+      contactarlo.
+    sugerencias: [proyectos, stack, contacto]

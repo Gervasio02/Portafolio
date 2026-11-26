@@ -90,6 +90,11 @@ class Almacen:
             c.execute(
                 "CREATE INDEX IF NOT EXISTS portafolio_eventos_creado ON portafolio_eventos(creado)"
             )
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS asistente_preguntas(
+                    id {clave}, creado TEXT NOT NULL, pregunta TEXT NOT NULL,
+                    intencion TEXT, confianza REAL, motivo TEXT NOT NULL, ruta TEXT)"""
+            )
 
     def guardar(self, evento: dict):
         campos = ("creado", "sesion", "tipo", "ruta", "destino", "etiqueta", "referente", "dispositivo", "idioma")
@@ -111,10 +116,56 @@ class Almacen:
             nombres = [d[0] for d in cursor.description]
             return [dict(zip(nombres, fila)) for fila in cursor.fetchall()]
 
+    def guardar_pregunta(self, pregunta: dict):
+        campos = ("creado", "pregunta", "intencion", "confianza", "motivo", "ruta")
+        with self._conexion() as c:
+            c.execute(
+                self._sql(f"INSERT INTO asistente_preguntas({','.join(campos)}) VALUES({','.join('?' * len(campos))})"),
+                tuple(pregunta[k] for k in campos),
+            )
+
+    def preguntas_desde(self, inicio: datetime) -> list[dict]:
+        with self._conexion() as c:
+            cursor = c.execute(
+                self._sql(
+                    "SELECT creado,pregunta,intencion,confianza,motivo,ruta "
+                    "FROM asistente_preguntas WHERE creado>=? ORDER BY creado"
+                ),
+                (inicio.isoformat(),),
+            )
+            nombres = [d[0] for d in cursor.description]
+            return [dict(zip(nombres, fila)) for fila in cursor.fetchall()]
+
     def purgar(self):
         limite = (datetime.now(timezone.utc) - timedelta(days=RETENCION_DIAS)).isoformat()
         with self._conexion() as c:
             c.execute(self._sql("DELETE FROM portafolio_eventos WHERE creado<?"), (limite,))
+            c.execute(self._sql("DELETE FROM asistente_preguntas WHERE creado<?"), (limite,))
+
+
+MOTIVOS = {"sin_respuesta", "no_sirvio"}
+
+
+def resumir_preguntas(preguntas: list[dict], ahora: datetime | None = None) -> dict:
+    """Lo que el asistente no supo responder, para enseñarle."""
+    ahora = (ahora or datetime.now(timezone.utc)).astimezone(ZONA)
+    frecuentes = Counter(" ".join(p["pregunta"].lower().split()) for p in preguntas)
+    return {
+        "total": len(preguntas),
+        "sin_respuesta": sum(p["motivo"] == "sin_respuesta" for p in preguntas),
+        "no_sirvio": sum(p["motivo"] == "no_sirvio" for p in preguntas),
+        "frecuentes": frecuentes.most_common(10),
+        "recientes": [
+            {
+                "hora": datetime.fromisoformat(p["creado"]).astimezone(ZONA).strftime("%d-%m %H:%M"),
+                "pregunta": p["pregunta"],
+                "intencion": p["intencion"] or "",
+                "confianza": p["confianza"],
+                "motivo": p["motivo"],
+            }
+            for p in reversed(preguntas[-50:])
+        ],
+    }
 
 
 def _categoria(destino: str) -> str:
@@ -219,7 +270,10 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
             respuesta.headers["Access-Control-Max-Age"] = "600"
         return respuesta
 
+    preguntas_ip: dict[str, deque] = defaultdict(deque)
+
     @app.options("/api/visitas", include_in_schema=False)
+    @app.options("/api/asistente/preguntas", include_in_schema=False)
     @app.options("/api/panel/resumen", include_in_schema=False)
     def preflight(request: Request):
         return cors(request, Response(status_code=204))
@@ -260,6 +314,44 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
         )
         return cors(request, Response(status_code=204))
 
+    @app.post("/api/asistente/preguntas", status_code=204, tags=["analítica"])
+    async def pregunta_asistente(request: Request):
+        """Guarda una pregunta que el asistente no supo responder (sin datos personales)."""
+        origen = (request.headers.get("origin") or "").rstrip("/")
+        if origen not in _origenes():
+            raise HTTPException(403, "Origen no permitido")
+        if not permitido(preguntas_ip, ip_cliente(request), 30, 60):
+            return cors(request, Response(status_code=429))
+        crudo = await request.body()
+        if len(crudo) > 1024:
+            raise HTTPException(413, "Pregunta demasiado grande")
+        try:
+            datos = json.loads(crudo or b"{}")
+        except json.JSONDecodeError:
+            raise HTTPException(400, "JSON inválido")
+        pregunta = _texto(datos.get("pregunta"), 200)
+        motivo = _texto(datos.get("motivo"), 20)
+        intencion = _texto(datos.get("intencion"), 40)
+        try:
+            confianza = float(datos.get("confianza"))
+        except (TypeError, ValueError):
+            confianza = None
+        if len(pregunta) < 2 or motivo not in MOTIVOS:
+            raise HTTPException(422, "Pregunta inválida")
+        if confianza is not None and not 0 <= confianza <= 1:
+            confianza = None
+        almacen.guardar_pregunta(
+            {
+                "creado": datetime.now(timezone.utc).isoformat(),
+                "pregunta": pregunta,
+                "intencion": intencion if intencion.replace("_", "").isalnum() else "",
+                "confianza": confianza,
+                "motivo": motivo,
+                "ruta": _texto(datos.get("ruta"), LIMITES["ruta"]),
+            }
+        )
+        return cors(request, Response(status_code=204))
+
     @app.get("/api/panel/resumen", tags=["analítica"])
     def resumen(request: Request, dias: int = 30):
         clave = os.getenv("PANEL_CLAVE", "")
@@ -279,6 +371,8 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
         dias = max(1, min(dias, 90))
         almacen.purgar()
         inicio = datetime.now(timezone.utc) - timedelta(days=dias + 1)
-        respuesta = JSONResponse(resumir(almacen.desde(inicio), dias))
+        datos = resumir(almacen.desde(inicio), dias)
+        datos["asistente"] = resumir_preguntas(almacen.preguntas_desde(inicio))
+        respuesta = JSONResponse(datos)
         respuesta.headers["Cache-Control"] = "no-store"
         return cors(request, respuesta)
