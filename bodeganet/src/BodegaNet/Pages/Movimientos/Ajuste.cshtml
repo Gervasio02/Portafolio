@@ -1,15 +1,15 @@
 @page
 @model AjusteModel
 @{
-    ViewData["Title"] = "Registrar ajuste";
+    ViewData["Title"] = "Corregir un conteo";
 }
 <div class="titulo-pagina">
-    <h1>Registrar ajuste</h1>
+    <h1>Corregir un conteo</h1>
     <a href="/Movimientos">Volver a movimientos</a>
 </div>
 <div class="rejilla-form">
     <form method="post" class="tarjeta formulario" novalidate>
-        <p class="tenue">Corrige el saldo después de un conteo físico. Un sobrante entra al costo promedio vigente; un faltante no puede dejar el stock bajo cero.</p>
+        <p class="tenue">Compara lo que contaste con la cantidad disponible. Si sobran 3 unidades escribe 3. Si faltan 3, escribe −3.</p>
         <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
         <div class="campo">
             <label asp-for="Datos.ProductoId"></label>
@@ -21,6 +21,7 @@
             <select asp-for="Datos.BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
             <span asp-validation-for="Datos.BodegaId" class="error"></span>
         </div>
+        <p id="disponibilidad" class="disponibilidad" role="status" aria-atomic="true"></p>
         <div class="campo">
             <label asp-for="Datos.Cantidad"></label>
             <input asp-for="Datos.Cantidad" type="number" step="1" inputmode="numeric" />

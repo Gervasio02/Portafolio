@@ -10,6 +10,7 @@
         <a class="boton" href="/Bodegas/Nueva">+ Nueva bodega</a>
     }
 </div>
+<p class="tenue">Elige una bodega para ver los productos que tiene disponibles.</p>
 <nav class="bodegas" aria-label="Bodegas">
     @foreach (var b in Model.Bodegas)
     {
@@ -48,8 +49,8 @@
                         @foreach (var e in Model.Existencias)
                         {
                             <tr>
-                                <td><a href="/Kardex?productoId=@e.ProductoId&amp;bodegaId=@e.BodegaId">@e.Sku</a></td>
-                                <td>@e.Producto</td>
+                                <td>@e.Sku</td>
+                                <td><a asp-page="/Kardex" asp-route-productoId="@e.ProductoId" asp-route-bodegaId="@e.BodegaId">@e.Producto</a></td>
                                 <td class="num">@Formato.Numero(e.Cantidad) @e.Unidad</td>
                                 <td class="num">@Formato.Costo(e.CostoPromedio)</td>
                                 <td class="num">@Formato.Pesos(e.Valor)</td>

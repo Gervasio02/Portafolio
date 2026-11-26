@@ -30,7 +30,7 @@ public sealed class SalidaModel(BodegaDbContext db, ServicioInventario inventari
 
         var productoId = Datos.ProductoId!.Value;
         var bodegaId = Datos.BodegaId!.Value;
-        return await RegistrarAsync(productoId, bodegaId, "Salida registrada al costo promedio vigente.", () =>
+        return await RegistrarAsync(productoId, bodegaId, "Salida registrada. Puedes ver las unidades restantes en el historial.", () =>
             inventario.RegistrarSalidaAsync(
                 new SolicitudSalida(productoId, bodegaId, Datos.Cantidad!.Value, Datos.Referencia),
                 User.Nombre(), null, ct), ct);

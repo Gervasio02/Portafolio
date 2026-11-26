@@ -50,7 +50,7 @@
                             }
                         </td>
                         <td class="nowrap">
-                            <a href="/Kardex?productoId=@p.Id">Kardex</a>
+                            <a asp-page="/Kardex" asp-route-productoId="@p.Id">Ver historial</a>
                             @if (User.EsAdministrador())
                             {
                                 <text> · </text><a href="/Productos/Editar/@p.Id">Editar</a>

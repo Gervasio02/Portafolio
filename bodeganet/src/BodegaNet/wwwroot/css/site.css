@@ -14,6 +14,7 @@
   --tenue: #b3a8c9;
   --acento: #ff2e63;
   --acento-suave: rgba(255, 46, 99, 0.14);
+  --accion: #ab204d;
   --morado: #a855f7;
   --morado-claro: #c084fc;
   --ok: #4ade80;
@@ -151,6 +152,9 @@ pre {
 }
 
 .menu a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--tenue);
   text-decoration: none;
   padding: 0.35rem 0.6rem;
@@ -158,12 +162,12 @@ pre {
 }
 
 .menu a:hover,
-.menu a.activo {
+.menu a[aria-current] {
   color: var(--texto);
   background: var(--superficie-2);
 }
 
-.menu a.activo {
+.menu a[aria-current] {
   box-shadow: inset 0 -2px 0 var(--acento);
 }
 
@@ -246,8 +250,78 @@ pre {
 }
 
 .rejilla-form {
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  max-width: 730px;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
+}
+
+.portada-inventario {
+  margin-bottom: 1.5rem;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: linear-gradient(120deg, var(--superficie), var(--superficie-2));
+}
+
+.sobrelinea {
+  margin: 0 0 .5rem;
+  color: var(--morado-claro);
+  font-weight: 600;
+}
+
+.tareas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: 1.1rem;
+}
+
+.tarea {
+  display: grid;
+  align-content: start;
+  gap: .35rem;
+  padding: 1rem;
+  border: 1px solid #4a3966;
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: var(--tenue);
+  text-decoration: none;
+}
+
+.tarea:hover {
+  color: var(--texto);
+  border-color: var(--morado-claro);
+  background: var(--superficie-2);
+}
+
+.tarea strong {
+  color: var(--texto);
+  font-size: 1.1rem;
+}
+
+.tarea-icono {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--superficie-2);
+  color: var(--morado-claro);
+  font-size: 1.25rem;
+}
+
+.consultas {
+  margin-top: 1rem;
+}
+
+.disponibilidad:not(:empty) {
+  padding: .75rem;
+  border-left: 3px solid var(--morado-claro);
+  background: var(--superficie-2);
+}
+
+.disponibilidad:empty {
+  display: none;
 }
 
 /* Cifras */
@@ -412,9 +486,30 @@ meter::-moz-meter-bar {
 
 /* Tablas */
 .tabla {
+  position: relative;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin: 0 -0.2rem;
+}
+
+.reposiciones {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: .85rem;
+  margin: 0;
+  padding: 0;
+}
+
+.reposiciones li {
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo);
+}
+
+.reposiciones li > p {
+  margin: .35rem 0 .8rem;
 }
 
 table {
@@ -478,8 +573,8 @@ tbody tr:hover {
 }
 
 .campo label {
-  font-size: 0.9rem;
-  color: var(--tenue);
+  font-weight: 500;
+  color: var(--texto);
 }
 
 .campos-2 {
@@ -497,6 +592,7 @@ tbody tr:hover {
 .campo-check input {
   width: 1.1rem;
   height: 1.1rem;
+  min-height: 0;
   accent-color: var(--acento);
 }
 
@@ -510,6 +606,7 @@ select {
   border: 1px solid var(--borde);
   border-radius: 8px;
   padding: 0.55rem 0.7rem;
+  min-height: 44px;
 }
 
 input:focus,
@@ -551,10 +648,11 @@ select:focus {
   text-decoration: none;
   cursor: pointer;
   color: #fff;
-  background: var(--acento);
+  background: var(--accion);
   border: 1px solid var(--acento);
   border-radius: 9px;
   padding: 0.55rem 1rem;
+  min-height: 44px;
   transition: box-shadow 0.15s ease, background 0.15s ease;
 }
 
@@ -631,8 +729,24 @@ select:focus {
   font-size: 1.05rem;
 }
 
-.login-caja .acciones .boton {
-  flex: 1 1 160px;
+.login-intro .sobrelinea {
+  color: var(--morado-claro);
+}
+
+.login-intro h1 {
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.25rem);
+  max-width: 17ch;
+}
+
+.acceso-cuenta {
+  margin-top: 1rem;
+  border-top: 1px solid var(--borde);
+}
+
+.acceso-cuenta summary {
+  cursor: pointer;
+  padding: .8rem 0;
+  color: var(--morado-claro);
 }
 
 .login-caja form {
@@ -677,14 +791,31 @@ select:focus {
 }
 
 @media (max-width: 760px) {
-  .rejilla-form {
-    grid-template-columns: minmax(0, 1fr);
+  .tareas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .menu {
+    display: grid;
+    order: 1;
+    flex-basis: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .menu a {
+    justify-content: center;
+    text-align: center;
+    padding-inline: .25rem;
   }
 
   .sesion {
-    margin-left: 0;
-    width: 100%;
-    justify-content: space-between;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .tareas {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

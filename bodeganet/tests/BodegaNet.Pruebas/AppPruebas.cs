@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace BodegaNet.Pruebas;
@@ -181,7 +182,7 @@ public sealed partial class AppPruebas(FabricaBodegaNet fabrica) : IClassFixture
             "/", "/Productos", "/Productos/Editar", "/Productos/Editar/1", "/Bodegas", "/Bodegas/Nueva",
             "/Movimientos", "/Movimientos?Tipo=Entrada", "/Movimientos/Entrada", "/Movimientos/Salida",
             "/Movimientos/Ajuste", "/Movimientos/Transferencia", "/Kardex", "/Kardex?productoId=1",
-            "/Alertas", "/Api",
+            "/Alertas",
         })
         {
             var respuesta = await cliente.GetAsync(ruta);
@@ -190,10 +191,32 @@ public sealed partial class AppPruebas(FabricaBodegaNet fabrica) : IClassFixture
     }
 
     [Fact]
-    public async Task ElDocumentoOpenApiEstaDisponible()
+    public async Task ElDocumentoOpenApiSoloEstaDisponibleEnDesarrollo()
     {
-        var documento = await Cliente().GetFromJsonAsync<JsonElement>("/openapi/v1.json");
+        var publicado = await ConSesionAsync(Cliente(), "consulta@bodeganet.test", "Consulta.Demo2026");
+        Assert.Equal(HttpStatusCode.NotFound, (await publicado.GetAsync("/Api")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await publicado.GetAsync("/openapi/v1.json")).StatusCode);
 
+        using var desarrollo = fabrica.WithWebHostBuilder(builder => builder.UseEnvironment("Development"));
+        using var cliente = desarrollo.CreateClient();
+        var documento = await cliente.GetFromJsonAsync<JsonElement>("/openapi/v1.json");
         Assert.True(documento.GetProperty("paths").TryGetProperty("/api/movimientos/salida", out _));
+    }
+
+    [Fact]
+    public async Task LaSalidaMuestraLasUnidadesDeLaBodegaSeleccionada()
+    {
+        const string ruta = "/Movimientos/Salida?handler=Disponibilidad&productoId=1&bodegaId=1";
+        using var cliente = await ConSesionAsync(Cliente(), "bodega@bodeganet.test", "Bodega.Demo2026");
+        var respuesta = await cliente.GetAsync(ruta);
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        Assert.True(respuesta.Headers.CacheControl!.NoStore);
+
+        var saldo = await respuesta.Content.ReadFromJsonAsync<JsonElement>();
+        var existencias = await cliente.GetFromJsonAsync<JsonElement>("/api/existencias?bodegaId=1");
+        var esperado = existencias.EnumerateArray().Single(fila => fila.GetProperty("productoId").GetInt32() == 1);
+        Assert.Equal(esperado.GetProperty("cantidad").GetInt32(), saldo.GetProperty("cantidad").GetInt32());
+        Assert.Equal("un", saldo.GetProperty("unidad").GetString());
+        Assert.Equal(HttpStatusCode.NotFound, (await cliente.GetAsync(ruta.Replace("bodegaId=1", "bodegaId=999999"))).StatusCode);
     }
 }

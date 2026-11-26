@@ -934,10 +934,9 @@ intenciones:
       - ¿sabes asp.net core?
       - ¿cómo evitas el stock negativo?
     respuesta: >-
-      BodegaNet es un control de inventario y kardex hecho en C# con .NET 10:
-      ASP.NET Core (Razor Pages y una API REST documentada con OpenAPI),
-      Entity Framework Core y PostgreSQL. Registra entradas con costo,
-      salidas, ajustes y transferencias entre bodegas, y valoriza el kardex
+      BodegaNet permite consultar qué hay en cada bodega y registrar entradas,
+      salidas, ajustes y traslados. Lo hice en C# con .NET 10, ASP.NET Core,
+      Entity Framework Core y PostgreSQL. El historial valoriza los movimientos
       con costo promedio ponderado. Lo difícil fue que el stock nunca quede
       negativo aunque lleguen dos salidas a la vez: concurrencia optimista
       dentro de una transacción con reintentos y una restricción en la base;

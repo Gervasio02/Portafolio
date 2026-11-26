@@ -1,51 +1,35 @@
 @page
 @model AlertasModel
 @{
-    ViewData["Title"] = "Alertas de stock";
+    ViewData["Title"] = "Productos por reponer";
 }
 <div class="titulo-pagina">
-    <h1>Alertas de stock</h1>
+    <h1>Productos por reponer</h1>
 </div>
 <section class="tarjeta">
-    <p class="tenue">Productos activos cuyo stock total, sumando todas las bodegas, está bajo el mínimo definido. Ordenados por lo que falta para reponer.</p>
+    <p class="tenue">Revisa cuántas unidades faltan para volver al mínimo, sumando todas las bodegas.</p>
     @if (Model.Alertas.Count == 0)
     {
-        <p>Todos los productos están sobre su stock mínimo.</p>
+        <p>Todos los productos alcanzan su mínimo de unidades.</p>
     }
     else
     {
-        <div class="tabla">
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">SKU</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col" class="num">Stock total</th>
-                        <th scope="col" class="num">Mínimo</th>
-                        <th scope="col" class="num">Faltan</th>
-                        <th scope="col"><span class="oculto">Acciones</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var a in Model.Alertas)
-                    {
-                        <tr>
-                            <td><strong>@a.Sku</strong></td>
-                            <td>@a.Producto</td>
-                            <td class="num">@Formato.Numero(a.StockTotal) @a.Unidad</td>
-                            <td class="num">@Formato.Numero(a.StockMinimo)</td>
-                            <td class="num"><span class="etiqueta etiqueta-alerta">@Formato.Numero(a.Faltante)</span></td>
-                            <td class="nowrap">
-                                <a href="/Kardex?productoId=@a.ProductoId">Kardex</a>
-                                @if (User.PuedeMover())
-                                {
-                                    <text> · </text><a href="/Movimientos/Entrada?productoId=@a.ProductoId">Reponer</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <ul class="reposiciones">
+            @foreach (var a in Model.Alertas)
+            {
+                <li>
+                    <h2>@a.Producto</h2>
+                    <p class="tenue">@a.Sku · Hay @Formato.Numero(a.StockTotal) (@a.Unidad) de un mínimo de @Formato.Numero(a.StockMinimo).</p>
+                    <p><strong>Faltan @Formato.Numero(a.Faltante) (@a.Unidad)</strong></p>
+                    <div class="acciones">
+                        @if (User.PuedeMover())
+                        {
+                            <a class="boton boton-secundario" asp-page="/Movimientos/Entrada" asp-route-productoId="@a.ProductoId">Registrar reposición</a>
+                        }
+                        <a class="boton boton-fantasma" asp-page="/Kardex" asp-route-productoId="@a.ProductoId">Ver historial</a>
+                    </div>
+                </li>
+            }
+        </ul>
     }
 </section>

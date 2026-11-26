@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="BodegaNet: control de inventario y kardex con costo promedio ponderado, hecho en C# con ASP.NET Core, Entity Framework Core y PostgreSQL.">
+  <meta name="description" content="Prueba BodegaNet para consultar existencias y registrar entradas, salidas y traslados entre bodegas.">
   <meta name="theme-color" content="#0b0812">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://gervasio.sbs/bodeganet/">
   <meta property="og:title" content="BodegaNet · Gervasio Torres">
-  <meta property="og:description" content="Inventario y kardex en .NET: el stock nunca queda negativo, aunque lleguen salidas al mismo tiempo.">
+  <meta property="og:description" content="Consulta qué hay en cada bodega y practica cómo recibir, entregar o trasladar productos.">
   <meta property="og:type" content="website"><meta property="og:url" content="https://gervasio.sbs/bodeganet/"><meta property="og:site_name" content="Portafolio de Gervasio Torres"><meta property="og:locale" content="es_CL">
   <meta property="og:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Portafolio de desarrollo de Gervasio Torres"><meta name="twitter:card" content="summary_large_image">
   <title>BodegaNet · Portafolio de Gervasio Torres</title>
@@ -33,29 +33,32 @@
   <main class="shell">
     <section class="project-lead" aria-labelledby="project-title">
       <div>
-        <p class="eyebrow"><span></span> BodegaNet · Inventario y kardex en .NET</p>
-        <h1 id="project-title">El stock nunca queda en negativo.</h1>
-        <p class="project-summary">Controla productos en varias bodegas: entradas con costo, salidas, ajustes por conteo y transferencias, con un kardex valorizado a costo promedio ponderado.</p>
-        <div class="project-links"><a class="hero-link" href="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Abrir BodegaNet</a><a href="#recorrido">Qué puedes probar</a><a href="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/openapi/v1.json" target="_blank" rel="noopener noreferrer">API (OpenAPI)</a></div>
-        <p class="nota-vivo" data-salud="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">Servidor: <span class="estado" data-estado></span><br>Entra con el botón «Entrar como invitado». Esta página despierta la app al abrirse; cuando veas «En línea», responde al instante. Los datos son ficticios y se reinician cuando la app se apaga.</p>
+        <p class="eyebrow"><span></span> BodegaNet</p>
+        <h1 id="project-title">Inventario de bodegas</h1>
+        <p class="project-summary">Consulta qué hay en cada bodega y practica cómo recibir, entregar o trasladar productos.</p>
+        <div class="project-links">
+          <a class="hero-link" href="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer" data-salud="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">Abrir BodegaNet <span class="estado" data-estado></span></a>
+          <a href="#recorrido">Qué puedes probar</a>
+        </div>
+        <p class="nota-vivo">Selecciona «Entrar como invitado» para practicar con datos ficticios, sin crear una cuenta.</p>
       </div>
       <figure>
         <picture>
           <source type="image/webp" srcset="../capturas/bodeganet-720.webp 720w, ../capturas/bodeganet-1200.webp 1200w" sizes="(max-width: 900px) 92vw, 600px">
-          <img src="../capturas/bodeganet.png" width="1440" height="1068" alt="Panel de BodegaNet con el valor del inventario por bodega, alertas de stock y últimos movimientos" fetchpriority="high">
+          <img src="../capturas/bodeganet.png" width="1440" height="1068" alt="Vista previa del inventario de BodegaNet" fetchpriority="high">
         </picture>
-        <figcaption>Panel de la aplicación desplegada en Azure</figcaption>
+        <figcaption>Vista previa de BodegaNet</figcaption>
       </figure>
     </section>
     <section id="recorrido" class="project-steps" aria-labelledby="walkthrough-title">
       <h2 id="walkthrough-title">Qué puedes probar</h2>
-      <ol><li><strong>Registra una salida</strong><p>Intenta sacar más unidades de las que hay: la app lo impide y te muestra el saldo disponible.</p></li><li><strong>Transfiere entre bodegas</strong><p>La salida de una bodega y la entrada en la otra se guardan juntas o no se guarda ninguna.</p></li><li><strong>Revisa el kardex</strong><p>Elige un producto y una bodega: cada entrada recalcula el costo promedio y puedes exportarlo a CSV.</p></li></ol>
-    </section>
-    <section class="project-technical" aria-labelledby="source-title">
-      <div><p class="eyebrow">Cómo se implementa</p><h2 id="source-title">C# · ASP.NET Core · EF Core · PostgreSQL</h2></div>
-      <p>La interfaz usa Razor Pages renderizadas en el servidor y la misma lógica se expone como API REST documentada con OpenAPI. Entity Framework Core persiste en PostgreSQL con migraciones (o SQLite en la demo pública). Cada saldo tiene un token de concurrencia optimista: si dos salidas compiten, una se reintenta dentro de la transacción y, si ya no hay stock, se rechaza; la base además tiene su propia restricción. Hay roles (Administrador, Bodeguero, Consulta) y 34 pruebas con xUnit, incluida una que lanza 10 salidas simultáneas. <a href="https://github.com/Gervasio02/Portafolio/tree/main/bodeganet" target="_blank" rel="noopener noreferrer">Ver el código</a>.</p>
+      <ol>
+        <li><strong>Consulta qué queda</strong><p>Abre Bodegas y elige una ubicación para ver sus productos.</p></li>
+        <li><strong>Entrega un producto</strong><p>Elige un producto y una bodega para ver cuántas unidades puedes registrar.</p></li>
+        <li><strong>Revisa el historial</strong><p>Selecciona un producto y una bodega para ver sus entradas y salidas.</p></li>
+      </ol>
     </section>
   </main>
-  <footer class="shell footer"><span>BodegaNet · Gervasio Torres</span><a href="../index.html#bodeganet">Volver al portafolio</a></footer>
+  <footer class="shell footer"><a href="../index.html#bodeganet">Volver al portafolio</a><a href="https://github.com/Gervasio02/Portafolio/tree/main/bodeganet" target="_blank" rel="noopener noreferrer">Código en GitHub</a></footer>
 </body>
 </html>

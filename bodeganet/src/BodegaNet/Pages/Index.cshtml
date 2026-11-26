@@ -1,23 +1,33 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Panel";
+    ViewData["Title"] = "Inicio";
     var r = Model.Resumen;
     var maximo = r.Bodegas.Count == 0 ? 0 : r.Bodegas.Max(b => b.Valor);
 }
-<div class="titulo-pagina">
-    <h1>Panel de inventario</h1>
+<section class="portada-inventario" aria-labelledby="inicio-titulo">
+    <p class="sobrelinea">Inventario</p>
+    <h1 id="inicio-titulo">¿Qué quieres hacer hoy?</h1>
     @if (User.PuedeMover())
     {
-        <partial name="_AccionesMovimiento" />
+        <div class="tareas">
+            <a class="tarea" asp-page="/Movimientos/Entrada"><span class="tarea-icono" aria-hidden="true">+</span><strong>Recibir productos</strong><span>Agrega unidades a una bodega.</span></a>
+            <a class="tarea" asp-page="/Movimientos/Salida"><span class="tarea-icono" aria-hidden="true">−</span><strong>Entregar productos</strong><span>Descuenta unidades de una bodega.</span></a>
+            <a class="tarea" asp-page="/Movimientos/Transferencia"><span class="tarea-icono" aria-hidden="true">⇄</span><strong>Mover entre bodegas</strong><span>Traslada unidades de una bodega a otra.</span></a>
+            <a class="tarea" asp-page="/Movimientos/Ajuste"><span class="tarea-icono" aria-hidden="true">±</span><strong>Corregir un conteo</strong><span>Registra las unidades que sobran o faltan.</span></a>
+        </div>
     }
-</div>
+    <div class="acciones consultas">
+        <a class="boton boton-secundario" asp-page="/Bodegas/Index">Ver productos por bodega</a>
+        <a class="boton boton-fantasma" asp-page="/Kardex">Consultar historial</a>
+    </div>
+</section>
 
 <section class="cifras" aria-label="Resumen">
     <article class="cifra">
         <h2>Valor del inventario</h2>
         <p class="cifra-valor">@Formato.Pesos(r.ValorTotal)</p>
-        <p class="tenue">Al costo promedio ponderado</p>
+        <p class="tenue">Según el costo de compra</p>
     </article>
     <article class="cifra">
         <h2>Productos activos</h2>
@@ -27,10 +37,10 @@
     <article class="cifra">
         <h2>Bodegas</h2>
         <p class="cifra-valor">@Formato.Numero(r.Bodegas.Count)</p>
-        <p class="tenue">Con saldo y costo propios</p>
+        <p class="tenue">Ubicaciones registradas</p>
     </article>
     <article class="cifra @(r.Alertas.Count > 0 ? "cifra-alerta" : "")">
-        <h2>Bajo el mínimo</h2>
+        <h2>Productos por reponer</h2>
         <p class="cifra-valor">@Formato.Numero(r.Alertas.Count)</p>
         <p class="tenue"><a href="/Alertas">Ver alertas</a></p>
     </article>
@@ -47,7 +57,7 @@
                         <a href="/Bodegas?bodegaId=@b.BodegaId">@b.Nombre</a>
                         <span>@Formato.Pesos(b.Valor)</span>
                     </div>
-                    <meter min="0" max="@Formato.Entero(maximo)" value="@Formato.Entero(b.Valor)" aria-label="Valor de @b.Nombre"></meter>
+                    <meter min="0" max="@Formato.Entero(Math.Max(1, maximo))" value="@Formato.Entero(b.Valor)" aria-label="Valor de @b.Nombre"></meter>
                     <p class="tenue">@b.Comuna · @Formato.Numero(b.Unidades) unidades</p>
                 </li>
             }
@@ -55,10 +65,10 @@
     </section>
 
     <section class="tarjeta">
-        <h2>Alertas de stock</h2>
+        <h2>Productos por reponer</h2>
         @if (r.Alertas.Count == 0)
         {
-            <p class="tenue">Todos los productos están sobre su stock mínimo.</p>
+            <p class="tenue">Todos los productos alcanzan su mínimo de unidades.</p>
         }
         else
         {

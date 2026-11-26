@@ -106,7 +106,7 @@ window.PORTFOLIO_PROJECTS = [
     featured: true,
     goal: "Controlar el inventario de varias bodegas con un kardex valorizado.",
     features:
-      "Productos, bodegas, entradas con costo, salidas, ajustes, transferencias, kardex con costo promedio ponderado, alertas de stock, exportación a CSV, roles y API REST con OpenAPI.",
+      "Productos y bodegas, entradas, salidas, ajustes de conteo, traslados, alertas de reposición e historial por producto con exportación a CSV.",
     architecture:
       "ASP.NET Core con Razor Pages y minimal APIs; Entity Framework Core persiste en PostgreSQL (o SQLite en la demo) con migraciones y concurrencia optimista.",
     learning:

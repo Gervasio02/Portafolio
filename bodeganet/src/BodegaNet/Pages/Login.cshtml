@@ -5,34 +5,36 @@
 }
 <section class="login">
     <div class="login-intro">
-        <h1>Inventario y kardex sin planillas</h1>
-        <p>BodegaNet registra entradas, salidas, ajustes y transferencias entre bodegas. Cada salida se valoriza al costo promedio ponderado vigente y el stock nunca queda negativo.</p>
-        <ul class="lista-puntos">
-            <li>Kardex por producto y bodega, exportable a CSV.</li>
-            <li>Alertas de stock bajo el mínimo.</li>
-            <li>API REST documentada con OpenAPI.</li>
-        </ul>
+        <p class="sobrelinea">Control de inventario</p>
+        <h1>Lo que entra, lo que sale y lo que queda.</h1>
+        <p>Consulta qué hay en cada bodega, registra movimientos y revisa qué productos necesitan reposición.</p>
     </div>
     <div class="tarjeta login-caja">
-        <h2>Entrar</h2>
+        <h2>Prueba BodegaNet</h2>
+        <p class="tenue">Entra sin cuenta y practica con productos y bodegas de ejemplo.</p>
+        <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
         <form method="post" novalidate>
-            <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
             <input type="hidden" asp-for="ReturnUrl" />
-            <div class="campo">
-                <label asp-for="Datos.Correo">Correo</label>
-                <input asp-for="Datos.Correo" type="email" autocomplete="username" />
-                <span asp-validation-for="Datos.Correo" class="error"></span>
-            </div>
-            <div class="campo">
-                <label asp-for="Datos.Clave">Clave</label>
-                <input asp-for="Datos.Clave" type="password" autocomplete="current-password" />
-                <span asp-validation-for="Datos.Clave" class="error"></span>
-            </div>
-            <div class="acciones">
-                <button type="submit" class="boton">Entrar</button>
-                <button type="submit" class="boton boton-secundario" asp-page-handler="Invitado" formnovalidate>Entrar como invitado</button>
-            </div>
+            <button type="submit" class="boton" asp-page-handler="Invitado">Entrar como invitado</button>
         </form>
-        <p class="tenue">El invitado entra con rol Bodeguero: puede registrar movimientos, pero no crear productos ni bodegas. Las cuentas de demo están en el README del proyecto.</p>
+        <details class="acceso-cuenta" open="@(ViewData.ModelState.ContainsKey("Datos.Correo") ? "open" : null)">
+            <summary>Entrar con mi cuenta</summary>
+            <form method="post" novalidate>
+                <input type="hidden" asp-for="ReturnUrl" id="return-url-cuenta" />
+                <div class="campo">
+                    <label asp-for="Datos.Correo">Correo</label>
+                    <input asp-for="Datos.Correo" type="email" autocomplete="username" />
+                    <span asp-validation-for="Datos.Correo" class="error"></span>
+                </div>
+                <div class="campo">
+                    <label asp-for="Datos.Clave">Clave</label>
+                    <input asp-for="Datos.Clave" type="password" autocomplete="current-password" />
+                    <span asp-validation-for="Datos.Clave" class="error"></span>
+                </div>
+                <div class="acciones">
+                    <button type="submit" class="boton boton-secundario">Iniciar sesión</button>
+                </div>
+            </form>
+        </details>
     </div>
 </section>
