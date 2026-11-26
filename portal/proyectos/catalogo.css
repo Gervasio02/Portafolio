@@ -5,15 +5,15 @@
 .catalog-intro > p:last-child { max-width: 42rem; font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--muted); }
 .top nav { flex-wrap: wrap; justify-content: flex-end; gap: .6rem 1.4rem; }
 .top nav [aria-current] { color: var(--mint); }
-.catalog-filters { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .8rem; padding: 1.2rem; background: #1b241d; border: 1px solid var(--line); border-radius: .8rem; }
+.catalog-filters { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .8rem; padding: 1.2rem; background: #14101f; border: 1px solid var(--line); border-radius: .8rem; }
 .catalog-filters label { display: grid; gap: .35rem; font-weight: 650; font-size: .9rem; }
-.catalog-filters input, .catalog-filters select { width: 100%; min-height: 46px; border: 1px solid #687668; border-radius: .35rem; padding: .55rem .7rem; background: #131a14; color: var(--text); font: inherit; }
+.catalog-filters input, .catalog-filters select { width: 100%; min-height: 46px; border: 1px solid #4a3a66; border-radius: .35rem; padding: .55rem .7rem; background: #0b0812; color: var(--text); font: inherit; }
 .catalog-filters :focus-visible, summary:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
 .catalog-count { color: var(--muted); margin: 1.2rem 0; }
 .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 1rem; }
-.catalog-card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: .8rem; background: #1b241d; }
+.catalog-card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: .8rem; background: #14101f; }
 .catalog-card:target { border-color: var(--mint); }
-.catalog-card img { display: block; width: 100%; aspect-ratio: 16/8; object-fit: cover; object-position: top; background: #253627; }
+.catalog-card img { display: block; width: 100%; aspect-ratio: 16/8; object-fit: cover; object-position: top; background: #1d1630; }
 .catalog-body { padding: clamp(1.2rem, 3vw, 1.8rem); }
 .catalog-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem 1rem; color: var(--mint); font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .catalog-body h2 { margin: .45rem 0 .55rem; font-size: 2rem; line-height: 1.1; letter-spacing: -.04em; }

@@ -5,20 +5,20 @@
 
 :root {
   color-scheme: dark;
-  --bg: #151413;
-  --panel: #1c1b19;
-  --panel-2: #24221f;
-  --text: #ece7df;
-  --muted: #a8a196;
-  --line: #34312c;
-  --line-soft: #2a2825;
-  --mint: #e3a13b; /* acento principal (ámbar) */
-  --accent: #e3a13b;
-  --acento-fuerte: #f0b456;
-  --acento-tinta: #1a1408;
-  --ok: #8fbf8a;
-  --aviso: #d9b45a;
-  --error: #e07a64;
+  --bg: #0b0812;
+  --panel: #14101f;
+  --panel-2: #1d1630;
+  --text: #f1ecfa;
+  --muted: #b3a8c9;
+  --line: #33264a;
+  --line-soft: #241b36;
+  --mint: #ff2e63; /* acento principal (rojo neón) */
+  --accent: #ff2e63;
+  --acento-fuerte: #ff5c85;
+  --acento-tinta: #12030a;
+  --ok: #4ee6a3;
+  --aviso: #ffc857;
+  --error: #ff6b81;
   --sans: "Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Plex Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
   --radio: 6px;
@@ -223,8 +223,8 @@ nav a:hover,
 .project-page,
 .project-page.taskflow,
 .project-page.tiendanova {
-  --accent: #e3a13b;
-  --wash: #1c1b19;
+  --accent: #ff2e63;
+  --wash: #14101f;
 }
 
 .project-page .eyebrow {
@@ -332,4 +332,19 @@ nav a:hover,
   .project-lead h1 {
     font-size: clamp(1.9rem, 9vw, 2.6rem);
   }
+}
+
+/* Capa neón compartida con la portada */
+body {
+  background-image:
+    radial-gradient(60rem 30rem at 85% -10%, rgb(168 85 247 / 14%), transparent 70%),
+    linear-gradient(rgb(168 85 247 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(168 85 247 / 5%) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline-color: #a855f7;
 }

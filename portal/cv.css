@@ -1,14 +1,14 @@
 /* CV: oscuro en pantalla (igual que la portada) y claro al imprimir o en PDF. */
 
 :root {
-  --fondo: #151413;
-  --panel: #1c1b19;
-  --texto: #ece7df;
-  --suave: #a8a196;
-  --linea: #34312c;
-  --azul: #e3a13b;
-  --morado: #e3a13b;
-  --rojo: #e3a13b;
+  --fondo: #0b0812;
+  --panel: #14101f;
+  --texto: #f1ecfa;
+  --suave: #b3a8c9;
+  --linea: #33264a;
+  --azul: #ff2e63;
+  --morado: #ff2e63;
+  --rojo: #ff2e63;
   --mono: "Plex Mono", ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
 }
 
@@ -61,7 +61,7 @@ a {
   padding: 0.65rem 0.9rem;
   text-decoration: none;
   background: var(--azul);
-  color: #1a1408;
+  color: #12030a;
   border-radius: 6px;
 }
 

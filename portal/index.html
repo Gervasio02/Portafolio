@@ -7,7 +7,7 @@
       name="description"
       content="Gervasio Torres, analista programador y egresado de Ingeniería Informática (INACAP). Desarrollo full stack con React, Node.js, Python y PostgreSQL: cinco aplicaciones y tres herramientas publicadas, con su código."
     />
-    <meta name="theme-color" content="#151413" />
+    <meta name="theme-color" content="#0b0812" />
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="portada.css" />
     <script src="inicio.js" defer></script>
     <script src="despertar.js" defer></script>
+    <script src="animaciones.js" defer></script>
     <script src="analitica.js" defer></script>
     <script src="schema.js" defer></script>
   </head>
@@ -63,11 +64,13 @@
       <section class="wrap inicio" aria-labelledby="hola">
         <div class="inicio-texto">
           <p class="etiqueta-seccion">Desarrollador full stack</p>
-          <h1 id="hola">Hola, soy Gervasio.<br />Desarrollo aplicaciones web completas.</h1>
+          <h1 id="hola">Hola, soy Gervasio.<br />Desarrollo <span class="neon">aplicaciones web completas</span>.</h1>
+          <p class="consola" aria-hidden="true"><span class="prompt">&gt;</span><span class="escribe" data-frases="React · TypeScript|Node.js · Express|Python · FastAPI|PostgreSQL · Prisma|Docker · Azure">React · TypeScript</span><span class="cursor"></span></p>
           <p class="bajada">
             Soy analista programador titulado y egresado de Ingeniería
-            Informática en INACAP. Hoy hago mi práctica profesional en Tuniche,
-            desarrollando bots de automatización.
+            Informática en INACAP. Terminé mi práctica profesional en Tuniche,
+            donde desarrollé bots de automatización, y ahora busco mi primer
+            puesto como desarrollador.
           </p>
           <p class="bajada">
             Me gusta trabajar en toda la aplicación: la interfaz que usa la
@@ -305,7 +308,7 @@
               <li>
                 <span class="fecha">sep – nov 2026</span>
                 <h4>Práctica profesional · Tuniche</h4>
-                <p>Desarrollo de bots de automatización.</p>
+                <p>Desarrollé bots de automatización (práctica terminada).</p>
               </li>
               <li>
                 <span class="fecha">nov 2026</span>
