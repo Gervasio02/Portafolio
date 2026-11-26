@@ -15,6 +15,7 @@ Incluye un CV web (`portal/cv.html`) y su versión PDF.
 | [Snake](snake/README.md)                   | React, TypeScript, Express, Prisma y PostgreSQL | Reproduce la partida en el servidor para validar puntajes y conserva desafíos, logros e historial.                       |
 | [Interrogatorio](interrogatorio/README.md) | React, FastAPI, SQLAlchemy y PostgreSQL/SQLite  | Genera expedientes deterministas con cronología y conexiones de evidencias sin depender de un modelo externo.            |
 | [Laboratorios](labs/README.md)             | FastAPI, Python y SQLite                        | DataLab, DocFlow y CloudOps mantienen resultados, auditoría e identidad aislada sin inventar telemetría.                 |
+| [Asistente](asistente/README.md)            | Python, NumPy y JavaScript                      | Red neuronal hecha a mano que responde preguntas de reclutadores en el navegador y aprende de lo que no supo responder. |
 
 ## Ejecutar en el computador
 

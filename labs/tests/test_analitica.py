@@ -123,3 +123,33 @@ def test_resumen_cuenta_por_dia_en_hora_de_chile():
     assert datos["por_dia"][-1] == {"dia": "2026-11-25", "vistas": 1, "sesiones": 1}
     assert datos["totales"]["activos_5min"] == 0
     assert datos["totales"]["vistas_7d"] == 2
+
+
+def pregunta(**cambios):
+    base = {"pregunta": "¿sabes kotlin?", "intencion": "stack", "confianza": 0.31, "motivo": "sin_respuesta", "ruta": "/"}
+    base.update(cambios)
+    return json.dumps(base)
+
+
+def test_guarda_preguntas_del_asistente_y_las_muestra_en_el_panel(client):
+    url = "/api/asistente/preguntas"
+    assert client.post(url, content=pregunta(), headers=ORIGEN).status_code == 204
+    assert client.post(url, content=pregunta(pregunta="¿Sabes   Kotlin?"), headers=ORIGEN).status_code == 204
+    otra = pregunta(pregunta="¿qué edad tienes?", motivo="no_sirvio", intencion="datos_personales", confianza=0.9)
+    assert client.post(url, content=otra, headers=ORIGEN).status_code == 204
+
+    asistente = client.get("/api/panel/resumen", headers=autorizado()).json()["asistente"]
+    assert asistente["total"] == 3
+    assert asistente["sin_respuesta"] == 2 and asistente["no_sirvio"] == 1
+    assert asistente["frecuentes"][0] == ["¿sabes kotlin?", 2]
+    assert asistente["recientes"][0]["motivo"] == "no_sirvio"
+
+
+def test_rechaza_preguntas_invalidas_o_de_otro_origen(client):
+    url = "/api/asistente/preguntas"
+    assert client.post(url, content=pregunta(), headers={"Origin": "https://malo.example"}).status_code == 403
+    assert client.post(url, content=pregunta(motivo="otro"), headers=ORIGEN).status_code == 422
+    assert client.post(url, content=pregunta(pregunta=""), headers=ORIGEN).status_code == 422
+    assert client.post(url, content="x" * 2000, headers=ORIGEN).status_code == 413
+    preflight = client.options(url, headers={"Origin": "https://gervasio.sbs", "Access-Control-Request-Method": "POST"})
+    assert preflight.headers["access-control-allow-origin"] == "https://gervasio.sbs"

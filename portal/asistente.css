@@ -1,0 +1,340 @@
+/* Chat «Pregúntale a mi portafolio» (asistente.js). Usa sus propias
+   variables para verse igual en la portada y en las páginas interiores. */
+
+.asis {
+  --asis-fondo: #0b0812;
+  --asis-superficie: #14101f;
+  --asis-superficie-2: #1d1630;
+  --asis-linea: #33264a;
+  --asis-texto: #f1ecfa;
+  --asis-suave: #b3a8c9;
+  --asis-rojo: #ff2e63;
+  --asis-morado: #a855f7;
+  --asis-morado-claro: #c084fc;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  font-family: "Plex Sans", system-ui, sans-serif;
+  color: var(--asis-texto);
+}
+
+.asis button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.asis-abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0 1.1rem;
+  color: var(--asis-texto);
+  font-weight: 600;
+  background: var(--asis-superficie);
+  border: 1px solid var(--asis-morado);
+  border-radius: 999px;
+  box-shadow: 0 0 22px rgb(168 85 247 / 35%), 0 10px 30px rgb(0 0 0 / 45%);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asis-abrir:hover,
+.asis-abrir:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgb(255 46 99 / 45%), 0 10px 30px rgb(0 0 0 / 45%);
+}
+
+.asis-punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--asis-rojo);
+  box-shadow: 0 0 10px var(--asis-rojo);
+  animation: asis-latido 2s ease-in-out infinite;
+}
+
+@keyframes asis-latido {
+  50% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+}
+
+.asis-activo .asis-abrir {
+  display: none;
+}
+
+.asis-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - 2rem));
+  height: min(560px, calc(100vh - 2rem));
+  height: min(560px, calc(100dvh - 2rem));
+  background: var(--asis-superficie);
+  border: 1px solid var(--asis-linea);
+  border-top: 2px solid var(--asis-rojo);
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgb(168 85 247 / 25%), 0 20px 50px rgb(0 0 0 / 60%);
+  overflow: hidden;
+  animation: asis-entrar 0.25s ease-out;
+}
+
+.asis-panel[hidden] {
+  display: none;
+}
+
+@keyframes asis-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+.asis-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 0.6rem 0.75rem 1rem;
+  border-bottom: 1px solid var(--asis-linea);
+}
+
+.asis-cabecera h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.asis-cabecera p {
+  margin: 0.1rem 0 0;
+  font: 0.72rem "Plex Mono", ui-monospace, monospace;
+  color: var(--asis-morado-claro);
+}
+
+.asis-cerrar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  color: var(--asis-suave);
+  font-size: 1.5rem;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+
+.asis-cerrar:hover {
+  color: var(--asis-texto);
+  background: var(--asis-superficie-2);
+}
+
+.asis-mensajes {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+}
+
+.asis-msg {
+  max-width: 88%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+.asis-msg a {
+  color: var(--asis-morado-claro);
+}
+
+.asis-bot {
+  align-self: flex-start;
+  background: var(--asis-superficie-2);
+  border: 1px solid var(--asis-linea);
+  border-bottom-left-radius: 2px;
+}
+
+.asis-usuario {
+  align-self: flex-end;
+  color: #12030a;
+  background: var(--asis-rojo);
+  border-bottom-right-radius: 2px;
+}
+
+.asis-escribiendo {
+  color: var(--asis-suave);
+  letter-spacing: 0.2em;
+}
+
+.asis-confianza {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font: 0.68rem "Plex Mono", ui-monospace, monospace;
+  color: var(--asis-suave);
+}
+
+.asis-confianza i {
+  height: 3px;
+  max-width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--asis-rojo), var(--asis-morado));
+}
+
+.asis-valorar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--asis-suave);
+}
+
+.asis-valorar button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.6rem;
+  color: var(--asis-texto);
+  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid var(--asis-linea);
+  border-radius: 999px;
+}
+
+.asis-valorar button:hover {
+  border-color: var(--asis-morado);
+}
+
+.asis-sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.asis-sugerencias span {
+  width: 100%;
+  font-size: 0.78rem;
+  color: var(--asis-suave);
+}
+
+.asis-sugerencias button {
+  min-height: 44px;
+  padding: 0.3rem 0.75rem;
+  color: var(--asis-morado-claro);
+  font-size: 0.82rem;
+  text-align: left;
+  background: rgb(168 85 247 / 8%);
+  border: 1px solid rgb(168 85 247 / 40%);
+  border-radius: 999px;
+}
+
+.asis-sugerencias button:hover,
+.asis-sugerencias button:focus-visible {
+  border-color: var(--asis-morado);
+  box-shadow: 0 0 14px rgb(168 85 247 / 35%);
+}
+
+.asis-formulario {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid var(--asis-linea);
+}
+
+.asis-formulario input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  color: var(--asis-texto);
+  font: inherit;
+  font-size: 16px; /* evita el zoom automático en iOS */
+  background: var(--asis-fondo);
+  border: 1px solid var(--asis-linea);
+  border-radius: 8px;
+}
+
+.asis-formulario input:focus {
+  outline: 2px solid var(--asis-morado);
+  outline-offset: 1px;
+}
+
+.asis-formulario button {
+  min-height: 44px;
+  padding: 0 1rem;
+  color: #12030a;
+  font-weight: 600;
+  background: var(--asis-rojo);
+  border: 0;
+  border-radius: 8px;
+}
+
+.asis-pie {
+  margin: 0;
+  padding: 0 0.9rem 0.7rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--asis-suave);
+}
+
+.asis-pie a {
+  color: var(--asis-morado-claro);
+}
+
+.asis-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.asis :focus-visible {
+  outline: 2px solid var(--asis-morado-claro);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .asis {
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+
+  .asis-activo {
+    right: 0.5rem;
+    left: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .asis-panel {
+    width: 100%;
+    height: min(80vh, 560px);
+    height: min(80dvh, 560px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asis-punto,
+  .asis-panel {
+    animation: none;
+  }
+
+  .asis-abrir {
+    transition: none;
+  }
+}
+
+@media print {
+  .asis {
+    display: none;
+  }
+}

@@ -144,6 +144,18 @@ function pintar(datos) {
     (e) => e.detalle,
     (e) => NOMBRES_DISPOSITIVO[e.dispositivo] || "–",
   ]);
+  const asistente = datos.asistente || { total: 0, sin_respuesta: 0, no_sirvio: 0, frecuentes: [], recientes: [] };
+  $("asistente-resumen").textContent =
+    `${numero(asistente.total)} preguntas por revisar en el período: ` +
+    `${numero(asistente.sin_respuesta)} sin respuesta y ${numero(asistente.no_sirvio)} marcadas como «no me sirvió».`;
+  lista("asistente-frecuentes", asistente.frecuentes);
+  filas("asistente-recientes", asistente.recientes, [
+    (p) => p.hora,
+    (p) => p.pregunta,
+    (p) => (p.intencion || "–").replaceAll("_", " "),
+    (p) => (p.confianza == null ? "–" : `${Math.round(p.confianza * 100)} %`),
+    (p) => (p.motivo === "no_sirvio" ? "No le sirvió" : "Sin respuesta"),
+  ]);
   const hora = new Date(datos.generado).toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
   $("actualizado").textContent = `Actualizado a las ${hora} · se refresca cada 30 segundos`;
 }
