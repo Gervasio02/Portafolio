@@ -32,7 +32,10 @@ from .analitica import _origenes
 registro = logging.getLogger("labs.asistente_ia")
 
 URL_GROQ = "https://api.groq.com/openai/v1/chat/completions"
-MODELO_POR_DEFECTO = "llama-3.3-70b-versatile"
+# Modelos de producción de Groq, en orden de preferencia. Si la cuenta no
+# tiene acceso a uno (404 model_not_found), se prueba el siguiente y se
+# recuerda el que funcionó. ASISTENTE_IA_MODELO, si existe, va primero.
+MODELOS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
 TOPE_DIARIO = 800
 CHARLA = {"saludo", "despedida", "gracias", "acuse", "como_estas", "hora", "molestia", "fuera_de_tema"}
 
@@ -97,12 +100,11 @@ class Contexto:
 
 def llamar_modelo(mensajes: list[dict], clave: str, modelo: str) -> str:
     """Llama al proveedor. Se reemplaza en las pruebas."""
-    respuesta = httpx.post(
-        URL_GROQ,
-        headers={"Authorization": f"Bearer {clave}"},
-        json={"model": modelo, "messages": mensajes, "temperature": 0.3, "max_tokens": 350},
-        timeout=25,
-    )
+    cuerpo = {"model": modelo, "messages": mensajes, "temperature": 0.3, "max_tokens": 350}
+    if modelo.startswith("openai/gpt-oss"):
+        # Modelos con razonamiento: poco razonamiento y espacio para la respuesta.
+        cuerpo.update(max_tokens=900, reasoning_effort="low")
+    respuesta = httpx.post(URL_GROQ, headers={"Authorization": f"Bearer {clave}"}, json=cuerpo, timeout=25)
     respuesta.raise_for_status()
     return respuesta.json()["choices"][0]["message"]["content"]
 
@@ -112,6 +114,27 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
     por_minuto: dict[str, deque] = defaultdict(deque)
     por_dia: dict[str, int] = defaultdict(int)
     uso = {"dia": date.today(), "total": 0}
+    elegido: dict[str, str] = {}
+
+    def candidatos() -> list[str]:
+        preferido = os.getenv("ASISTENTE_IA_MODELO", "").strip()
+        orden = ([elegido["modelo"]] if "modelo" in elegido else []) + ([preferido] if preferido else []) + MODELOS
+        return list(dict.fromkeys(orden))
+
+    def consultar(mensajes: list[dict], clave: str) -> tuple[str, str]:
+        ultimo_error: Exception | None = None
+        for modelo in candidatos():
+            try:
+                texto = llamar_modelo(mensajes, clave, modelo)
+                elegido["modelo"] = modelo
+                return texto, modelo
+            except httpx.HTTPStatusError as error:
+                if error.response.status_code in (400, 404) and "model" in error.response.text:
+                    registro.warning("IA: sin acceso a %s, se prueba otro modelo.", modelo)
+                    ultimo_error = error
+                    continue
+                raise
+        raise ultimo_error or httpx.HTTPError("Sin modelos disponibles")
 
     def cors(request: Request, respuesta: Response) -> Response:
         origen = (request.headers.get("origin") or "").rstrip("/")
@@ -164,9 +187,9 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
             {"role": "system", "content": REGLAS.format(contexto=contexto.obtener())},
             {"role": "user", "content": pregunta},
         ]
-        modelo = os.getenv("ASISTENTE_IA_MODELO", MODELO_POR_DEFECTO)
         try:
-            texto = llamar_modelo(mensajes, clave, modelo).strip()
+            texto, modelo = consultar(mensajes, clave)
+            texto = texto.strip()
         except httpx.HTTPStatusError as error:
             # Solo el código y el mensaje del proveedor; nunca la clave.
             registro.warning("IA: el proveedor respondió %s: %s", error.response.status_code, error.response.text[:300])
