@@ -37,11 +37,11 @@
       <p class="eyebrow">Pregúntale a mi portafolio</p>
       <h1 id="red-titulo">Una red neuronal hecha a mano.</h1>
       <p class="project-summary">
-        El chat de este sitio no usa ChatGPT ni ninguna API externa. Es un
-        perceptrón multicapa que programé desde cero: lo entreno en Python con
-        NumPy (escribí la retropropagación y el optimizador Adam a mano) y lo
-        ejecuto en tu navegador con JavaScript. Tu pregunta nunca sale de tu
-        equipo para ser respondida.
+        El chat de este sitio responde con un perceptrón multicapa que
+        programé desde cero: lo entreno en Python con NumPy (escribí la
+        retropropagación y el optimizador Adam a mano) y lo ejecuto en tu
+        navegador con JavaScript. Solo cuando no reconoce una pregunta pide
+        ayuda a un modelo de lenguaje externo, y lo indica en la respuesta.
       </p>
       <p class="red-acciones"><a class="red-boton" href="#preguntame">Abrir el chat</a><a href="#probador">Ver cómo piensa</a></p>
     </section>
@@ -49,12 +49,12 @@
     <section class="red-bloque" aria-labelledby="arq-titulo">
       <h2 id="arq-titulo">Qué pasa con tu pregunta</h2>
       <ol class="red-flujo">
-        <li><strong>Normalizo</strong><span>Minúsculas, sin tildes ni signos. Quito palabras vacías como «el» o «para».</span></li>
+        <li><strong>Normalizo</strong><span>Minúsculas, sin tildes ni signos. Traduzco chilenismos («pega», «lucas», «al tiro») y quito palabras vacías como «el» o «para».</span></li>
         <li><strong>Extraigo rasgos</strong><span>Raíces de palabras, pares de palabras y trigramas de letras (toleran errores de tipeo).</span></li>
         <li><strong>Hashing trick</strong><span>Cada rasgo cae en una de <b data-metrica="entrada">2048</b> posiciones con FNV-1a: no necesito guardar un vocabulario.</span></li>
         <li><strong>Capa oculta</strong><span><b data-metrica="oculta">96</b> neuronas con activación ReLU combinan esos rasgos.</span></li>
         <li><strong>Softmax</strong><span>Una probabilidad para cada una de las <b data-metrica="salida">48</b> intenciones que conoce.</span></li>
-        <li><strong>Respondo o pregunto</strong><span>Si la probabilidad más alta no supera el umbral, admito que no sé y guardo la pregunta para aprenderla.</span></li>
+        <li><strong>Respondo o pido ayuda</strong><span>Si la probabilidad más alta no supera el umbral, consulto un modelo de IA externo (plan gratuito de Groq) con mi información como contexto, y guardo la pregunta para aprenderla.</span></li>
       </ol>
     </section>
 

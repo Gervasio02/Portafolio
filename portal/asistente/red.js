@@ -41,9 +41,30 @@
     return h >>> 0;
   }
 
-  function rasgos(texto) {
+  // Reemplaza frases chilenas (de 3, 2 o 1 palabra, la más larga primero).
+  function traducir(palabras, mapa) {
+    const salida = [];
+    let i = 0;
+    while (i < palabras.length) {
+      let hecho = false;
+      for (const largo of [3, 2, 1]) {
+        if (palabras.length - i < largo) continue;
+        const frase = palabras.slice(i, i + largo).join(" ");
+        if (Object.prototype.hasOwnProperty.call(mapa, frase)) {
+          if (mapa[frase]) salida.push(...mapa[frase].split(" "));
+          i += largo;
+          hecho = true;
+          break;
+        }
+      }
+      if (!hecho) salida.push(palabras[i++]);
+    }
+    return salida;
+  }
+
+  function rasgos(texto, mapa = {}) {
     const normal = normalizar(texto);
-    const palabras = normal ? normal.split(" ").filter((p) => !PALABRAS_VACIAS.has(p)) : [];
+    const palabras = normal ? traducir(normal.split(" "), mapa).filter((p) => !PALABRAS_VACIAS.has(p)) : [];
     const raices = palabras.map(raiz);
     const salida = [];
     for (const r of raices) salida.push(["p:" + r, PESOS.p]);
@@ -56,9 +77,9 @@
   }
 
   /** Vector disperso como Map(posición → valor), normalizado a largo 1. */
-  function vector(texto, dimension = DIMENSION) {
+  function vector(texto, dimension = DIMENSION, mapa = {}) {
     const valores = new Map();
-    for (const [rasgo, peso] of rasgos(texto)) {
+    for (const [rasgo, peso] of rasgos(texto, mapa)) {
       const indice = fnv1a(rasgo) % dimension;
       valores.set(indice, (valores.get(indice) || 0) + peso);
     }
@@ -84,9 +105,10 @@
     const b1 = Float32Array.from(modelo.pesos.b1);
     const b2 = Float32Array.from(modelo.pesos.b2);
     const dimension = modelo.arquitectura.entrada;
+    const mapa = modelo.chilenismos || {};
 
     function predecir(texto) {
-      const x = vector(texto, dimension);
+      const x = vector(texto, dimension, mapa);
       // Capa oculta: ReLU(x · W1 + b1). Solo se recorren las entradas no nulas.
       const oculta = Float32Array.from(b1);
       for (const [i, valor] of x) {
@@ -117,10 +139,10 @@
       return { vacio: x.size === 0, resultado };
     }
 
-    return { predecir, umbral: modelo.umbral, intenciones: modelo.intenciones, metricas: modelo.metricas };
+    return { predecir, rasgos: (texto) => rasgos(texto, mapa), umbral: modelo.umbral, intenciones: modelo.intenciones, metricas: modelo.metricas };
   }
 
-  const api = { normalizar, fnv1a, rasgos, vector, crear, DIMENSION };
+  const api = { normalizar, traducir, fnv1a, rasgos, vector, crear, DIMENSION };
   global.RedAsistente = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof self !== "undefined" ? self : globalThis);

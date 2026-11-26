@@ -84,8 +84,16 @@ pasa como `DATABASE_URL` solo si existe; las migraciones se aplican al arrancar.
 
 ## 6. Asistente del portafolio
 
-No necesita configuración: el modelo se entrena en GitHub Actions al publicar
-la portada. Para enseñarle, revisa la sección «Asistente» del panel privado y
+La red propia no necesita configuración: se entrena en GitHub Actions al
+publicar la portada. Para el respaldo con IA (preguntas que la red no
+reconoce):
+
+1. Crea una cuenta gratuita en https://console.groq.com y genera una API key.
+2. Guárdala en GitHub como secreto `ASISTENTE_IA_CLAVE`.
+3. *Actions → Laboratorios → Run workflow*.
+
+Sin esa clave el chat funciona igual, solo que responde «no estoy seguro» con
+un enlace de búsqueda. Para enseñarle, revisa la sección «Asistente» del panel privado y
 edita `asistente/conocimiento.yml` (detalle en `asistente/README.md`).
 
 ## Comprobación final (usuarios finales)

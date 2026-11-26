@@ -50,6 +50,7 @@ jobs:
           # Los dos los crea Gervasio en Settings → Secrets and variables → Actions.
           PANEL_CLAVE: ${{ secrets.PANEL_CLAVE }}
           ANALITICA_DB_URL: ${{ secrets.ANALITICA_DB_URL }}
+          ASISTENTE_IA_CLAVE: ${{ secrets.ASISTENTE_IA_CLAVE }}
         run: |
           extra=()
           if [[ -n "${PANEL_CLAVE:-}" ]]; then
@@ -61,6 +62,11 @@ jobs:
             extra+=("ANALITICA_DB_URL=$ANALITICA_DB_URL")
           else
             echo "::warning::Sin ANALITICA_DB_URL: las visitas se guardan en SQLite y se pierden al apagarse la app."
+          fi
+          if [[ -n "${ASISTENTE_IA_CLAVE:-}" ]]; then
+            extra+=("ASISTENTE_IA_CLAVE=$ASISTENTE_IA_CLAVE")
+          else
+            echo "::warning::Sin ASISTENTE_IA_CLAVE: el asistente no usará el respaldo con IA."
           fi
           scripts/azure-desplegar-app.sh labs labs /health 8001 \
             APP_ENV=production LABS_GUEST_MODE=on RATE_LIMIT=on PORTAL_URL=https://gervasio.sbs \

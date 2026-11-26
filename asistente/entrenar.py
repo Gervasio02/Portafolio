@@ -30,7 +30,7 @@ import yaml
 AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI))
 
-from caracteristicas import DIMENSION, normalizar, vector  # noqa: E402
+from caracteristicas import DIMENSION, chilenismos, normalizar, vector  # noqa: E402
 
 RAIZ = AQUI.parent
 CONOCIMIENTO = AQUI / "conocimiento.yml"
@@ -277,6 +277,7 @@ def main(argv: list[str] | None = None) -> int:
             "W2": cuantizar(red.p["W2"]),
             "b2": [round(float(v), 5) for v in red.p["b2"]],
         },
+        "chilenismos": chilenismos(),
         "intenciones": [
             {
                 "id": i["id"],

@@ -18,6 +18,7 @@ pregunta ─▶ normalizar ─▶ rasgos (palabras, pares, trigramas)
 
 | Archivo | Qué hace |
 | --- | --- |
+| `chilenismos.yml` | Traductor de chilenismos («pega» → trabajo, «al tiro» → inmediatamente) que se aplica antes de analizar la pregunta. Viaja dentro de `modelo.json`. |
 | `conocimiento.yml` | Intenciones: palabras clave, ejemplos de preguntas y respuesta. **Es lo que se edita para enseñarle.** |
 | `caracteristicas.py` | Texto → vector. Tiene un gemelo exacto en `portal/asistente/red.js`. |
 | `entrenar.py` | Perceptrón multicapa con retropropagación y Adam escritos a mano. Exporta `portal/asistente/modelo.json` (pesos en int8, ~290 KB). |
@@ -29,6 +30,19 @@ El entrenamiento separa el 20 % de los ejemplos para medir el acierto con
 preguntas nuevas y luego entrena el modelo final con todos. Para generalizar
 mejor, cada ejemplo se aumenta con errores de tipeo, palabras de relleno y
 palabras omitidas.
+
+## Respuestas con datos en vivo y respaldo con IA
+
+- En `respuesta` se pueden usar `{hora}` y `{fecha}` (hora de Chile, calculada
+  en el navegador) y `{pregunta}` (la pregunta codificada para un enlace, por
+  ejemplo `https://www.google.com/search?q={pregunta}`).
+- Lo que cambia a diario (clima, dólar, noticias, lanzamientos) no se
+  responde con cifras: se entrega un enlace a una fuente confiable.
+- Si la red no reconoce la pregunta (seguridad bajo el umbral o
+  `fuera_de_tema`), el chat la envía a `POST /api/asistente/ia` en Labs, que
+  responde con un modelo del plan gratuito de Groq usando como contexto las
+  respuestas de este mismo archivo. Sin la clave `ASISTENTE_IA_CLAVE`, o si
+  falla, se muestra la respuesta de siempre con enlace de búsqueda.
 
 ## Enseñarle algo nuevo
 

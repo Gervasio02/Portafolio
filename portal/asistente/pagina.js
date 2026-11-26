@@ -62,9 +62,13 @@
       rasgos.textContent = "";
       return;
     }
-    const n = window.RedAsistente.rasgos(texto).length;
+    const n = red.rasgos(texto).length;
     const normal = window.RedAsistente.normalizar(texto);
-    rasgos.textContent = `«${normal}» → ${n} rasgos activos`;
+    const traducido = window.RedAsistente.traducir(normal.split(" "), modelo.chilenismos || {}).join(" ");
+    rasgos.textContent =
+      traducido !== normal
+        ? `«${normal}» → en neutro: «${traducido}» → ${n} rasgos activos`
+        : `«${normal}» → ${n} rasgos activos`;
     const { resultado } = red.predecir(texto);
     resultado.slice(0, 5).forEach(({ intencion, probabilidad }, i) => {
       const li = document.createElement("li");
