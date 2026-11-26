@@ -1,0 +1,126 @@
+# Traductor de chilenismos del asistente.
+#
+# Antes de analizar una pregunta, la red cambia estas expresiones por su
+# equivalente neutro. Así «¿cuántas lucas pides?» se entiende igual que
+# «¿cuánto dinero pides?». Un valor vacío ("") elimina la palabra.
+#
+# Se escriben en minúsculas; las tildes no importan (se quitan al comparar).
+# Se aceptan frases de hasta 3 palabras. Lista escrita a mano a partir del
+# uso cotidiano; ante dudas de significado, consultar el Diccionario de uso
+# del español de Chile (DUECh) de la Academia Chilena de la Lengua.
+
+chilenismos:
+  # Muletillas y saludos
+  po: ""
+  pos: ""
+  ya po: ok
+  sipo: si
+  nopo: no
+  oe: oye
+  wena: buena
+  wenas: buenas
+  wena compadre: hola
+  hola wn: hola
+  wn: ""
+  weon: ""
+  weona: ""
+  hueon: ""
+  hueona: ""
+  pucha: ""
+  chuta: ""
+  dale: ok
+  oka: ok
+  wena onda: buena persona
+
+  # Verbos en voseo chileno
+  cachai: entiendes
+  cacho: entiendo
+  cachar: entender
+  cachas: entiendes
+  teni: tienes
+  tenis: tienes
+  sabi: sabes
+  sabis: sabes
+  podi: puedes
+  podis: puedes
+  queri: quieres
+  queris: quieres
+  estai: estas
+  eri: eres
+  eris: eres
+  haci: haces
+  hacis: haces
+  vivi: vives
+  vivis: vives
+  trabajai: trabajas
+  manejai: manejas
+  programai: programas
+  estudiai: estudias
+  usai: usas
+  jugai: juegas
+  cobrai: cobras
+  buscai: buscas
+  me tinca: me parece
+  te tinca: te parece
+
+  # Trabajo y plata
+  pega: trabajo
+  pegas: trabajos
+  pegita: trabajo
+  pituto: contacto trabajo
+  luca: dinero
+  lucas: dinero
+  lukas: dinero
+  palo: millon
+  palos: millones
+  plata: dinero
+  jefe: jefe
+  la u: universidad
+  profe: profesor
+  practica profesional: practica profesional
+
+  # Calificativos
+  bacan: bueno
+  bakan: bueno
+  la raja: excelente
+  filete: excelente
+  cuatico: impresionante
+  fome: aburrido
+  seco: experto
+  secazo: experto
+  chanta: poco confiable
+  harto: mucho
+  harta: mucha
+  hartos: muchos
+  hartas: muchas
+  caleta: mucho
+  al tiro: inmediatamente
+  altiro: inmediatamente
+  condoro: error
+  embarrarla: equivocarse
+  carrete: fiesta
+  cabros: chicos
+  compadre: amigo
+  socio: amigo
+
+  # Abreviaturas de chat
+  q: que
+  k: que
+  xq: porque
+  pq: porque
+  x: por
+  tb: tambien
+  tmb: tambien
+  dsp: despues
+  porfa: por favor
+  xfa: por favor
+  pls: por favor
+  grax: gracias
+  graciaas: gracias
+  toy: estoy
+  tamos: estamos
+  pa: para
+  pal: para el
+  compu: computador
+  pc: computador
+  celu: celular

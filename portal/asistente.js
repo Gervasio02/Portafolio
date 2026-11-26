@@ -11,8 +11,10 @@
 (() => {
   const script = document.currentScript;
   const base = new URL(".", script ? script.src : location.href);
-  const API_APRENDER =
-    "https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/api/asistente/preguntas";
+  const LABS = "https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io";
+  const API_APRENDER = `${LABS}/api/asistente/preguntas`;
+  const API_IA = `${LABS}/api/asistente/ia`;
+  const enProduccion = /(^|\.)gervasio\.sbs$/.test(location.hostname);
   const INICIO = ["presentacion", "proyectos", "stack", "contacto"];
 
   let red = null;
@@ -44,8 +46,8 @@
         <button type="submit">Enviar</button>
       </form>
       <p class="asis-pie">
-        Las preguntas que no sé responder se guardan sin datos personales para
-        enseñarme. <a href="${new URL("asistente/", base).pathname}">Cómo funciono</a>
+        Si no sé responder, uso un modelo de IA externo (Groq) y guardo la
+        pregunta sin datos personales para aprenderla. <a href="${new URL("asistente/", base).pathname}">Cómo funciono</a>
       </p>
     </section>`;
   document.body.append(raiz);
@@ -81,14 +83,32 @@
     return cargando;
   }
 
+  /* ---------- datos en vivo dentro de las respuestas ---------- */
+  // {hora} y {fecha} se calculan en el navegador (hora de Chile);
+  // {pregunta} se reemplaza por la pregunta, codificada para un enlace.
+  function completar(plantilla, pregunta) {
+    const ahora = new Date();
+    const zona = { timeZone: "America/Santiago" };
+    return plantilla
+      .replaceAll("{hora}", ahora.toLocaleTimeString("es-CL", { ...zona, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }))
+      .replaceAll("{fecha}", ahora.toLocaleDateString("es-CL", { ...zona, weekday: "long", day: "numeric", month: "long", year: "numeric" }))
+      .replaceAll("{pregunta}", encodeURIComponent(pregunta.slice(0, 150)));
+  }
+
   /* ---------- mensajes ---------- */
   // Convierte [texto](ruta) en enlaces sin usar innerHTML con datos.
-  function conEnlaces(texto) {
+  // «soloWeb»: para texto de la IA, solo se aceptan enlaces https/mailto.
+  function conEnlaces(texto, soloWeb = false) {
     const fragmento = document.createDocumentFragment();
     const patron = /\[([^\]]+)\]\(([^)\s]+)\)/g;
     let ultimo = 0;
     for (const m of texto.matchAll(patron)) {
       fragmento.append(texto.slice(ultimo, m.index));
+      if (soloWeb && !/^(https:|mailto:)/.test(m[2])) {
+        fragmento.append(m[1]);
+        ultimo = m.index + m[0].length;
+        continue;
+      }
       const enlace = document.createElement("a");
       const destino = /^(https?:|mailto:)/.test(m[2]) ? m[2] : new URL(m[2], base).href;
       enlace.href = destino;
@@ -149,7 +169,6 @@
 
   /* ---------- aprendizaje (opt-out con «No rastrear») ---------- */
   function aprender(pregunta, prediccion, motivo) {
-    const enProduccion = /(^|\.)gervasio\.sbs$/.test(location.hostname);
     if (!enProduccion || navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true) return;
     const cuerpo = JSON.stringify({
       pregunta: pregunta.slice(0, 200),
@@ -188,6 +207,39 @@
     return caja;
   }
 
+  /* ---------- respaldo con IA (Labs → Groq) ---------- */
+  async function consultarIA(pregunta) {
+    if (!enProduccion) return null;
+    const control = new AbortController();
+    const plazo = setTimeout(() => control.abort(), 25000);
+    try {
+      const respuesta = await fetch(API_IA, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ pregunta: pregunta.slice(0, 200) }),
+        signal: control.signal,
+      });
+      if (!respuesta.ok) return null;
+      const datos = await respuesta.json();
+      return typeof datos.respuesta === "string" && datos.respuesta.trim() ? datos.respuesta.trim() : null;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(plazo);
+    }
+  }
+
+  function respuestaIA(texto) {
+    const msg = burbuja("bot", conEnlaces(texto, true));
+    const nota = document.createElement("div");
+    nota.className = "asis-confianza";
+    const etiqueta = document.createElement("span");
+    etiqueta.textContent = "respuesta generada con IA · puede equivocarse";
+    nota.append(document.createElement("i"), etiqueta);
+    msg.append(nota);
+    return msg;
+  }
+
   /* ---------- conversación ---------- */
   async function preguntar(texto) {
     const pregunta = texto.trim();
@@ -206,16 +258,34 @@
     await new Promise((r) => setTimeout(r, 250));
     escribiendo.remove();
 
-    if (vacio || mejor.probabilidad < red.umbral) {
+    const sinRespuesta = vacio || mejor.probabilidad < red.umbral;
+    if (sinRespuesta || mejor.intencion.id === "fuera_de_tema") {
+      aprender(pregunta, mejor, "sin_respuesta");
+      const pensando = burbuja("bot asis-escribiendo", "Consultando…");
+      const texto = await consultarIA(pregunta);
+      pensando.remove();
+      if (texto) {
+        const msg = respuestaIA(texto);
+        msg.append(valoracion(pregunta, mejor));
+        sugerencias(["ayuda", "proyectos"]);
+        return;
+      }
+    }
+
+    if (sinRespuesta) {
       const msg = burbuja(
         "bot",
         conEnlaces(
-          "No estoy seguro de haber entendido. Guardé tu pregunta para que Gervasio me enseñe a responderla. " +
-            "Mientras tanto, puedes escribirle a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com)."
+          completar(
+            "No estoy seguro de haber entendido, así que no quiero inventarte una respuesta. " +
+              "Guardé tu pregunta para que Gervasio me enseñe. Mientras tanto, puedes " +
+              "[buscarlo en la web](https://www.google.com/search?q={pregunta}) o escribirle a " +
+              "[Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
+            pregunta
+          )
         )
       );
       msg.append(confianza(mejor.probabilidad));
-      aprender(pregunta, mejor, "sin_respuesta");
       // Si la red tiene alguna pista, ofrece sus dos mejores candidatas;
       // si no, los temas generales.
       const opciones = [mejor, segunda]
@@ -226,9 +296,10 @@
       return;
     }
 
-    const msg = burbuja("bot", conEnlaces(mejor.intencion.respuesta));
+    const msg = burbuja("bot", conEnlaces(completar(mejor.intencion.respuesta, pregunta)));
     msg.append(confianza(mejor.probabilidad));
-    if (!["saludo", "despedida", "gracias", "fuera_de_tema"].includes(mejor.intencion.id)) {
+    const charla = ["saludo", "despedida", "gracias", "acuse", "como_estas", "hora", "fuera_de_tema"];
+    if (!charla.includes(mejor.intencion.id)) {
       msg.append(valoracion(pregunta, mejor));
     }
     sugerencias(mejor.intencion.sugerencias.slice(0, 3));

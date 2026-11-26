@@ -22,6 +22,19 @@ intenciones:
   - id: saludo
     claves: [hola, buenas, saludos, hey, qué tal, buen día]
     ejemplos:
+      - hola, buenas tardes
+      - holaa
+      - hola, qué tal todo
+      - hola, ¿cómo te va?
+      - buenas buenas
+      - qué onda
+      - wena
+      - hola hola
+      - buen día
+      - alo
+      - saludos cordiales
+      - hi
+      - hello
       - hola
       - buenas
       - buenos días
@@ -41,6 +54,15 @@ intenciones:
   - id: despedida
     claves: [chao, adiós, hasta luego, nos vemos, bye, me despido]
     ejemplos:
+      - chao, gracias
+      - adiós, que estés bien
+      - me tengo que ir
+      - nos hablamos
+      - cuídate
+      - hasta la próxima
+      - eso sería
+      - listo, chao
+      - bye bye
       - chao
       - adiós
       - nos vemos
@@ -56,6 +78,13 @@ intenciones:
   - id: gracias
     claves: [gracias, genial, perfecto, excelente, buenísimo, vale, ok]
     ejemplos:
+      - gracias por la info
+      - muy amable
+      - te pasaste
+      - se agradece
+      - mil gracias
+      - thanks
+      - buena respuesta
       - gracias
       - muchas gracias
       - te pasaste
@@ -90,8 +119,9 @@ intenciones:
       Soy una red neuronal pequeña que Gervasio programó desde cero: un
       perceptrón multicapa escrito en Python con NumPy, sin librerías de
       machine learning. Se entrena con las preguntas que suelen hacer los
-      reclutadores y corre completa en tu navegador, así que no envía tu
-      conversación a ningún servicio externo. El detalle está en
+      reclutadores y corre en tu navegador. Solo si no reconozco una
+      pregunta pido ayuda a un modelo de IA externo, y lo marco en la
+      respuesta. El detalle está en
       [cómo funciono](asistente/).
     sugerencias: [presentacion, proyectos]
 
@@ -147,6 +177,7 @@ intenciones:
   - id: experiencia
     claves: [sercotec, tiempo programando, desde cuándo programas, experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
     ejemplos:
+      - ¿has tenido pega como programador?
       - ¿desde cuándo programas?
       - ¿cuánto tiempo llevas programando?
       - ¿qué hiciste en sercotec?
@@ -209,6 +240,7 @@ intenciones:
   - id: stack
     claves: [javascript, lenguaje principal, lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
     ejemplos:
+      - ¿qué lenguajes manejai?
       - ¿qué tecnologías usas?
       - ¿cuál es tu stack?
       - ¿qué lenguajes sabes?
@@ -233,6 +265,8 @@ intenciones:
   - id: frontend
     claves: [react, next.js, nextjs, frontend, front, interfaz, css, html, vite, typescript, responsive, diseño web]
     ejemplos:
+      - ¿tienes experiencia con react?
+      - ¿cachai de react?
       - ¿tienes experiencia con typescript?
       - ¿sabes react?
       - ¿qué tal tu frontend?
@@ -694,6 +728,8 @@ intenciones:
   - id: busca
     claves: [qué buscas, puesto, cargo, rol, trabajo de desarrollador, junior, pasantía, empleo]
     ejemplos:
+      - ¿andai buscando pega?
+      - ¿qué pega buscas?
       - ¿buscas trabajo o práctica?
       - ¿te interesa un puesto junior?
       - ¿qué tipo de trabajo buscas?
@@ -713,6 +749,8 @@ intenciones:
   - id: disponibilidad
     claves: [disponibilidad, cuándo empiezas, disponible, fecha de inicio, inmediata, trabajando actualmente]
     ejemplos:
+      - ¿podís empezar al tiro?
+      - ¿estai disponible?
       - ¿cuándo puedes empezar?
       - ¿tienes disponibilidad?
       - ¿estás disponible?
@@ -763,6 +801,8 @@ intenciones:
   - id: sueldo
     claves: [sueldo, salario, renta, pretensiones, expectativa salarial, cuánto cobras, remuneración]
     ejemplos:
+      - ¿cuántas lucas pides?
+      - ¿cuánto querís ganar?
       - ¿cuánto quieres ganar?
       - pretensiones de renta
       - ¿cuál es tu expectativa salarial?
@@ -816,6 +856,7 @@ intenciones:
   - id: github
     claves: [github, código fuente, repositorio, código público, ver tu código]
     ejemplos:
+      - ¿tienes cuenta en github?
       - ¿tienes github?
       - ¿dónde está tu código?
       - repositorio
@@ -881,6 +922,8 @@ intenciones:
   - id: bodeganet
     claves: [bodeganet, .net, dotnet, c#, csharp, asp.net, entity framework, razor, inventario, kardex, bodega, stock, costo promedio]
     ejemplos:
+      - ¿tienes experiencia con .net?
+      - ¿has trabajado con c#?
       - háblame de bodeganet
       - ¿sabes .net?
       - ¿programas en c#?
@@ -935,34 +978,349 @@ intenciones:
       aprendiendo.
     sugerencias: [busca, aprendizaje]
 
+  - id: llegada
+    claves: [reclutador, reclutadora, recursos humanos, rrhh, headhunter, vengo de linkedin, revisando tu perfil, selección]
+    ejemplos:
+      - hola, soy reclutador
+      - hola, soy reclutadora de una empresa
+      - buenas, trabajo en recursos humanos
+      - vengo de linkedin
+      - estoy revisando tu perfil
+      - vi tu postulación
+      - te encontré en github
+      - recién llego a tu portafolio
+      - hola, vengo a ver tu portafolio
+      - estamos buscando un desarrollador
+      - tengo una oferta de trabajo
+      - me interesa tu perfil
+    respuesta: >-
+      ¡Bienvenido o bienvenida, y gracias por revisar mi perfil! Si tienes
+      poco tiempo, te recomiendo ver TaskFlow o BodegaNet, que son los más
+      cercanos a sistemas de empresa, y descargar mi [CV](cv/Gervasio-Torres-CV.pdf).
+      Puedes preguntarme lo que necesites o escribirme directo a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [presentacion, proyecto_destacado, disponibilidad]
+
+  - id: como_estas
+    claves: [cómo estás, cómo te va, todo bien, qué tal tu día]
+    ejemplos:
+      - ¿cómo estás?
+      - ¿cómo te va?
+      - ¿todo bien?
+      - ¿qué tal tu día?
+      - ¿cómo has estado?
+      - ¿cómo andas?
+      - ¿estás bien?
+    respuesta: >-
+      ¡Bien, gracias por preguntar! Listo para contarte del portafolio de
+      Gervasio. ¿Qué te gustaría saber?
+    sugerencias: [presentacion, proyectos, ayuda]
+
+  - id: acuse
+    claves: [ok, ya, okey, entiendo, entendido, jaja, jajaja, perfecto, bueno, vale, ah ya]
+    ejemplos:
+      - ok
+      - ya
+      - entiendo
+      - jaja
+      - jajaja
+      - bueno
+      - ah ya
+      - mmm
+      - interesante
+      - ya veo
+      - claro
+      - sí
+    respuesta: >-
+      ¿Te cuento algo más? Puedo hablarte de un proyecto en particular, de su
+      experiencia o de cómo contactarlo.
+    sugerencias: [proyectos, experiencia, contacto]
+
+  - id: ayuda
+    claves: [ayuda, qué puedes hacer, opciones, menú, qué te puedo preguntar, temas]
+    ejemplos:
+      - ¿qué puedes hacer?
+      - ayuda
+      - ¿qué te puedo preguntar?
+      - ¿de qué sabes?
+      - ¿qué temas conoces?
+      - opciones
+      - menú
+      - no sé qué preguntar
+      - ¿en qué me puedes ayudar?
+    respuesta: >-
+      Puedo contarte de los proyectos de Gervasio (TaskFlow, ReservaYa,
+      TiendaNova, BodegaNet, Snake, Interrogatorio y sus herramientas), las
+      tecnologías que usa, su formación y experiencia, su disponibilidad y
+      cómo contactarlo. También te digo la hora en Chile y, para el clima,
+      el dólar o las noticias, te paso un enlace confiable.
+    sugerencias: [presentacion, proyectos, contacto]
+
+  - id: molestia
+    claves: [no sirves, tonto, malo, respuesta mala, no entiendes, inútil, pésimo]
+    ejemplos:
+      - no sirves
+      - eres tonto
+      - esa respuesta está mala
+      - no entiendes nada
+      - no me ayudaste
+      - eso no era lo que pregunté
+      - respondes mal
+    respuesta: >-
+      Perdón, todavía estoy aprendiendo y guardé tu pregunta para mejorar.
+      Si es urgente, escríbele directo a Gervasio:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [ayuda, contacto]
+
+  - id: hora
+    claves: [hora, qué hora es, fecha, qué día es, hoy, día de hoy]
+    ejemplos:
+      - ¿qué hora es?
+      - ¿qué hora es en chile?
+      - ¿qué día es hoy?
+      - ¿qué fecha es hoy?
+      - dime la hora
+      - ¿qué hora tienes?
+      - ¿en qué fecha estamos?
+    respuesta: >-
+      En Chile son las {hora} del {fecha}.
+    sugerencias: [ubicacion, disponibilidad]
+
+  - id: clima
+    claves: [clima, tiempo, lluvia, temperatura, pronóstico, calor, frío, llover]
+    ejemplos:
+      - ¿cómo está el clima?
+      - ¿qué tiempo hace hoy?
+      - ¿va a llover?
+      - ¿qué temperatura hay?
+      - pronóstico del tiempo
+      - ¿hace frío en rancagua?
+      - ¿cómo está el día afuera?
+    respuesta: >-
+      No tengo el tiempo en vivo, así que no quiero inventarte un dato. El
+      pronóstico oficial está en la
+      [Dirección Meteorológica de Chile](https://www.meteochile.gob.cl/), o
+      puedes [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+    sugerencias: [hora, ayuda]
+
+  - id: indicadores
+    claves: [dólar, dolar, uf, utm, euro, ipc, inflación, tipo de cambio, bitcoin]
+    ejemplos:
+      - ¿cómo está el dólar?
+      - ¿a cuánto está la uf?
+      - valor del dólar hoy
+      - ¿cuánto vale la utm?
+      - ¿cuál fue el ipc?
+      - precio del euro
+      - ¿a cuánto está el bitcoin?
+    respuesta: >-
+      Esos valores cambian a diario y no los tengo al día. Los oficiales los
+      publica el [Banco Central de Chile](https://www.bcentral.cl/), o puedes
+      [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+    sugerencias: [hora, ayuda]
+
+  - id: actualidad
+    claves: [noticias, partido, ganó, resultado, gobierno, elecciones, mundial, colo colo, selección chilena]
+    ejemplos:
+      - ¿quién ganó el partido?
+      - ¿qué noticias hay hoy?
+      - ¿qué pasó hoy en chile?
+      - ¿cómo salió colo colo?
+      - resultados del fútbol
+      - ¿qué opinas del gobierno?
+      - ¿quién va a ganar el mundial?
+      - últimas noticias
+    respuesta: >-
+      De actualidad no tengo información verificada al día. Puedes revisarlo
+      en [Google Noticias](https://news.google.com/search?q={pregunta}&hl=es-419&gl=CL&ceid=CL:es-419).
+      Yo te puedo contar del portafolio de Gervasio.
+    sugerencias: [ayuda, proyectos]
+
+  - id: juegos_portafolio
+    claves: [juegos, videojuegos, juego, gaming, gamer, hiciste juegos]
+    ejemplos:
+      - ¿tienes juegos?
+      - ¿hiciste videojuegos?
+      - ¿qué juegos hiciste?
+      - ¿puedo jugar algo?
+      - muéstrame tus juegos
+      - ¿hay algún juego en el portafolio?
+    respuesta: >-
+      Sí, hay dos: Snake, el clásico de la serpiente con tres modos, desafío
+      diario y ranking verificado, e Interrogatorio, un juego de deducción en
+      el que interrogas sospechosos y buscas contradicciones.
+      [Jugar Snake](https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/)
+      · [Jugar Interrogatorio](interrogatorio/).
+    sugerencias: [jugar_snake, jugar_interrogatorio]
+
+  - id: gustos_gamer
+    claves: [te gustan los videojuegos, juegas, consola, play, nintendo, xbox, steam]
+    ejemplos:
+      - ¿te gustan los videojuegos?
+      - ¿juegas videojuegos?
+      - ¿eres gamer?
+      - ¿tienes consola?
+      - ¿juegas en pc o consola?
+      - ¿cuál es tu juego favorito?
+    respuesta: >-
+      El tema me interesa tanto que dos de mis proyectos son juegos y el
+      diseño de este sitio tiene estética gamer. Mis gustos personales te los
+      cuento mejor en una conversación:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    sugerencias: [juegos_portafolio, diseno_sitio]
+
+  - id: gamer_general
+    claves: [lanzamiento, recomiéndame un juego, precio de juego, gta, minecraft, fortnite, juego nuevo, reseña]
+    ejemplos:
+      - ¿qué juego me recomiendas?
+      - ¿cuándo sale el próximo gta?
+      - ¿cuánto cuesta la play 5?
+      - ¿qué juegos nuevos salieron?
+      - ¿es bueno minecraft?
+      - recomiéndame una serie
+      - ¿qué película me recomiendas?
+    respuesta: >-
+      Lanzamientos, precios y recomendaciones cambian todo el tiempo y no los
+      tengo verificados al día. Puedes [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+      Si quieres jugar algo ahora mismo, prueba los juegos del portafolio.
+    sugerencias: [juegos_portafolio, ayuda]
+
+  - id: jugar_snake
+    claves: [cómo se juega snake, controles, modos de snake, contrarreloj, sin paredes, clásico]
+    ejemplos:
+      - ¿cómo se juega snake?
+      - ¿cuáles son los controles de snake?
+      - ¿qué modos tiene snake?
+      - ¿cómo pauso el juego?
+      - ¿cómo funciona el desafío diario?
+      - ¿se puede jugar en el celular?
+      - ¿cómo entro al ranking?
+    respuesta: >-
+      Snake tiene tres modos: Clásico, Sin paredes y Contrarreloj. Te mueves
+      con las flechas o con W, A, S y D, o deslizando el dedo en el teléfono,
+      y pausas con la barra espaciadora. Hay comidas especiales (dorada, lenta
+      y escudo), un desafío diario y logros; para aparecer en el ranking
+      creas una cuenta y el servidor verifica tu partida.
+      [Jugar Snake](https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/).
+    sugerencias: [snake, jugar_interrogatorio]
+
+  - id: jugar_interrogatorio
+    claves: [cómo se juega interrogatorio, acusar, sospechoso, pistas, expediente]
+    ejemplos:
+      - ¿cómo se juega interrogatorio?
+      - ¿cómo gano en interrogatorio?
+      - ¿cómo acuso a un sospechoso?
+      - ¿cómo encuentro contradicciones?
+      - instrucciones del juego de detectives
+      - ¿qué hago en el juego de deducción?
+    respuesta: >-
+      Eliges un caso, revisas el expediente y las pruebas, interrogas a los
+      sospechosos mostrándoles evidencias y comparas sus testimonios con la
+      cronología para encontrar contradicciones. Cuando estés seguro, acusas.
+      Hay una demo rápida en [la ficha de Interrogatorio](interrogatorio/).
+    sugerencias: [interrogatorio, juegos_portafolio]
+
+  - id: diseno_sitio
+    claves: [diseño, colores, estética, neón, por qué se ve así, animaciones, fuente, tipografía]
+    ejemplos:
+      - ¿por qué el sitio se ve gamer?
+      - ¿quién diseñó la página?
+      - me gustan los colores
+      - ¿cómo hiciste las animaciones?
+      - ¿qué tipografía usas?
+      - el diseño está bacán
+    respuesta: >-
+      Lo diseñé con estética gamer: fondo negro violáceo con rojo y morado
+      neón y tipografía IBM Plex. Las animaciones (la consola que escribe, las
+      secciones que aparecen al bajar y las cifras que cuentan) son
+      JavaScript propio, sin librerías, y respetan a quien prefiere menos
+      movimiento.
+    sugerencias: [portafolio_hecho, asistente]
+
+  - id: hosting
+    claves: [costo, cuánto cuesta, gratis, hosting, servidor, dominio, hostinger, azure for students, github pages]
+    ejemplos:
+      - ¿cuánto te cuesta mantener las apps?
+      - ¿dónde alojas tus proyectos?
+      - ¿pagas servidores?
+      - ¿dónde compraste el dominio?
+      - ¿por qué las apps tardan en cargar?
+      - ¿las apps están siempre encendidas?
+    respuesta: >-
+      Las apps corren en Azure Container Apps con la suscripción Azure for
+      Students y se apagan cuando nadie las usa para no gastar; por eso la
+      primera carga puede tardar unos segundos, y esta página las despierta
+      apenas entras. La portada está en GitHub Pages con el dominio
+      gervasio.sbs, registrado en Hostinger.
+    sugerencias: [devops, portafolio_hecho]
+
+  - id: conceptos_api
+    claves: [qué es una api, api rest, endpoint, json, http]
+    ejemplos:
+      - ¿cómo se comunican el frontend y el backend?
+      - ¿qué es una api?
+      - ¿qué es una api rest?
+      - ¿qué es un endpoint?
+      - explícame qué es rest
+      - ¿para qué sirve una api?
+    respuesta: >-
+      Una API REST es la puerta por la que una aplicación pide o guarda datos
+      en un servidor, usando direcciones (endpoints) y verbos HTTP como GET o
+      POST, normalmente con JSON. En mis proyectos la pantalla en React habla
+      con una API en Express, FastAPI o ASP.NET Core, que es donde aplico las
+      reglas y los permisos.
+    sugerencias: [backend, proyectos]
+
+  - id: conceptos_docker_cicd
+    claves: [qué es docker, contenedor, qué es ci cd, integración continua, pipeline, qué es devops]
+    ejemplos:
+      - ¿qué es docker?
+      - ¿qué es un contenedor?
+      - ¿qué es ci/cd?
+      - ¿qué es la integración continua?
+      - ¿qué es un pipeline?
+      - explícame devops
+    respuesta: >-
+      Docker empaqueta una aplicación con todo lo que necesita para que
+      funcione igual en cualquier máquina. CI/CD es automatizar el camino del
+      código a producción: en cada cambio, GitHub Actions corre las pruebas,
+      construye la imagen y, si todo pasa, la publica en Azure. Así trabajo
+      todos los proyectos del portafolio.
+    sugerencias: [devops, pruebas]
+
+  - id: conceptos_pwa
+    claves: [qué es una pwa, app instalable, service worker, offline]
+    ejemplos:
+      - ¿puedo instalar snake en el celular?
+      - ¿qué es una pwa?
+      - ¿qué significa que se pueda instalar?
+      - ¿qué es un service worker?
+      - ¿snake funciona sin internet?
+      - ¿qué es una aplicación web progresiva?
+    respuesta: >-
+      Una PWA es una página web que se puede instalar como app en el teléfono
+      o el computador. Snake lo es: tiene manifiesto, ícono y un service
+      worker que guarda los archivos del juego, aunque el ranking necesita
+      conexión con el servidor.
+    sugerencias: [snake, frontend]
+
   # Ejemplos de temas ajenos al portafolio: le enseñan a la red a no
   # forzar una respuesta cuando la pregunta no tiene que ver.
   - id: fuera_de_tema
-    claves: [clima, fútbol, receta, chiste, película, serie, política, matemáticas, poema, dólar]
+    claves: [receta, chiste, poema, matemáticas, tarea, horóscopo, chistes]
     ejemplos:
-      - ¿juegas videojuegos?
-      - ¿cuál es tu juego favorito?
-      - ¿te gusta el fútbol?
-      - ¿qué tiempo hace hoy?
-      - ¿quién ganó el partido?
       - dame una receta de pan
       - ¿cuánto es 2 más 2?
       - cuéntame un chiste
       - ¿cuál es la capital de francia?
-      - ¿qué película me recomiendas?
-      - ¿cómo está el dólar?
       - escribe un poema
       - ¿cuál es el sentido de la vida?
-      - recomiéndame una serie
-      - ¿a qué hora cierra el banco?
-      - ¿qué opinas del gobierno?
-      - ¿quién va a ganar el mundial?
       - traduce esto al inglés
       - ¿cómo se hace un asado?
       - ayúdame con mi tarea de matemáticas
       - ¿cuál es tu color favorito?
     respuesta: >-
-      Eso no lo sé: solo conozco el portafolio de Gervasio. Puedo contarte de
-      sus proyectos, su formación, las tecnologías que usa o cómo
-      contactarlo.
-    sugerencias: [proyectos, stack, contacto]
+      Eso está fuera de lo que sé: conozco el portafolio de Gervasio. Para no
+      inventarte nada, puedes [buscarlo en la web](https://www.google.com/search?q={pregunta}).
+      Si quieres, te cuento de sus proyectos, tecnologías o cómo contactarlo.
+    sugerencias: [ayuda, proyectos, contacto]

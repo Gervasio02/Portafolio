@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from .data import ingest, clean, profile, export_csv, numeric, MAX_BYTES
 from .documents import extract, extract_file, validate
 from .analitica import registrar as registrar_analitica
+from .asistente_ia import registrar as registrar_ia
 
 
 class Invoice(BaseModel):
@@ -229,7 +230,7 @@ def create_app(database=None, targets=None):
                 status_code=429,
                 headers={"Retry-After": "60"},
             )
-        public = request.url.path in ("/api/guest", "/api/visitas", "/api/asistente/preguntas") or request.url.path.startswith(
+        public = request.url.path in ("/api/guest", "/api/visitas", "/api/asistente/preguntas", "/api/asistente/ia") or request.url.path.startswith(
             "/api/panel/"
         )
         if (
@@ -256,6 +257,7 @@ def create_app(database=None, targets=None):
         if request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path not in (
             "/api/visitas",
             "/api/asistente/preguntas",
+            "/api/asistente/ia",
         ):
             origin = request.headers.get("origin")
             if origin and urlsplit(origin).netloc != request.headers.get("host"):
@@ -292,6 +294,7 @@ def create_app(database=None, targets=None):
 
     # Analítica privada de la portada (ver app/analitica.py).
     registrar_analitica(app, database, client_ip, allowed)
+    registrar_ia(app, client_ip, allowed)
 
     @app.get("/api/session")
     def session(request: Request):

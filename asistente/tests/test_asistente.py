@@ -15,7 +15,7 @@ AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI.parent))
 
 import entrenar  # noqa: E402
-from caracteristicas import normalizar, vector  # noqa: E402
+from caracteristicas import chilenismos, normalizar, traducir, vector  # noqa: E402
 
 RAIZ = AQUI.parent.parent
 RED_JS = RAIZ / "portal" / "asistente" / "red.js"
@@ -44,7 +44,7 @@ PREGUNTAS_NUEVAS = [
     ("¿cuándo podrías empezar a trabajar?", "disponibilidad"),
     ("¿eres un chatbot?", "asistente"),
     ("¿cuál es tu proyecto favorito?", "proyecto_destacado"),
-    ("¿qué tiempo hará mañana?", "fuera_de_tema"),
+    ("¿qué tiempo hará mañana?", "clima"),
     ("hola, buenas tardes", "saludo"),
     ("muchas gracias por la info", "gracias"),
     ("¿tienes perfil de github?", "github"),
@@ -53,6 +53,13 @@ PREGUNTAS_NUEVAS = [
     ("¿usas scrum en tus proyectos?", "metodologias"),
     ("¿qué metas tienes como desarrollador?", "motivacion"),
     ("¿sabes programar en java?", "otros_lenguajes"),
+    ("wena po, ¿cachai de react?", "frontend"),
+    ("¿cuántas lucas pedí por la pega?", "sueldo"),
+    ("¿podís empezar al tiro?", "disponibilidad"),
+    ("¿cómo está el clima en rancagua?", "clima"),
+    ("¿me das la receta de las empanadas?", "fuera_de_tema"),
+    ("¿qué hora es en chile?", "hora"),
+    ("¿cómo se juega snake?", "jugar_snake"),
 ]
 
 
@@ -79,6 +86,12 @@ def test_normalizar_quita_tildes_y_signos():
     assert normalizar("¿Qué ESTUDIASTE, Gervasio?") == "que estudiaste gervasio"
 
 
+def test_traduce_chilenismos():
+    mapa = chilenismos()
+    texto = traducir(normalizar("Oe wn, ¿teni pega po? ¿Cuántas lucas pides al tiro?").split(), mapa)
+    assert texto == "oye tienes trabajo cuantas dinero pides inmediatamente".split()
+
+
 def test_vector_normalizado():
     v = vector("¿qué tecnologías usas?")
     assert v and abs(sum(x * x for x in v.values()) - 1) < 1e-9
@@ -102,14 +115,17 @@ def test_paridad_con_javascript():
         "ñandú pingüino acción",
         "",
         "¿sabes C# / .NET?",
+        "oe wn, ¿teni pega po? ¿cuántas lucas pides al tiro?",
+        "¿cachai de bases de datos? la raja tu portafolio",
     ]
     script = (
         "const r = require(process.argv[1]);"
         "const textos = JSON.parse(process.argv[2]);"
-        "console.log(JSON.stringify(textos.map(t => Object.fromEntries(r.vector(t)))));"
+        "const mapa = JSON.parse(process.argv[3]);"
+        "console.log(JSON.stringify(textos.map(t => Object.fromEntries(r.vector(t, 2048, mapa)))));"
     )
     salida = subprocess.run(
-        ["node", "-e", script, str(RED_JS), json.dumps(textos)],
+        ["node", "-e", script, str(RED_JS), json.dumps(textos), json.dumps(chilenismos())],
         check=True, capture_output=True, text=True,
     ).stdout
     desde_js = json.loads(salida)

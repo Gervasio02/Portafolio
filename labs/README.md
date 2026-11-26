@@ -44,6 +44,7 @@ clave en la cabecera `Authorization: Bearer <clave>`.
 | ------------------ | ------------------------------------------------------------------- |
 | `PANEL_CLAVE`      | Clave del panel. Sin ella el panel responde 503 (cerrado).          |
 | `ANALITICA_DB_URL` | PostgreSQL donde guardar las visitas (esquema `analitica`). Acepta cadenas de Prisma (quita `schema` y otros parámetros que no son de libpq). Sin ella, o si no conecta, usa la SQLite de Labs, que se pierde al apagarse el contenedor. |
+| `ASISTENTE_IA_CLAVE` | Clave de Groq (plan gratuito) para el respaldo con IA del asistente (`POST /api/asistente/ia`). Sin ella responde 503 y el chat usa sus respuestas propias. Opcional: `ASISTENTE_IA_MODELO` (por defecto `llama-3.3-70b-versatile`). |
 | `PANEL_ORIGENES`   | Orígenes que pueden enviar visitas y abrir el panel (por defecto `https://gervasio.sbs,https://www.gervasio.sbs`). |
 
 En producción las dos primeras salen de los secretos de GitHub con el mismo

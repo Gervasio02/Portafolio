@@ -6,7 +6,9 @@ ambos deben producir exactamente el mismo vector. La prueba
 
 Pasos:
 1. Normalizar: minúsculas, sin tildes, solo letras y números.
-2. Tokenizar y quitar palabras vacías («el», «de», «para»...).
+2. Traducir chilenismos («pega» -> «trabajo», «al tiro» -> «inmediatamente»)
+   según `chilenismos.yml`.
+2b. Tokenizar y quitar palabras vacías («el», «de», «para»...).
 3. Raíz simple: sin plural ni vocal final y como máximo 6 letras
    («estudiaste» y «estudios» -> «estudi»; «remota» y «remoto» -> «remot»).
 4. Rasgos: palabras, pares de palabras seguidas y trigramas de letras
@@ -21,6 +23,10 @@ from __future__ import annotations
 import math
 import re
 import unicodedata
+from functools import lru_cache
+from pathlib import Path
+
+import yaml
 
 DIMENSION = 2048
 
@@ -38,6 +44,33 @@ def normalizar(texto: str) -> str:
     texto = "".join(c for c in texto if not unicodedata.combining(c))
     texto = re.sub(r"[^a-z0-9]+", " ", texto)
     return texto.strip()
+
+
+CHILENISMOS_YML = Path(__file__).resolve().parent / "chilenismos.yml"
+
+
+@lru_cache(maxsize=1)
+def chilenismos() -> dict[str, str]:
+    """Diccionario {frase normalizada: equivalente normalizado}."""
+    datos = yaml.safe_load(CHILENISMOS_YML.read_text(encoding="utf-8")) or {}
+    return {normalizar(str(k)): normalizar(str(v or "")) for k, v in (datos.get("chilenismos") or {}).items()}
+
+
+def traducir(palabras: list[str], mapa: dict[str, str]) -> list[str]:
+    """Reemplaza frases chilenas (de 3, 2 o 1 palabra, la más larga primero)."""
+    salida: list[str] = []
+    i = 0
+    while i < len(palabras):
+        for largo in (3, 2, 1):
+            frase = " ".join(palabras[i : i + largo])
+            if len(palabras) - i >= largo and frase in mapa:
+                salida.extend(mapa[frase].split())
+                i += largo
+                break
+        else:
+            salida.append(palabras[i])
+            i += 1
+    return salida
 
 
 def raiz(palabra: str) -> str:
@@ -60,8 +93,9 @@ def fnv1a(texto: str) -> int:
     return h
 
 
-def rasgos(texto: str) -> list[tuple[str, float]]:
-    palabras = [p for p in normalizar(texto).split() if p not in PALABRAS_VACIAS]
+def rasgos(texto: str, mapa: dict[str, str] | None = None) -> list[tuple[str, float]]:
+    mapa = chilenismos() if mapa is None else mapa
+    palabras = [p for p in traducir(normalizar(texto).split(), mapa) if p not in PALABRAS_VACIAS]
     raices = [raiz(p) for p in palabras]
     salida: list[tuple[str, float]] = []
     for r in raices:
@@ -75,10 +109,10 @@ def rasgos(texto: str) -> list[tuple[str, float]]:
     return salida
 
 
-def vector(texto: str, dimension: int = DIMENSION) -> dict[int, float]:
+def vector(texto: str, dimension: int = DIMENSION, mapa: dict[str, str] | None = None) -> dict[int, float]:
     """Vector disperso {posición: valor} normalizado a largo 1."""
     valores: dict[int, float] = {}
-    for rasgo, peso in rasgos(texto):
+    for rasgo, peso in rasgos(texto, mapa):
         indice = fnv1a(rasgo) % dimension
         valores[indice] = valores.get(indice, 0.0) + peso
     norma = math.sqrt(sum(v * v for v in valores.values()))
