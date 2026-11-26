@@ -95,6 +95,24 @@ window.PORTFOLIO_PROJECTS = [
       "Separar la verdad del caso de la información pública y persistir el progreso.",
   },
   {
+    id: "bodeganet",
+    name: "BodegaNet",
+    type: "Inventario",
+    stack: ["C#", ".NET 10", "ASP.NET Core", "EF Core", "PostgreSQL"],
+    image: "bodeganet-720.webp",
+    demo: "../bodeganet/index.html",
+    live: "https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/",
+    health: "https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health",
+    featured: true,
+    goal: "Controlar el inventario de varias bodegas con un kardex valorizado.",
+    features:
+      "Productos, bodegas, entradas con costo, salidas, ajustes, transferencias, kardex con costo promedio ponderado, alertas de stock, exportación a CSV, roles y API REST con OpenAPI.",
+    architecture:
+      "ASP.NET Core con Razor Pages y minimal APIs; Entity Framework Core persiste en PostgreSQL (o SQLite en la demo) con migraciones y concurrencia optimista.",
+    learning:
+      "Que el stock nunca quede negativo con salidas simultáneas y que el costo promedio se recalcule bien en cada movimiento.",
+  },
+  {
     id: "cloudops",
     name: "CloudOps",
     type: "Observabilidad",
