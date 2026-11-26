@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Gervasio Torres, analista programador y egresado de Ingeniería Informática (INACAP). Desarrollo full stack con React, Node.js, Python y PostgreSQL: cinco aplicaciones y tres herramientas publicadas, con su código."
+      content="Gervasio Torres, analista programador y egresado de Ingeniería Informática (INACAP). Desarrollo full stack con React, Node.js, Python, .NET y PostgreSQL: seis aplicaciones y tres herramientas publicadas, con su código."
     />
     <meta name="theme-color" content="#0b0812" />
     <meta
@@ -29,7 +29,7 @@
     <meta property="og:image:alt" content="Portafolio de desarrollo de Gervasio Torres" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Gervasio Torres · Portafolio" />
-    <meta name="twitter:description" content="Cinco aplicaciones y tres laboratorios de desarrollo full stack." />
+    <meta name="twitter:description" content="Seis aplicaciones y tres laboratorios de desarrollo full stack." />
     <meta name="twitter:image" content="https://gervasio.sbs/capturas/gervasio-social.jpg" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
@@ -96,7 +96,7 @@
           <h2 id="ficha-titulo">En resumen</h2>
           <dl>
             <div><dt>Busco</dt><dd>Mi primer puesto como desarrollador full stack.</dd></div>
-            <div><dt>Trabajo con</dt><dd>React, TypeScript, Node.js, Python (FastAPI), PostgreSQL, Docker.</dd></div>
+            <div><dt>Trabajo con</dt><dd>React, TypeScript, Node.js, Python (FastAPI), C# (.NET), PostgreSQL, Docker.</dd></div>
             <div><dt>Ubicación</dt><dd>Región de O'Higgins, Chile · <time id="hora-local">--:--</time></dd></div>
           </dl>
           <a class="ficha-correo" href="mailto:Gervasiot19@gmail.com">Gervasiot19@gmail.com</a>
@@ -105,7 +105,7 @@
 
       <!-- ============ CIFRAS ============ -->
       <section class="wrap cifras" id="logros" aria-label="Cifras medidas en las pruebas">
-        <p><strong>8</strong><span>proyectos publicados</span></p>
+        <p><strong>9</strong><span>proyectos publicados</span></p>
         <p><strong>98,9 %</strong><span>cobertura de la API de TaskFlow</span></p>
         <p><strong>95,8 %</strong><span>cobertura del backend de ReservaYa</span></p>
         <p><strong>111</strong><span>pruebas en el backend de Interrogatorio</span></p>
@@ -150,6 +150,39 @@
               <a href="https://taskflow-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Abrir la app</a>
               <a href="taskflow/index.html#demo">Demo rápida</a>
               <a href="https://github.com/Gervasio02/Portafolio/tree/main/taskflow" target="_blank" rel="noopener noreferrer">Código</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="proyecto" id="bodeganet" data-salud="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/health">
+          <figure class="proyecto-img">
+            <picture>
+              <source type="image/webp" srcset="capturas/bodeganet-720.webp 720w, capturas/bodeganet-1200.webp 1200w" sizes="(max-width: 900px) 92vw, 560px" />
+              <img src="capturas/bodeganet.png" width="1440" height="1068" loading="lazy" decoding="async" alt="Panel de inventario de BodegaNet con valor por bodega, alertas de stock y últimos movimientos" />
+            </picture>
+          </figure>
+          <div class="proyecto-texto">
+            <p class="proyecto-meta"><span>Inventario · .NET</span><span class="estado" data-estado></span></p>
+            <h3>BodegaNet</h3>
+            <p class="resumen">
+              Control de inventario para varias bodegas: entradas con costo,
+              salidas, ajustes por conteo y transferencias, con un kardex por
+              producto valorizado a costo promedio ponderado y alertas cuando
+              algo baja del mínimo.
+            </p>
+            <h4>Lo difícil</h4>
+            <p>
+              Que el stock nunca quede negativo aunque lleguen dos salidas a la
+              vez. Cada saldo usa concurrencia optimista dentro de una
+              transacción con reintentos, y la base tiene su propia
+              restricción. Una prueba lanza 10 salidas simultáneas sobre 10
+              unidades y comprueba que solo pasan las que caben.
+            </p>
+            <ul class="stack"><li>C#</li><li>ASP.NET Core</li><li>EF Core</li><li>PostgreSQL</li><li>xUnit</li></ul>
+            <p class="links">
+              <a href="https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/" target="_blank" rel="noopener noreferrer">Abrir la app</a>
+              <a href="bodeganet/">Ver ficha</a>
+              <a href="https://github.com/Gervasio02/Portafolio/tree/main/bodeganet" target="_blank" rel="noopener noreferrer">Código</a>
             </p>
           </div>
         </article>
@@ -320,7 +353,7 @@
               <li>
                 <span class="fecha">nov 2026</span>
                 <h4>Proyecto personal · este portafolio</h4>
-                <p>Ocho proyectos con pruebas automatizadas, integración continua y despliegue en Azure.</p>
+                <p>Nueve proyectos con pruebas automatizadas, integración continua y despliegue en Azure.</p>
               </li>
               <li>
                 <span class="fecha">ene – abr 2023</span>
@@ -360,11 +393,11 @@
           <p>Solo lo que he usado en estos proyectos.</p>
         </header>
         <dl class="tabla-herr">
-          <div><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, SQL, HTML, CSS</dd></div>
+          <div><dt>Lenguajes</dt><dd>JavaScript, TypeScript, Python, C#, SQL, HTML, CSS</dd></div>
           <div><dt>Frontend</dt><dd>React, Next.js, Vite</dd></div>
-          <div><dt>Backend</dt><dd>Node.js con Express, FastAPI, Auth.js, APIs REST</dd></div>
-          <div><dt>Datos</dt><dd>PostgreSQL, SQLite, Prisma, SQLAlchemy, Alembic</dd></div>
-          <div><dt>Pruebas</dt><dd>Jest, Vitest, pytest, Playwright</dd></div>
+          <div><dt>Backend</dt><dd>Node.js con Express, FastAPI, ASP.NET Core, Auth.js, APIs REST</dd></div>
+          <div><dt>Datos</dt><dd>PostgreSQL, SQLite, Prisma, SQLAlchemy, Alembic, Entity Framework Core</dd></div>
+          <div><dt>Pruebas</dt><dd>Jest, Vitest, pytest, xUnit, Playwright</dd></div>
           <div><dt>Entrega</dt><dd>Git, Docker, GitHub Actions, Azure Container Apps</dd></div>
         </dl>
       </section>

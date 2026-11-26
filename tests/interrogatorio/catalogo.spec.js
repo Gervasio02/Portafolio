@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 test('el catálogo filtra y abre el detalle enlazado', async ({ page }) => {
   await page.goto('/proyectos/#reservaya');
   await expect(page.locator('#reservaya details')).toHaveAttribute('open', '');
-  await expect(page.locator('#projects article')).toHaveCount(8);
+  await expect(page.locator('#projects article')).toHaveCount(9);
   await page.getByRole('searchbox', { name: 'Buscar' }).fill('python');
   await expect(page.locator('#projects article')).toHaveCount(4);
   await page.getByLabel('Tipo').selectOption('Juegos');
@@ -13,10 +13,10 @@ test('el catálogo filtra y abre el detalle enlazado', async ({ page }) => {
   await expect(page.getByText('No hay resultados. Prueba otro filtro.')).toBeVisible();
 });
 
-test('los ocho proyectos tienen un acceso público directo y seguro', async ({ page }) => {
+test('los nueve proyectos tienen un acceso público directo y seguro', async ({ page }) => {
   await page.goto('/proyectos/');
   const tarjetas = page.locator('#projects article');
-  await expect(tarjetas).toHaveCount(8);
+  await expect(tarjetas).toHaveCount(9);
 
   for (let index = 0; index < await tarjetas.count(); index += 1) {
     const tarjeta = tarjetas.nth(index);

@@ -899,7 +899,7 @@ intenciones:
       negativo aunque lleguen dos salidas a la vez: concurrencia optimista
       dentro de una transacción con reintentos y una restricción en la base;
       una prueba lanza 10 salidas simultáneas y comprueba que solo pasan las
-      que caben. [Ver el código](https://github.com/Gervasio02/Portafolio/tree/main/bodeganet).
+      que caben. [Ver BodegaNet](bodeganet/) (puedes entrar como invitado).
     sugerencias: [concurrencia, otros_lenguajes]
 
   - id: metodologias
