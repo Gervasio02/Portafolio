@@ -1,0 +1,33 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Movimientos";
+}
+<div class="titulo-pagina">
+    <h1>Movimientos</h1>
+    @if (User.PuedeMover())
+    {
+        <partial name="_AccionesMovimiento" />
+    }
+</div>
+<form method="get" class="tarjeta filtros">
+    <div class="campo">
+        <label asp-for="ProductoId">Producto</label>
+        <select asp-for="ProductoId" asp-items="Model.OpcionesProductos"><option value="">Todos</option></select>
+    </div>
+    <div class="campo">
+        <label asp-for="BodegaId">Bodega</label>
+        <select asp-for="BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Todas</option></select>
+    </div>
+    <div class="campo">
+        <label asp-for="Tipo">Tipo</label>
+        <select asp-for="Tipo" asp-items="Model.OpcionesTipo"><option value="">Todos</option></select>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton boton-secundario">Filtrar</button>
+    </div>
+</form>
+<section class="tarjeta">
+    <p class="tenue">Se muestran los @IndexModel.Limite movimientos más recientes que cumplen el filtro.</p>
+    <partial name="_TablaMovimientos" model="Model.Filas" />
+</section>

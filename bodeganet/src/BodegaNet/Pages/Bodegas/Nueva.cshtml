@@ -1,0 +1,30 @@
+@page
+@model NuevaModel
+@{
+    ViewData["Title"] = "Nueva bodega";
+}
+<div class="titulo-pagina">
+    <h1>Nueva bodega</h1>
+    <a href="/Bodegas">Volver a bodegas</a>
+</div>
+<form method="post" class="tarjeta formulario estrecha" novalidate>
+    <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+    <div class="campo">
+        <label asp-for="Datos.Codigo"></label>
+        <input asp-for="Datos.Codigo" placeholder="OES" maxlength="12" autocapitalize="characters" />
+        <span asp-validation-for="Datos.Codigo" class="error"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Datos.Nombre"></label>
+        <input asp-for="Datos.Nombre" placeholder="Bodega Oeste" maxlength="80" />
+        <span asp-validation-for="Datos.Nombre" class="error"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Datos.Comuna"></label>
+        <input asp-for="Datos.Comuna" placeholder="Melipilla" maxlength="60" />
+        <span asp-validation-for="Datos.Comuna" class="error"></span>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Crear bodega</button>
+    </div>
+</form>

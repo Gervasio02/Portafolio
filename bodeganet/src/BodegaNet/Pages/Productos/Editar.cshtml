@@ -1,0 +1,44 @@
+@page "{id:int?}"
+@model EditarModel
+@{
+    ViewData["Title"] = Model.Id is null ? "Nuevo producto" : "Editar producto";
+}
+<div class="titulo-pagina">
+    <h1>@ViewData["Title"]</h1>
+    <a href="/Productos">Volver a productos</a>
+</div>
+<form method="post" class="tarjeta formulario estrecha" novalidate>
+    <div asp-validation-summary="ModelOnly" class="aviso aviso-error" role="alert"></div>
+    <div class="campos-2">
+        <div class="campo">
+            <label asp-for="Datos.Sku"></label>
+            <input asp-for="Datos.Sku" placeholder="EMB-010" maxlength="32" autocapitalize="characters" />
+            <span asp-validation-for="Datos.Sku" class="error"></span>
+        </div>
+        <div class="campo">
+            <label asp-for="Datos.Unidad"></label>
+            <input asp-for="Datos.Unidad" placeholder="un, caja, kg" maxlength="16" />
+            <span asp-validation-for="Datos.Unidad" class="error"></span>
+        </div>
+    </div>
+    <div class="campo">
+        <label asp-for="Datos.Nombre"></label>
+        <input asp-for="Datos.Nombre" maxlength="120" />
+        <span asp-validation-for="Datos.Nombre" class="error"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Datos.StockMinimo"></label>
+        <input asp-for="Datos.StockMinimo" type="number" min="0" step="1" inputmode="numeric" />
+        <span asp-validation-for="Datos.StockMinimo" class="error"></span>
+    </div>
+    @if (Model.Id is not null)
+    {
+        <div class="campo campo-check">
+            <input asp-for="Datos.Activo" />
+            <label asp-for="Datos.Activo">Activo (los inactivos no aceptan movimientos)</label>
+        </div>
+    }
+    <div class="acciones">
+        <button type="submit" class="boton">Guardar</button>
+    </div>
+</form>

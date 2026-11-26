@@ -1,0 +1,10 @@
+@page
+@model AccesoDenegadoModel
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+<section class="tarjeta estrecha">
+    <h1>No tienes permiso para esta acción</h1>
+    <p>Tu rol es <strong>@User.Rol()</strong>. Registrar movimientos requiere el rol Bodeguero o Administrador, y crear productos o bodegas, el rol Administrador.</p>
+    <p><a class="boton" href="/">Volver al panel</a></p>
+</section>

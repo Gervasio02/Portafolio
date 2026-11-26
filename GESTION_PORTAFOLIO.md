@@ -28,6 +28,7 @@ pruebas, el historial y la recuperación que sí ofrece GitHub.
 | Snake | <https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/api/health` |
 | Interrogatorio | <https://interrogatorio-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/ready` |
 | Laboratorios | <https://labs-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/datalab> | `/health` |
+| BodegaNet | <https://bodeganet-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/> | `/health` |
 
 Las cuatro aplicaciones contenedorizadas están en el grupo
 `rg-portafolio-gervasio`. Un cambio de las carpetas `taskflow/`, `reservaya/`,

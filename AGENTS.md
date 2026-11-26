@@ -20,6 +20,7 @@ Cuenta de GitHub personal: `Gervasio02`. Nunca uses una cuenta de empresa.
 | `snake/`          | React, TypeScript, Express, Prisma           | Azure Container Apps              |
 | `interrogatorio/` | React, FastAPI, SQLAlchemy                   | Azure Container Apps              |
 | `labs/`           | FastAPI, Python, SQLite (modo invitado)      | Azure Container Apps              |
+| `bodeganet/`      | .NET 10, ASP.NET Core Razor Pages, EF Core, PostgreSQL/SQLite | Azure Container Apps |
 | `asistente/`      | Red neuronal en Python/NumPy (chat del portal) | Se entrena en CI y se publica con `portal/` |
 | `tests/interrogatorio/` | Playwright para todo `portal/`         | CI                                |
 
@@ -96,6 +97,7 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 | Snake                | `snake`: `npm ci && npm test && npm run build`                        |
 | Interrogatorio       | `interrogatorio/backend`: `python -m pytest`; `interrogatorio/frontend`: `npm run build` |
 | Labs                 | `labs`: `python -m pytest -q`                                         |
+| BodegaNet            | `bodeganet`: `dotnet test BodegaNet.sln && dotnet format BodegaNet.sln --verify-no-changes` (con `BODEGANET_PRUEBAS_POSTGRES` prueba también en PostgreSQL) |
 | Asistente            | raíz: `pip install -r asistente/requirements.txt && python -m pytest -q asistente/tests` |
 
 Si no puedes ejecutar algo (por ejemplo, falta PostgreSQL), dilo en el PR con
@@ -107,7 +109,7 @@ Antes de dar por terminado un cambio en `portal/`, revísalo en 1440, 390 y
 ## Despliegue (ojo: llegar a `main` publica)
 
 - Push a `main` con cambios en `taskflow/`, `reservaya/`, `tiendanova/`,
-  `snake/`, `interrogatorio/` o `labs/` → pruebas → imagen en Azure Container
+  `snake/`, `interrogatorio/`, `labs/` o `bodeganet/` → pruebas → imagen en Azure Container
   Registry → nueva revisión en Azure Container Apps (grupo
   `rg-portafolio-gervasio`). Las apps nuevas usan `scripts/azure-desplegar-app.sh`.
 - Push a `main` con cambios en `portal/` → pruebas Playwright → GitHub Pages

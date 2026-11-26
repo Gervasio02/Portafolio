@@ -1,0 +1,111 @@
+@page
+@model KardexModel
+@{
+    ViewData["Title"] = "Kardex";
+    var ultimo = Model.Filas.LastOrDefault();
+}
+<div class="titulo-pagina">
+    <h1>Kardex</h1>
+    @if (Model.Producto is not null && Model.Bodega is not null && User.PuedeMover())
+    {
+        <div class="acciones-movimiento">
+            <a class="boton" href="/Movimientos/Entrada?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">+ Entrada</a>
+            <a class="boton boton-secundario" href="/Movimientos/Salida?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">− Salida</a>
+            <a class="boton boton-secundario" href="/Movimientos/Transferencia?productoId=@Model.Producto.Id&amp;bodegaId=@Model.Bodega.Id">⇄ Transferir</a>
+        </div>
+    }
+</div>
+<form method="get" class="tarjeta filtros">
+    <div class="campo">
+        <label asp-for="ProductoId">Producto</label>
+        <select asp-for="ProductoId" asp-items="Model.OpcionesProductos"><option value="">Elige un producto</option></select>
+    </div>
+    <div class="campo">
+        <label asp-for="BodegaId">Bodega</label>
+        <select asp-for="BodegaId" asp-items="Model.OpcionesBodegas"><option value="">Elige una bodega</option></select>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton boton-secundario">Ver kardex</button>
+    </div>
+</form>
+
+@if (Model.Producto is null)
+{
+    <section class="tarjeta">
+        <p>Elige un producto y una bodega para ver su kardex: cada entrada recalcula el costo promedio ponderado y cada salida se valoriza a ese promedio.</p>
+    </section>
+}
+else if (Model.Bodega is null)
+{
+    <section class="tarjeta">
+        <p><strong>@Model.Producto.Sku</strong> @Model.Producto.Nombre todavía no tiene movimientos. Elige una bodega para registrar su primera entrada.</p>
+    </section>
+}
+else
+{
+    <section class="cifras" aria-label="Saldo">
+        <article class="cifra">
+            <h2>Saldo</h2>
+            <p class="cifra-valor">@Formato.Numero(ultimo?.SaldoCantidad ?? 0)</p>
+            <p class="tenue">@Model.Producto.Unidad en @Model.Bodega.Nombre</p>
+        </article>
+        <article class="cifra">
+            <h2>Costo promedio</h2>
+            <p class="cifra-valor">@Formato.Costo(ultimo?.SaldoCostoPromedio ?? 0)</p>
+            <p class="tenue">Ponderado por cantidad</p>
+        </article>
+        <article class="cifra">
+            <h2>Saldo valorizado</h2>
+            <p class="cifra-valor">@Formato.Pesos(ultimo?.SaldoValor ?? 0)</p>
+            <p class="tenue">@Formato.Numero(Model.TotalEntradas) entradas · @Formato.Numero(Model.TotalSalidas) salidas</p>
+        </article>
+    </section>
+    <section class="tarjeta">
+        <div class="titulo-seccion">
+            <h2>@Model.Producto.Sku · @Model.Producto.Nombre — @Model.Bodega.Nombre</h2>
+            <a class="boton boton-fantasma boton-chico" asp-page="/Kardex" asp-page-handler="Csv"
+               asp-route-productoId="@Model.Producto.Id" asp-route-bodegaId="@Model.Bodega.Id">Exportar CSV</a>
+        </div>
+        @if (Model.Filas.Count == 0)
+        {
+            <p class="tenue">Sin movimientos en esta bodega.</p>
+        }
+        else
+        {
+            <div class="tabla">
+                <table class="kardex">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Detalle</th>
+                            <th scope="col" class="num">Entrada</th>
+                            <th scope="col" class="num">Salida</th>
+                            <th scope="col" class="num">Costo unit.</th>
+                            <th scope="col" class="num">Saldo</th>
+                            <th scope="col" class="num">Costo prom.</th>
+                            <th scope="col" class="num">Saldo valorizado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var f in Model.Filas)
+                        {
+                            <tr>
+                                <td class="nowrap">@Formato.Fecha(f.Fecha)</td>
+                                <td>
+                                    <span class="etiqueta tipo-@f.Tipo.ToString().ToLowerInvariant()">@Formato.Tipo(f.Tipo)</span>
+                                    <span class="tenue">@f.Referencia</span>
+                                </td>
+                                <td class="num positivo">@(f.Entrada > 0 ? Formato.Numero(f.Entrada) : "")</td>
+                                <td class="num negativo">@(f.Salida > 0 ? Formato.Numero(f.Salida) : "")</td>
+                                <td class="num">@Formato.Costo(f.CostoUnitario)</td>
+                                <td class="num"><strong>@Formato.Numero(f.SaldoCantidad)</strong></td>
+                                <td class="num">@Formato.Costo(f.SaldoCostoPromedio)</td>
+                                <td class="num">@Formato.Pesos(f.SaldoValor)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}

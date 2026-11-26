@@ -1,0 +1,51 @@
+@page
+@model AlertasModel
+@{
+    ViewData["Title"] = "Alertas de stock";
+}
+<div class="titulo-pagina">
+    <h1>Alertas de stock</h1>
+</div>
+<section class="tarjeta">
+    <p class="tenue">Productos activos cuyo stock total, sumando todas las bodegas, está bajo el mínimo definido. Ordenados por lo que falta para reponer.</p>
+    @if (Model.Alertas.Count == 0)
+    {
+        <p>Todos los productos están sobre su stock mínimo.</p>
+    }
+    else
+    {
+        <div class="tabla">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col" class="num">Stock total</th>
+                        <th scope="col" class="num">Mínimo</th>
+                        <th scope="col" class="num">Faltan</th>
+                        <th scope="col"><span class="oculto">Acciones</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model.Alertas)
+                    {
+                        <tr>
+                            <td><strong>@a.Sku</strong></td>
+                            <td>@a.Producto</td>
+                            <td class="num">@Formato.Numero(a.StockTotal) @a.Unidad</td>
+                            <td class="num">@Formato.Numero(a.StockMinimo)</td>
+                            <td class="num"><span class="etiqueta etiqueta-alerta">@Formato.Numero(a.Faltante)</span></td>
+                            <td class="nowrap">
+                                <a href="/Kardex?productoId=@a.ProductoId">Kardex</a>
+                                @if (User.PuedeMover())
+                                {
+                                    <text> · </text><a href="/Movimientos/Entrada?productoId=@a.ProductoId">Reponer</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

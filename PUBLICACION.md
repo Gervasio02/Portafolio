@@ -55,7 +55,21 @@ leer el registro. Sus flujos (`interrogatorio.yml`, `labs.yml`) usan
 `scripts/azure-desplegar-app.sh` para publicar cada versión. El secreto
 `JWT_SECRET` de Interrogatorio se genera dentro del flujo; nadie lo ve.
 
-## 5. Panel privado de visitas
+## 5. BodegaNet (.NET)
+
+`bodeganet-gervasio-std` la crea el flujo `bodeganet.yml` la primera vez que
+llega a `main`, copiando el entorno y la identidad de registro de Snake
+(`scripts/azure-desplegar-app.sh`). Sin configurar nada, la demo usa SQLite
+dentro del contenedor y se reinicia cada vez que la app se apaga por
+inactividad (vuelve a sembrar los datos de ejemplo).
+
+Si quieres que los movimientos se conserven, crea en GitHub → *Settings →
+Secrets and variables → Actions* el secreto `BODEGANET_DATABASE_URL` con la URL
+de un PostgreSQL (`postgres://usuario:clave@host:5432/base?sslmode=require`) y
+vuelve a ejecutar *Actions → BodegaNet → Run workflow* en `main`. El flujo lo
+pasa como `DATABASE_URL` solo si existe; las migraciones se aplican al arrancar.
+
+## 6. Panel privado de visitas
 
 1. GitHub → *Settings → Secrets and variables → Actions → New repository secret*:
    - `PANEL_CLAVE`: la clave que usarás para entrar (no va en el código porque
@@ -82,6 +96,7 @@ Desde un teléfono y un computador que no sean el tuyo:
 2. Snake: juega una partida y revisa el ranking.
 3. Interrogatorio: entra como invitado, interroga y acusa.
 4. TaskFlow, ReservaYa, TiendaNova: usa las credenciales de demo de cada README.
+   BodegaNet: «Entrar como invitado», registra una salida y revisa el kardex.
 5. Laboratorios: procesa los datos de ejemplo en DataLab, extrae una factura en
    DocFlow y ejecuta una comprobación en CloudOps.
 6. Descarga el CV en PDF desde la sección de contacto.
