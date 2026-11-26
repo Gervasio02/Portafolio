@@ -20,6 +20,7 @@ jobs:
           dotnet-version: "10.0.x"
       - run: dotnet tool install --global dotnet-ef --version 10.0.15
       - run: rm -rf src/BodegaNet/Datos/Migraciones
+      - run: dotnet restore BodegaNet.sln
       - run: dotnet ef migrations add Inicial --project src/BodegaNet --context BodegaSqliteContext --output-dir Datos/Migraciones/Sqlite
       - run: dotnet ef migrations add Inicial --project src/BodegaNet --context BodegaPostgresContext --output-dir Datos/Migraciones/Postgres
       - name: Volcar migraciones en base64
