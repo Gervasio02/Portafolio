@@ -99,3 +99,21 @@ def test_si_no_hay_acceso_a_un_modelo_prueba_el_siguiente(client, monkeypatch):
     assert datos == {"respuesta": "Hola desde otro modelo.", "modelo": "openai/gpt-oss-120b"}
     client.post(URL, content=pregunta(), headers=ORIGEN)
     assert usados == ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-120b"]
+
+
+def test_si_un_modelo_no_tiene_cupo_usa_otro_sin_olvidar_el_preferido(client, monkeypatch):
+    monkeypatch.setenv("ASISTENTE_IA_CLAVE", "clave-falsa")
+    monkeypatch.setenv("ASISTENTE_IA_MODELO", "modelo-a")
+    llamadas = {"n": 0}
+
+    def falso(mensajes, clave, modelo):
+        llamadas["n"] += 1
+        if modelo == "modelo-a" and llamadas["n"] == 1:
+            peticion = asistente_ia.httpx.Request("POST", asistente_ia.URL_GROQ)
+            respuesta = asistente_ia.httpx.Response(429, text="rate limit", request=peticion)
+            raise asistente_ia.httpx.HTTPStatusError("429", request=peticion, response=respuesta)
+        return f"respuesta de {modelo}"
+
+    monkeypatch.setattr(asistente_ia, "llamar_modelo", falso)
+    assert client.post(URL, content=pregunta(), headers=ORIGEN).json()["modelo"] == "llama-3.3-70b-versatile"
+    assert client.post(URL, content=pregunta(), headers=ORIGEN).json()["modelo"] == "modelo-a"
