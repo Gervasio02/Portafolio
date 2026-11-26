@@ -1,5 +1,6 @@
 name: Laboratorios
 on:
+  workflow_dispatch:
   push:
     paths: ["labs/**", ".github/workflows/labs.yml"]
   pull_request:
@@ -27,7 +28,7 @@ jobs:
   desplegar:
     name: Publicar en Azure
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,6 +47,21 @@ jobs:
           REGISTRY_NAME: ${{ vars.AZURE_REGISTRY_NAME }}
           REGISTRY_SERVER: ${{ vars.AZURE_REGISTRY_LOGIN_SERVER }}
           AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP || 'rg-portafolio-gervasio' }}
+          # Los dos los crea Gervasio en Settings → Secrets and variables → Actions.
+          PANEL_CLAVE: ${{ secrets.PANEL_CLAVE }}
+          ANALITICA_DB_URL: ${{ secrets.ANALITICA_DB_URL }}
         run: |
+          extra=()
+          if [[ -n "${PANEL_CLAVE:-}" ]]; then
+            extra+=("PANEL_CLAVE=$PANEL_CLAVE")
+          else
+            echo "::warning::Falta el secreto PANEL_CLAVE: el panel privado quedará cerrado."
+          fi
+          if [[ -n "${ANALITICA_DB_URL:-}" ]]; then
+            extra+=("ANALITICA_DB_URL=$ANALITICA_DB_URL")
+          else
+            echo "::warning::Sin ANALITICA_DB_URL: las visitas se guardan en SQLite y se pierden al apagarse la app."
+          fi
           scripts/azure-desplegar-app.sh labs labs /health 8001 \
-            APP_ENV=production LABS_GUEST_MODE=on RATE_LIMIT=on PORTAL_URL=https://gervasio.sbs
+            APP_ENV=production LABS_GUEST_MODE=on RATE_LIMIT=on PORTAL_URL=https://gervasio.sbs \
+            "PANEL_ORIGENES=https://gervasio.sbs,https://www.gervasio.sbs" "${extra[@]}"

@@ -32,3 +32,20 @@ y se reinicia cuando el contenedor se recicla: es una demo, no un archivo.
 
 `Dockerfile` incluye Tesseract en español para el OCR de DocFlow. El flujo
 `.github/workflows/labs.yml` prueba y, en `main`, publica y verifica `/health`.
+
+## Contador de visitas del portafolio
+
+`portal/analitica.js` envía cada visita y cada clic (anónimos: sin cookies, IP
+ni datos personales) a `POST /api/visitas`. El panel privado
+`https://gervasio.sbs/panel/` los lee desde `GET /api/panel/resumen` con la
+clave en la cabecera `Authorization: Bearer <clave>`.
+
+| Variable           | Para qué                                                            |
+| ------------------ | ------------------------------------------------------------------- |
+| `PANEL_CLAVE`      | Clave del panel. Sin ella el panel responde 503 (cerrado).          |
+| `ANALITICA_DB_URL` | PostgreSQL donde guardar las visitas (esquema `analitica`). Sin ella usa la SQLite de Labs, que se pierde al apagarse el contenedor. |
+| `PANEL_ORIGENES`   | Orígenes que pueden enviar visitas y abrir el panel (por defecto `https://gervasio.sbs,https://www.gervasio.sbs`). |
+
+En producción las dos primeras salen de los secretos de GitHub con el mismo
+nombre (ver `PUBLICACION.md`). Cinco claves erradas bloquean esa IP 15 minutos.
+Los eventos se borran solos a los 180 días.
