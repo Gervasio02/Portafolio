@@ -45,6 +45,10 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
 - `portal/despertar.js` despierta las apps de Azure al abrir una página: todo
   enlace a una app en vivo lleva `data-salud="<url de salud>"` y un
   `<span class="estado" data-estado>` para mostrar su estado.
+- `portal/analitica.js` cuenta visitas y clics de forma anónima (backend en
+  `labs/app/analitica.py`). Inclúyelo en toda página pública nueva; nunca en
+  `portal/panel/`, que es privado (`noindex`, fuera del sitemap y con clave en
+  el secreto `PANEL_CLAVE`). Enlaces que no deben contarse: `data-no-contar`.
 - El CV vive en `portal/cv.html` (+ `cv.css`). Si lo cambias, regenera
   `portal/cv/Gervasio-Torres-CV.pdf` imprimiendo esa página a PDF (A4).
   Nunca publiques RUT, dirección, teléfono ni fecha de nacimiento.

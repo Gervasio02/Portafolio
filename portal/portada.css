@@ -814,3 +814,18 @@ section.wrap {
     transition: none;
   }
 }
+
+/* Acceso discreto al panel privado: no se anuncia, pero sigue siendo usable */
+.colofon .acceso-privado {
+  display: inline-block;
+  min-width: 24px;
+  padding: 0 0.4rem;
+  color: var(--texto-suave);
+  opacity: 0.35;
+  text-decoration: none;
+}
+
+.colofon .acceso-privado:hover,
+.colofon .acceso-privado:focus-visible {
+  opacity: 1;
+}

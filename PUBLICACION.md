@@ -55,6 +55,19 @@ leer el registro. Sus flujos (`interrogatorio.yml`, `labs.yml`) usan
 `scripts/azure-desplegar-app.sh` para publicar cada versión. El secreto
 `JWT_SECRET` de Interrogatorio se genera dentro del flujo; nadie lo ve.
 
+## 5. Panel privado de visitas
+
+1. GitHub → *Settings → Secrets and variables → Actions → New repository secret*:
+   - `PANEL_CLAVE`: la clave que usarás para entrar (no va en el código porque
+     el repositorio es público).
+   - `ANALITICA_DB_URL` (recomendado): cadena de un PostgreSQL para que las
+     visitas no se pierdan; puede ser el mismo servidor de TaskFlow, porque se
+     guardan en un esquema aparte (`analitica`).
+2. *Actions → Laboratorios → Run workflow* (rama `main`) para aplicar los cambios.
+3. Entra en https://gervasio.sbs/panel/ (también desde el punto discreto «·» al
+   final del pie de la portada). Marca «No contar mis visitas» para no inflar
+   las cifras.
+
 ## Comprobación final (usuarios finales)
 
 Desde un teléfono y un computador que no sean el tuyo:

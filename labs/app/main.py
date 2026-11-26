@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, Field
 from .data import ingest, clean, profile, export_csv, numeric, MAX_BYTES
 from .documents import extract, extract_file, validate
+from .analitica import registrar as registrar_analitica
 
 
 class Invoice(BaseModel):
@@ -228,7 +229,9 @@ def create_app(database=None, targets=None):
                 status_code=429,
                 headers={"Retry-After": "60"},
             )
-        public = request.url.path == "/api/guest"
+        public = request.url.path in ("/api/guest", "/api/visitas") or request.url.path.startswith(
+            "/api/panel/"
+        )
         if (
             request.url.path.startswith("/api/")
             and not public
@@ -250,7 +253,7 @@ def create_app(database=None, targets=None):
                     headers={"WWW-Authenticate": "Bearer"},
                 )
             request.state.owner = owner
-        if request.method not in ("GET", "HEAD", "OPTIONS"):
+        if request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path != "/api/visitas":
             origin = request.headers.get("origin")
             if origin and urlsplit(origin).netloc != request.headers.get("host"):
                 return Response("Origen no permitido", status_code=403)
@@ -283,6 +286,9 @@ def create_app(database=None, targets=None):
         with db() as connection:
             connection.execute("SELECT 1")
         return {"status": "ok"}
+
+    # Analítica privada de la portada (ver app/analitica.py).
+    registrar_analitica(app, database, client_ip, allowed)
 
     @app.get("/api/session")
     def session(request: Request):

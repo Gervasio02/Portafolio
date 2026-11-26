@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="portada.css" />
     <script src="inicio.js" defer></script>
     <script src="despertar.js" defer></script>
+    <script src="analitica.js" defer></script>
     <script src="schema.js" defer></script>
   </head>
     <body>
@@ -61,18 +62,18 @@
       <!-- ============ PRESENTACIÓN ============ -->
       <section class="wrap inicio" aria-labelledby="hola">
         <div class="inicio-texto">
-          <p class="etiqueta-seccion">Analista programador · Región de O'Higgins, Chile</p>
-          <h1 id="hola">Hola, soy Gervasio.<br />Construyo aplicaciones web de punta a punta.</h1>
+          <p class="etiqueta-seccion">Desarrollador full stack</p>
+          <h1 id="hola">Hola, soy Gervasio.<br />Desarrollo aplicaciones web completas.</h1>
           <p class="bajada">
             Soy analista programador titulado y egresado de Ingeniería
-            Informática en INACAP. Me gusta hacerme cargo de todo el
-            recorrido: la pantalla que usa la persona, la API que decide qué
-            se puede hacer y la base de datos que no se equivoca cuando dos
-            usuarios hacen clic al mismo tiempo.
+            Informática en INACAP. Hoy hago mi práctica profesional en Tuniche,
+            desarrollando bots de automatización.
           </p>
           <p class="bajada">
-            Todo lo que ves aquí está publicado, tiene pruebas automáticas y
-            su código es público. Puedes abrir cualquier proyecto y usarlo.
+            Me gusta trabajar en toda la aplicación: la interfaz que usa la
+            persona, la API que aplica las reglas y la base de datos que guarda
+            la información sin errores. Abajo están los proyectos que he
+            construido; puedes abrir y probar cualquiera de ellos.
           </p>
           <p class="acciones">
             <a class="boton" href="#niveles">Ver proyectos</a>
@@ -84,10 +85,9 @@
         <aside class="ficha" aria-labelledby="ficha-titulo">
           <h2 id="ficha-titulo">En resumen</h2>
           <dl>
-            <div><dt>Ahora</dt><dd>Práctica profesional en Tuniche, desarrollando bots de automatización.</dd></div>
             <div><dt>Busco</dt><dd>Mi primer puesto como desarrollador full stack.</dd></div>
             <div><dt>Trabajo con</dt><dd>React, TypeScript, Node.js, Python (FastAPI), PostgreSQL, Docker.</dd></div>
-            <div><dt>Hora local</dt><dd><time id="hora-local">--:--</time> en Chile</dd></div>
+            <div><dt>Ubicación</dt><dd>Región de O'Higgins, Chile · <time id="hora-local">--:--</time></dd></div>
           </dl>
           <a class="ficha-correo" href="mailto:Gervasiot19@gmail.com">Gervasiot19@gmail.com</a>
         </aside>
@@ -292,32 +292,6 @@
         </div>
       </section>
 
-      <!-- ============ CÓMO TRABAJO ============ -->
-      <section class="wrap metodo" aria-labelledby="metodo-titulo">
-        <header class="encabezado">
-          <h2 id="metodo-titulo">Cómo trabajo</h2>
-          <p>Cuatro costumbres que repito en todos los proyectos.</p>
-        </header>
-        <ol class="principios">
-          <li>
-            <h3>Las reglas viven en el servidor</h3>
-            <p>La interfaz puede esconder un botón, pero quien decide si tienes permiso es la API.</p>
-          </li>
-          <li>
-            <h3>La base de datos tiene la última palabra</h3>
-            <p>Uso restricciones y transacciones en vez de confiar en que dos peticiones nunca lleguen juntas.</p>
-          </li>
-          <li>
-            <h3>Pruebo contra una base real</h3>
-            <p>Las pruebas de API corren sobre PostgreSQL de verdad. Así salen los errores que en producción dolerían.</p>
-          </li>
-          <li>
-            <h3>Nada llega a producción sin pasar por CI</h3>
-            <p>GitHub Actions prueba cada cambio y, si todo pasa, publica una nueva versión en Azure. Si algo falla, sigue la anterior.</p>
-          </li>
-        </ol>
-      </section>
-
       <!-- ============ TRAYECTORIA ============ -->
       <section id="historia" class="wrap historia" aria-labelledby="historia-titulo">
         <header class="encabezado">
@@ -385,21 +359,7 @@
         </dl>
       </section>
 
-      <!-- ============ CAMBIOS ============ -->
-      <section id="parches" class="wrap parches" aria-labelledby="parches-titulo">
-        <header class="encabezado">
-          <h2 id="parches-titulo">Cómo creció este repositorio</h2>
-          <p>Resumen del historial de commits.</p>
-        </header>
-        <ol class="linea">
-          <li><time datetime="2026-11-22">22 nov</time><p>Primer commit: las tres aplicaciones principales en un solo repositorio.</p></li>
-          <li><time datetime="2026-11-23">23 nov</time><p>Primer despliegue en Azure. Se suman Snake e Interrogatorio, y pruebas de concurrencia con PostgreSQL.</p></li>
-          <li><time datetime="2026-11-24">24 nov</time><p>TaskFlow suma SLA y calendario; TiendaNova, variantes y devoluciones. Auditoría de dependencias sin vulnerabilidades conocidas.</p></li>
-          <li><time datetime="2026-11-25">25 nov</time><p>Despliegue automático en cada push, dominio propio y las ocho herramientas en línea.</p></li>
-        </ol>
-        <p><a href="https://github.com/Gervasio02/Portafolio/commits/main" target="_blank" rel="noopener noreferrer">Ver todos los commits</a></p>
-      </section>
-    </main>
+      </main>
 
     <footer id="contacto" class="wrap pie">
       <div>
@@ -420,6 +380,7 @@
         Sitio hecho a mano con HTML, CSS y un poco de JavaScript, sin
         frameworks. Tipografía IBM Plex.
         <a href="https://github.com/Gervasio02/Portafolio/tree/main/portal" target="_blank" rel="noopener noreferrer">Código de esta página</a>.
+        Cuento las visitas de forma anónima, sin cookies.<a class="acceso-privado" href="panel/" aria-label="Acceso privado" title="" rel="nofollow" data-no-contar>·</a>
       </p>
     </footer>
   </body>

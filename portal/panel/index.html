@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#151413" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://*.azurecontainerapps.io; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Acceso privado</title>
+    <link rel="stylesheet" href="../fuentes/fuentes.css" />
+    <link rel="stylesheet" href="panel.css" />
+    <script src="panel.js" defer></script>
+  </head>
+  <body>
+    <!-- Pantalla de acceso -->
+    <main id="acceso" class="acceso">
+      <form id="formulario" class="caja-acceso" autocomplete="off">
+        <h1>Acceso privado</h1>
+        <p>Esta sección no es pública.</p>
+        <label for="clave">Clave</label>
+        <input id="clave" name="clave" type="password" required autocomplete="current-password" />
+        <label class="check"><input id="no-contar" type="checkbox" checked /> No contar mis visitas en este navegador</label>
+        <button type="submit">Entrar</button>
+        <p id="mensaje-acceso" class="mensaje" role="status" aria-live="polite"></p>
+        <a class="volver" href="../">Volver al portafolio</a>
+      </form>
+    </main>
+
+    <!-- Panel (se muestra solo con la clave correcta) -->
+    <div id="panel" class="panel" hidden>
+      <header class="barra">
+        <div>
+          <h1>Visitas a gervasio.sbs</h1>
+          <p id="actualizado" class="suave">Cargando…</p>
+        </div>
+        <div class="controles">
+          <label for="dias">Período</label>
+          <select id="dias">
+            <option value="7">7 días</option>
+            <option value="30" selected>30 días</option>
+            <option value="90">90 días</option>
+          </select>
+          <button id="refrescar" type="button">Actualizar</button>
+          <button id="salir" type="button" class="secundario">Salir</button>
+        </div>
+      </header>
+
+      <section class="tarjetas" aria-label="Totales">
+        <article><span>Personas ahora</span><strong id="t-activos">–</strong><small>últimos 5 minutos</small></article>
+        <article><span>Visitas hoy</span><strong id="t-hoy">–</strong><small id="t-hoy-ses">–</small></article>
+        <article><span>Visitas 7 días</span><strong id="t-7d">–</strong><small id="t-7d-ses">–</small></article>
+        <article><span>Visitas del período</span><strong id="t-periodo">–</strong><small id="t-periodo-ses">–</small></article>
+        <article><span>Clics del período</span><strong id="t-clics">–</strong><small>en enlaces y botones</small></article>
+      </section>
+
+      <section class="bloque" aria-labelledby="h-dias">
+        <h2 id="h-dias">Visitas por día</h2>
+        <div id="grafico" class="grafico" role="img" aria-label="Visitas por día"></div>
+      </section>
+
+      <div class="columnas">
+        <section class="bloque" aria-labelledby="h-proyectos">
+          <h2 id="h-proyectos">Interés por proyecto</h2>
+          <table>
+            <thead><tr><th>Proyecto</th><th>Abrió la app</th><th>Código</th><th>Demo</th><th>Total</th></tr></thead>
+            <tbody id="proyectos"></tbody>
+          </table>
+        </section>
+        <section class="bloque" aria-labelledby="h-acciones">
+          <h2 id="h-acciones">Qué hicieron</h2>
+          <ul id="acciones" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-paginas">
+          <h2 id="h-paginas">Páginas más vistas</h2>
+          <ul id="paginas" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-enlaces">
+          <h2 id="h-enlaces">Enlaces más pulsados</h2>
+          <ul id="enlaces" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-origen">
+          <h2 id="h-origen">De dónde llegaron</h2>
+          <ul id="referentes" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-disp">
+          <h2 id="h-disp">Dispositivos e idiomas</h2>
+          <ul id="dispositivos" class="barras"></ul>
+          <ul id="idiomas" class="barras"></ul>
+        </section>
+      </div>
+
+      <section class="bloque" aria-labelledby="h-vivo">
+        <h2 id="h-vivo">Actividad reciente <span class="vivo">● en vivo</span></h2>
+        <table>
+          <thead><tr><th>Hora</th><th>Evento</th><th>Página</th><th>Detalle</th><th>Dispositivo</th></tr></thead>
+          <tbody id="recientes"></tbody>
+        </table>
+      </section>
+      <p class="suave nota">Datos anónimos: sin cookies, IP ni datos personales. Se conservan 180 días.</p>
+    </div>
+  </body>
+</html>
