@@ -68,6 +68,13 @@ export default async function RootLayout({
             )}
           </div>
         </footer>
+        <a
+          className="volver-portafolio"
+          href="https://gervasio.sbs/#tiendanova"
+          title="Volver al portafolio de Gervasio Torres"
+        >
+          <span aria-hidden="true">←</span> Portafolio
+        </a>
       </body>
     </html>
   );

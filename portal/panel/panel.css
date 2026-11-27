@@ -352,3 +352,14 @@ th:not(:first-child) {
 .bloque a {
   color: var(--acento);
 }
+
+.enlace-portafolio {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  color: var(--texto);
+  text-decoration: none;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+}
