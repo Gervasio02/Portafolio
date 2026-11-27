@@ -76,7 +76,20 @@
     if (porcentaje > maximo) maximo = Math.min(100, porcentaje);
   };
   medirScroll();
-  window.addEventListener("scroll", medirScroll, { passive: true });
+  // Se mide como máximo una vez por cuadro para no frenar el scroll.
+  let midiendo = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (midiendo) return;
+      midiendo = true;
+      requestAnimationFrame(() => {
+        midiendo = false;
+        medirScroll();
+      });
+    },
+    { passive: true },
+  );
 
   let enviada = false;
   const salir = () => {
