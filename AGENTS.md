@@ -73,8 +73,11 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
   desde `portal/fuentes/`. Variables en `portal/portada.css` (portada) y
   `portal/tema.css` (interiores). El CV impreso (PDF) mantiene su estilo claro para impresión.
 - `portal/animaciones.js` anima la portada (consola que escribe y aparición al
-  hacer scroll con cifras que cuentan). Todo debe verse igual sin JavaScript y
-  respetar `prefers-reduced-motion`.
+  hacer scroll con cifras que cuentan) y `portal/efectos.js` dibuja las
+  partículas conectadas del inicio y la serpiente del pie (canvas que solo se
+  anima en pantalla y con la pestaña visible). La línea neón de la cabecera es
+  CSS. Todo debe verse igual sin JavaScript, respetar `prefers-reduced-motion`
+  y animar solo `transform`/`opacity` o canvas acotado.
 - El texto está en primera persona, concreto y con tono humano: cuenta qué
   hace cada proyecto y qué fue lo difícil. Evita frases de marketing, jerga
   vacía y datos personales que Gervasio no haya entregado. Los bloques

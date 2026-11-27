@@ -381,3 +381,40 @@ button:focus-visible {
     transition: none;
   }
 }
+
+/* Línea neón que recorre el borde de la cabecera (igual que en la portada) */
+.top {
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+}
+
+.top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff2e63, #c084fc, transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  transform: translateX(-40%);
+  animation: barrido-neon 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes barrido-neon {
+  to {
+    transform: translateX(140%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top::after {
+    animation: none;
+    transform: none;
+    background-size: 100% 100%;
+    opacity: 0.4;
+  }
+}
