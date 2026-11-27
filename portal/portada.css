@@ -1097,15 +1097,14 @@ a:hover {
    Efectos animados (efectos.js): partículas, línea neón y serpiente
    ========================================================= */
 
-/* Partículas detrás de la presentación; se desvanecen hacia abajo. */
+/* Partículas fijas detrás de toda la página: el lienzo mide solo lo que se
+   ve en pantalla, así que acompañan el scroll hasta el final sin dibujar
+   el documento completo. */
 .fondo-particulas {
-  position: absolute;
-  inset: 0 0 auto;
-  height: min(100vh, 920px);
+  position: fixed;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(#000 55%, transparent);
-  mask-image: linear-gradient(#000 55%, transparent);
 }
 
 .fondo-particulas canvas {
