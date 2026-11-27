@@ -124,3 +124,115 @@ chilenismos:
   compu: computador
   pc: computador
   celu: celular
+
+  # Escritura abreviada de chat (jóvenes y apuro). Las letras repetidas
+  # («holaaa», «siii») ya se colapsan solas al normalizar.
+  hla: hola
+  ola: hola
+  holi: hola
+  holis: hola
+  wenas tardes: buenas tardes
+  wns: buenas
+  bn: bien
+  mb: muy bien
+  tmbn: tambien
+  tbn: tambien
+  ke: que
+  qe: que
+  kien: quien
+  qien: quien
+  kiero: quiero
+  kieres: quieres
+  kmo: como
+  cmo: como
+  cm: como
+  dnd: donde
+  dnde: donde
+  cdo: cuando
+  cnd: cuando
+  qndo: cuando
+  xa: para
+  pra: para
+  d: de
+  dl: del
+  n: en
+  sta: esta
+  stas: estas
+  ta: esta
+  tai: estas
+  tns: tienes
+  tienei: tienes
+  tens: tienes
+  sbs: sabes
+  pdes: puedes
+  bkn: bueno
+  bkan: bueno
+  mxo: mucho
+  mxs: muchos
+  muxo: mucho
+  nse: no se
+  ns: no se
+  nose: no se
+  nc: no se
+  npi: ni idea
+  ntp: no te preocupes
+  sip: si
+  sep: si
+  sii: si
+  simon: si
+  nop: no
+  nel: no
+  oki: ok
+  okis: ok
+  okey: ok
+  okk: ok
+  dale po: ok
+  ya ok: ok
+  xd: jaja
+  jsjs: jaja
+  jsjsjs: jaja
+  jajaj: jaja
+  kjkj: jaja
+  lol: jaja
+  sry: perdon
+  srry: perdon
+  sorry: perdon
+  thx: gracias
+  ty: gracias
+  thanks: gracias
+  gracia: gracias
+  vale: ok
+  bro: amigo
+  broder: amigo
+  msj: mensaje
+  msje: mensaje
+  info: informacion
+  exp: experiencia
+  xp: experiencia
+  dev: desarrollador
+  devs: desarrolladores
+  progra: programacion
+  front: frontend
+  back: backend
+  bd: base de datos
+  bbdd: base de datos
+  db: base de datos
+  js: javascript
+  ts: typescript
+  py: python
+  cv: curriculum
+  linkd: linkedin
+  wsp: whatsapp
+  wasap: whatsapp
+  sueldito: sueldo
+  cuanto cobrai: cuanto cobras
+  aki: aqui
+  aca: aqui
+  pq no: por que no
+  tay: estas
+  estay: estas
+  stay: estas
+  loco: amigo
+  loca: amiga
+  compare: amigo
+  compadrito: amigo

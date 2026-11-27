@@ -58,6 +58,11 @@ PREGUNTAS_NUEVAS = [
     ("¿podís empezar al tiro?", "disponibilidad"),
     ("¿cómo está el clima en rancagua?", "clima"),
     ("¿me das la receta de las empanadas?", "fuera_de_tema"),
+    ("holaaa q tal", "saludo"),
+    ("tenis exp en react?", "frontend"),
+    ("xq t contrataria", "por_que_contratar"),
+    ("pasame tu correo pls", "contacto"),
+    ("dnd stas viviendo", "ubicacion"),
     ("¿qué hora es en chile?", "hora"),
     ("¿cómo se juega snake?", "jugar_snake"),
 ]
@@ -84,6 +89,7 @@ def test_conocimiento_valido(intenciones):
 
 def test_normalizar_quita_tildes_y_signos():
     assert normalizar("¿Qué ESTUDIASTE, Gervasio?") == "que estudiaste gervasio"
+    assert normalizar("Holaaaa, siiii!!") == "hola si"
 
 
 def test_traduce_chilenismos():

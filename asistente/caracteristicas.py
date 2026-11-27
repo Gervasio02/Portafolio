@@ -5,7 +5,8 @@ ambos deben producir exactamente el mismo vector. La prueba
 `tests/test_asistente.py::test_paridad_con_javascript` lo verifica.
 
 Pasos:
-1. Normalizar: minúsculas, sin tildes, solo letras y números.
+1. Normalizar: minúsculas, sin tildes, solo letras y números, y sin letras
+   repetidas («holaaa» -> «hola»).
 2. Traducir chilenismos («pega» -> «trabajo», «al tiro» -> «inmediatamente»)
    según `chilenismos.yml`.
 2b. Tokenizar y quitar palabras vacías («el», «de», «para»...).
@@ -43,6 +44,10 @@ def normalizar(texto: str) -> str:
     texto = unicodedata.normalize("NFD", texto.lower())
     texto = "".join(c for c in texto if not unicodedata.combining(c))
     texto = re.sub(r"[^a-z0-9]+", " ", texto)
+    # Letras repetidas al escribir rápido o con énfasis: «holaaa» -> «hola».
+    # Se aplica igual al entrenar y al preguntar, así que no daña palabras
+    # con letras dobles («llamar» -> «lamar» en ambos lados).
+    texto = re.sub(r"([a-z])\1+", r"\1", texto)
     return texto.strip()
 
 

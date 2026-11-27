@@ -22,6 +22,18 @@ intenciones:
   - id: saludo
     claves: [hola, buenas, saludos, hey, qué tal, buen día]
     ejemplos:
+      - wena loco
+      - wena locooo
+      - tanto tiempo
+      - cuanto tiempo
+      - wena compare
+      - wena wena
+      - hla
+      - holaaa
+      - holi q tal
+      - wenas
+      - ola
+      - hla bro
       - hola, buenas tardes
       - holaa
       - hola, qué tal todo
@@ -54,6 +66,10 @@ intenciones:
   - id: despedida
     claves: [chao, adiós, hasta luego, nos vemos, bye, me despido]
     ejemplos:
+      - chao nos vemos
+      - bye xd
+      - nos vimo
+      - dsp hablamos
       - chao, gracias
       - adiós, que estés bien
       - me tengo que ir
@@ -78,6 +94,10 @@ intenciones:
   - id: gracias
     claves: [gracias, genial, perfecto, excelente, buenísimo, vale, ok]
     ejemplos:
+      - grax
+      - thx
+      - grax bro
+      - vale grax
       - gracias por la info
       - muy amable
       - te pasaste
@@ -128,6 +148,9 @@ intenciones:
   - id: presentacion
     claves: [nombre, cómo te llamas, full stack, fullstack, quién es gervasio, perfil, resumen, preséntate, háblame de ti, candidato]
     ejemplos:
+      - q haces tu
+      - kien eres
+      - cuentame d ti
       - ¿cómo te llamas?
       - ¿cuál es tu nombre completo?
       - ¿te consideras full stack?
@@ -154,6 +177,9 @@ intenciones:
   - id: formacion
     claves: [certificación, certificaciones, cursos, estudios, título, titulado, carrera, universidad, inacap, ingeniería, analista programador, educación]
     ejemplos:
+      - q estudiaste
+      - dnd estudiaste
+      - tas titulao?
       - ¿tienes certificaciones?
       - ¿has hecho cursos?
       - ¿qué estudiaste?
@@ -177,6 +203,9 @@ intenciones:
   - id: experiencia
     claves: [sercotec, tiempo programando, desde cuándo programas, experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
     ejemplos:
+      - tenis exp?
+      - cuanta exp tienes
+      - has trabajao d dev?
       - ¿has tenido pega como programador?
       - ¿desde cuándo programas?
       - ¿cuánto tiempo llevas programando?
@@ -240,6 +269,9 @@ intenciones:
   - id: stack
     claves: [javascript, lenguaje principal, lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
     ejemplos:
+      - q lenguajes sabi
+      - q tecnologias usai
+      - q sabes hacer bro
       - ¿qué lenguajes manejai?
       - ¿qué tecnologías usas?
       - ¿cuál es tu stack?
@@ -265,6 +297,9 @@ intenciones:
   - id: frontend
     claves: [react, next.js, nextjs, frontend, front, interfaz, css, html, vite, typescript, responsive, diseño web]
     ejemplos:
+      - sabi react?
+      - manejai front?
+      - haces front?
       - ¿tienes experiencia con react?
       - ¿cachai de react?
       - ¿tienes experiencia con typescript?
@@ -288,6 +323,9 @@ intenciones:
   - id: backend
     claves: [microservicios, arquitectura de software, backend, api, apis rest, node, node.js, express, fastapi, python, django, servidor]
     ejemplos:
+      - sabi back?
+      - haces apis?
+      - manejai node?
       - ¿has usado python en tus proyectos?
       - ¿tienes experiencia con node?
       - ¿has hecho microservicios o apis?
@@ -312,6 +350,9 @@ intenciones:
   - id: bases_datos
     claves: [sql, postgresql, postgres, base de datos, orm, prisma, sqlalchemy, migraciones, mysql, sqlite, mongodb]
     ejemplos:
+      - sabi bd?
+      - manejai sql?
+      - q bd usai
       - ¿tienes experiencia en sql?
       - ¿sabes sql?
       - ¿qué bases de datos manejas?
@@ -440,6 +481,9 @@ intenciones:
   - id: proyectos
     claves: [proyectos, aplicaciones, demos, qué has construido, trabajos realizados, portafolio de proyectos]
     ejemplos:
+      - q proyectos tenis
+      - muestrame tus proyectos pls
+      - q has hecho
       - ¿qué proyectos tienes?
       - muéstrame tus proyectos
       - ¿qué has construido?
@@ -708,6 +752,8 @@ intenciones:
   - id: por_que_contratar
     claves: [elegirte, escogerte, por qué elegirte, contratarte, por qué tú, aportas, valor, buen candidato, convénceme]
     ejemplos:
+      - xq deberia contratarte
+      - xq tu
       - ¿por qué quieres trabajar aquí?
       - ¿por qué postulas a este cargo?
       - ¿por qué debería contratarte?
@@ -749,6 +795,9 @@ intenciones:
   - id: disponibilidad
     claves: [disponibilidad, cuándo empiezas, disponible, fecha de inicio, inmediata, trabajando actualmente]
     ejemplos:
+      - cdo podi empezar
+      - tai disponible?
+      - cuando empezai
       - ¿podís empezar al tiro?
       - ¿estai disponible?
       - ¿cuándo puedes empezar?
@@ -767,6 +816,8 @@ intenciones:
   - id: modalidad
     claves: [mudarte, cambiarte de ciudad, reubicarte, relocalizarte, teletrabajo, trabajo a distancia, remoto, presencial, híbrido, trasladarse, viajar, auto, licencia de conducir, movilización]
     ejemplos:
+      - trabajai remoto?
+      - haces home office?
       - ¿estarías dispuesto a cambiarte de ciudad?
       - ¿te mudarías por trabajo?
       - ¿trabajas remoto?
@@ -787,6 +838,9 @@ intenciones:
   - id: ubicacion
     claves: [dónde vives, ubicación, ciudad, región, comuna, chile, de dónde eres]
     ejemplos:
+      - dnd vivis
+      - d dnd eri
+      - dnd vives
       - ¿dónde vives?
       - ¿de dónde eres?
       - ubicación
@@ -801,6 +855,9 @@ intenciones:
   - id: sueldo
     claves: [sueldo, salario, renta, pretensiones, expectativa salarial, cuánto cobras, remuneración]
     ejemplos:
+      - cuanto cobrai
+      - cuanto pides x mes
+      - q sueldo buscai
       - ¿cuántas lucas pides?
       - ¿cuánto querís ganar?
       - ¿cuánto quieres ganar?
@@ -818,6 +875,10 @@ intenciones:
   - id: contacto
     claves: [agendar, llamada, videollamada, coordinar entrevista, contacto, correo, email, mail, teléfono, número, whatsapp, linkedin, escribirte, entrevista]
     ejemplos:
+      - pasame tu wsp
+      - tenis wsp?
+      - cmo te contacto
+      - pasame tu mail
       - ¿podemos agendar una entrevista?
       - ¿podemos coordinar una llamada?
       - ¿podemos hablar por videollamada?
@@ -841,6 +902,9 @@ intenciones:
   - id: cv
     claves: [cv, currículum, curriculum, hoja de vida, resume, pdf]
     ejemplos:
+      - tenis cv?
+      - pasame tu cv pls
+      - dnd ta tu cv
       - ¿tienes cv?
       - currículum
       - descargar cv
@@ -856,6 +920,8 @@ intenciones:
   - id: github
     claves: [github, código fuente, repositorio, código público, ver tu código]
     ejemplos:
+      - tenis github?
+      - pasame tu git
       - ¿tienes cuenta en github?
       - ¿tienes github?
       - ¿dónde está tu código?
@@ -1003,6 +1069,16 @@ intenciones:
   - id: como_estas
     claves: [cómo estás, cómo te va, todo bien, qué tal tu día]
     ejemplos:
+      - cm tay
+      - cm estay
+      - como estay
+      - q tal tay
+      - cm tai
+      - cmo estai
+      - cmo stas
+      - q tal todo
+      - tdo bn?
+      - cmo andai
       - ¿cómo estás?
       - ¿cómo te va?
       - ¿todo bien?
@@ -1018,6 +1094,12 @@ intenciones:
   - id: acuse
     claves: [ok, ya, okey, entiendo, entendido, jaja, jajaja, perfecto, bueno, vale, ah ya]
     ejemplos:
+      - oki
+      - sip
+      - xd
+      - jsjs
+      - ok ok
+      - va
       - ok
       - ya
       - entiendo
@@ -1038,6 +1120,9 @@ intenciones:
   - id: ayuda
     claves: [ayuda, qué puedes hacer, opciones, menú, qué te puedo preguntar, temas]
     ejemplos:
+      - q puedo preguntar
+      - q sabi hacer tu
+      - nose q preguntar
       - ¿qué puedes hacer?
       - ayuda
       - ¿qué te puedo preguntar?
@@ -1138,6 +1223,8 @@ intenciones:
   - id: juegos_portafolio
     claves: [juegos, videojuegos, juego, gaming, gamer, hiciste juegos]
     ejemplos:
+      - tenis juegos?
+      - hay algun juego aki?
       - ¿tienes juegos?
       - ¿hiciste videojuegos?
       - ¿qué juegos hiciste?
@@ -1308,6 +1395,12 @@ intenciones:
   - id: fuera_de_tema
     claves: [receta, chiste, poema, matemáticas, tarea, horóscopo, chistes]
     ejemplos:
+      - como hacer pan amasado
+      - jajaja como hago un queque
+      - cual es la montaña mas alta del mundo
+      - q es la fotosintesis
+      - cuantos planetas hay
+      - quien escribio don quijote
       - dame una receta de pan
       - ¿cuánto es 2 más 2?
       - cuéntame un chiste
