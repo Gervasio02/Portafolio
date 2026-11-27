@@ -21,6 +21,7 @@
       .normalize("NFD")
       .replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, " ")
+      .replace(/([a-z])\1+/g, "$1")
       .trim();
   }
 
