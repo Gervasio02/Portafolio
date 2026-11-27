@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080">
+<defs>
+ <radialGradient id="luz" cx="0.66" cy="0.12" r="0.75"><stop offset="0" stop-color="#f4e3b0" stop-opacity="0.30"/><stop offset="0.45" stop-color="#f4e3b0" stop-opacity="0.08"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+ <linearGradient id="cono" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e7b8" stop-opacity="0.35"/><stop offset="1" stop-color="#f6e7b8" stop-opacity="0"/></linearGradient>
+ <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000" flood-opacity="0.55"/></filter>
+</defs>
+<rect width="1440" height="1080" fill="#0f1514"/>
+<rect width="1440" height="1080" fill="url(#luz)"/>
+<!-- lámpara colgante y cono de luz -->
+<line x1="950" y1="0" x2="950" y2="96" stroke="#3a4a47" stroke-width="4"/>
+<path d="M890,96 L1010,96 L1040,140 L860,140 Z" fill="#26322f"/>
+<ellipse cx="950" cy="142" rx="60" ry="8" fill="#fff3c9"/>
+<path d="M880,142 L1020,142 L1330,1080 L570,1080 Z" fill="url(#cono)"/>
+<!-- tablero de pistas con hilo rojo -->
+<g stroke="#d6312a" stroke-width="3" fill="none" opacity="0.95">
+ <path d="M760,262 Q930,300 1110,246"/><path d="M1110,246 Q1200,400 1190,540"/><path d="M760,262 Q700,420 840,560"/><path d="M840,560 Q1000,520 1190,540"/>
+</g>
+<g filter="url(#sombra)">
+ <rect x="640" y="250" width="250" height="180" rx="6" fill="#e9e2cf" transform="rotate(-5 765 340)"/>
+ <rect x="990" y="230" width="270" height="170" rx="6" fill="#e3dcc8" transform="rotate(4 1125 315)"/>
+ <rect x="700" y="560" width="300" height="210" rx="8" fill="#c9a86a" transform="rotate(-3 850 665)"/>
+ <rect x="1040" y="520" width="290" height="190" rx="6" fill="#e9e2cf" transform="rotate(6 1180 615)"/>
+</g>
+<!-- contenido de las notas -->
+<g font-family="Plex Mono" font-size="19" fill="#2b2a26">
+ <g transform="rotate(-5 765 340)"><text x="664" y="300" font-weight="500">Registro de acceso</text><text x="664" y="340">22:02  puerta norte</text><text x="664" y="372">22:05  tarjeta 0417</text><text x="664" y="404">22:31  salida</text></g>
+ <g transform="rotate(4 1125 315)"><text x="1012" y="280" font-weight="500">Libro de guardia</text><text x="1012" y="318">«Nadie entró</text><text x="1012" y="348">después de las 22:00»</text></g>
+ <g transform="rotate(6 1180 615)"><text x="1066" y="570" font-weight="500">Testimonio</text><text x="1066" y="608">«Estaba en mi</text><text x="1066" y="638">oficina a las 22:02»</text></g>
+</g>
+<!-- carpeta del expediente -->
+<g transform="rotate(-3 850 665)" font-family="Plex Sans">
+ <rect x="700" y="545" width="120" height="30" rx="6" fill="#c9a86a"/>
+ <text x="730" y="660" font-size="36" font-weight="600" fill="#3b2c12">Expediente 07</text>
+ <text x="730" y="700" font-size="22" fill="#4d3a18">Caso del hotel</text>
+ <rect x="730" y="725" width="150" height="34" rx="4" fill="none" stroke="#b3261e" stroke-width="3"/>
+ <text x="805" y="749" font-size="20" font-weight="600" fill="#b3261e" text-anchor="middle">Sin resolver</text>
+</g>
+<g fill="#ff4d4d"><circle cx="760" cy="262" r="9"/><circle cx="1110" cy="246" r="9"/><circle cx="1190" cy="540" r="9"/><circle cx="840" cy="560" r="9"/></g>
+
+<!-- sello de contradicción -->
+<g transform="rotate(-12 1180 470)"><rect x="1080" y="440" width="210" height="52" rx="6" fill="#0f1514" fill-opacity="0.75" stroke="#ff5a4f" stroke-width="3"/><text x="1185" y="475" text-anchor="middle" font-family="Plex Sans" font-size="24" font-weight="600" fill="#ff5a4f">¡Contradicción!</text></g>
+<!-- lupa -->
+<g transform="rotate(-30 1240 860)">
+ <circle cx="1210" cy="830" r="62" fill="#aee2d9" fill-opacity="0.12" stroke="#cfd8d6" stroke-width="12"/>
+ <rect x="1200" y="890" width="22" height="110" rx="10" fill="#3a2a1a"/>
+</g>
+<!-- sospechosos -->
+<g font-family="Plex Sans" text-anchor="middle">
+ <g><circle cx="140" cy="760" r="34" fill="#22302d"/><path d="M84,860 Q140,790 196,860 Z" fill="#22302d"/><text x="140" y="895" font-size="20" fill="#9fb3b0">Sospechoso 1</text></g>
+ <g><circle cx="300" cy="760" r="34" fill="#22302d"/><path d="M244,860 Q300,790 356,860 Z" fill="#22302d"/><text x="300" y="895" font-size="20" fill="#9fb3b0">Sospechosa 2</text></g>
+ <g><circle cx="460" cy="760" r="34" fill="#2c3f3b"/><path d="M404,860 Q460,790 516,860 Z" fill="#2c3f3b"/><text x="460" y="745" font-size="40" font-weight="600" fill="#aee2d9">?</text><text x="460" y="895" font-size="20" fill="#aee2d9">¿Quién miente?</text></g>
+</g>
+<!-- título -->
+<g font-family="Plex Sans">
+ <text x="80" y="200" font-size="26" font-weight="500" fill="#aee2d9" font-family="Plex Mono">Juego de deducción</text>
+ <text x="80" y="330" font-size="84" font-weight="600" fill="#eef3f1" letter-spacing="-2">Interrogatorio</text>
+ <text x="80" y="410" font-size="30" fill="#c7d3d0">Revisa pruebas, interroga</text>
+ <text x="80" y="452" font-size="30" fill="#c7d3d0">y encuentra al culpable.</text>
+ <rect x="80" y="500" width="360" height="56" rx="28" fill="#aee2d9"/><text x="260" y="536" text-anchor="middle" font-size="24" font-weight="600" fill="#0f1514">Abre el expediente</text>
+</g>
+</svg>
