@@ -1,7 +1,9 @@
 "use strict";
 
 // Efectos animados de la portada, pensados para no trabar la página:
-// 1. Partículas conectadas fijas detrás de toda la página (como una red neuronal).
+// 1. Fondo espacial fijo detrás de toda la página: estrellas que titilan, dos
+//    planetas tenues, una estrella fugaz de vez en cuando y las partículas
+//    conectadas (como una red neuronal) que reaccionan al mouse.
 // 2. Una mini serpiente que recorre el pie, en honor al proyecto Snake.
 //
 // Reglas de rendimiento:
@@ -40,6 +42,52 @@
     let activo = false;
     const puntero = { x: -9999, y: -9999 };
     const DISTANCIA = 130;
+    // Capa quieta (planetas y estrellas tenues) dibujada una sola vez por tamaño.
+    const capa = document.createElement("canvas");
+    const capaCtx = capa.getContext("2d");
+    let estrellas = [];
+    let fugaz = null;
+    // La primera estrella fugaz aparece a los ~3 segundos de abrir la página.
+    let proximaFugaz = performance.now() + 3000;
+
+    function planeta(c, x, y, r, color, anillo) {
+      const brillo = c.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.1, x, y, r);
+      brillo.addColorStop(0, `rgba(${color}, 0.32)`);
+      brillo.addColorStop(0.7, `rgba(${color}, 0.12)`);
+      brillo.addColorStop(1, `rgba(${color}, 0.02)`);
+      c.fillStyle = brillo;
+      c.beginPath();
+      c.arc(x, y, r, 0, Math.PI * 2);
+      c.fill();
+      if (anillo) {
+        c.save();
+        c.translate(x, y);
+        c.rotate(-0.35);
+        c.strokeStyle = `rgba(${color}, 0.22)`;
+        c.lineWidth = Math.max(1, r * 0.06);
+        c.beginPath();
+        c.ellipse(0, 0, r * 1.75, r * 0.42, 0, 0, Math.PI * 2);
+        c.stroke();
+        c.restore();
+      }
+    }
+
+    function pintarCapa() {
+      capa.width = lienzo.width;
+      capa.height = lienzo.height;
+      capaCtx.setTransform(densidad, 0, 0, densidad, 0, 0);
+      const base = Math.min(ancho, alto);
+      // Planeta morado con anillo arriba a la derecha y uno rojo pequeño abajo.
+      planeta(capaCtx, ancho * 0.86, alto * 0.2, base * 0.07, "168, 85, 247", true);
+      planeta(capaCtx, ancho * 0.045, alto * 0.56, base * 0.028, "255, 46, 99", false);
+      // Estrellas tenues que no titilan.
+      const fijas = Math.round((ancho * alto) / 9000);
+      for (let i = 0; i < fijas; i++) {
+        capaCtx.fillStyle = `rgba(241, 236, 250, ${0.12 + Math.random() * 0.25})`;
+        const t = Math.random() < 0.85 ? 1 : 1.5;
+        capaCtx.fillRect(Math.random() * ancho, Math.random() * alto, t, t);
+      }
+    }
 
     function medir() {
       ancho = caja.clientWidth;
@@ -56,10 +104,65 @@
         vy: (Math.random() - 0.5) * 0.35,
         r: Math.random() < 0.2 ? 2.2 : 1.4,
       }));
+      // Pocas estrellas que titilan; el resto vive en la capa quieta.
+      estrellas = Array.from({ length: Math.max(12, Math.min(40, cantidad)) }, () => ({
+        x: Math.random() * ancho,
+        y: Math.random() * alto,
+        fase: Math.random() * Math.PI * 2,
+        ritmo: 0.0008 + Math.random() * 0.0016,
+      }));
+      pintarCapa();
     }
 
-    function dibujar() {
+    function estrellaFugaz(t) {
+      if (!fugaz) {
+        if (t < proximaFugaz) return;
+        // Cruza en diagonal desde la parte alta, cada 7 a 16 segundos.
+        const angulo = 0.45 + Math.random() * 0.35;
+        const rapidez = 7 + Math.random() * 4;
+        fugaz = {
+          x: Math.random() * ancho * 0.7,
+          y: Math.random() * alto * 0.35,
+          vx: Math.cos(angulo) * rapidez,
+          vy: Math.sin(angulo) * rapidez,
+          vida: 0,
+          duracion: 55 + Math.random() * 25,
+        };
+      }
+      const f = fugaz;
+      f.x += f.vx;
+      f.y += f.vy;
+      f.vida += 1;
+      const avance = f.vida / f.duracion;
+      const opacidad = Math.sin(Math.min(avance, 1) * Math.PI);
+      const cola = ctx.createLinearGradient(f.x, f.y, f.x - f.vx * 12, f.y - f.vy * 12);
+      cola.addColorStop(0, `rgba(241, 236, 250, ${opacidad})`);
+      cola.addColorStop(1, "rgba(192, 132, 252, 0)");
+      ctx.strokeStyle = cola;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(f.x, f.y);
+      ctx.lineTo(f.x - f.vx * 12, f.y - f.vy * 12);
+      ctx.stroke();
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacidad})`;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      if (avance >= 1) {
+        fugaz = null;
+        proximaFugaz = t + 7000 + Math.random() * 9000;
+      }
+    }
+
+    function dibujar(t = 0) {
       ctx.clearRect(0, 0, ancho, alto);
+      ctx.drawImage(capa, 0, 0, ancho, alto);
+      for (const e of estrellas) {
+        const luz = quieto ? 0.6 : 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(e.fase + t * e.ritmo));
+        ctx.fillStyle = `rgba(241, 236, 250, ${luz})`;
+        ctx.fillRect(e.x - 0.9, e.y - 0.9, 1.8, 1.8);
+      }
+      if (!quieto) estrellaFugaz(t);
       for (const p of puntos) {
         if (!quieto) {
           p.x += p.vx;
