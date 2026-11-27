@@ -117,3 +117,12 @@ def test_si_un_modelo_no_tiene_cupo_usa_otro_sin_olvidar_el_preferido(client, mo
     monkeypatch.setattr(asistente_ia, "llamar_modelo", falso)
     assert client.post(URL, content=pregunta(), headers=ORIGEN).json()["modelo"] == "llama-3.3-70b-versatile"
     assert client.post(URL, content=pregunta(), headers=ORIGEN).json()["modelo"] == "modelo-a"
+
+
+def test_el_registro_cambia_el_trato(client, monkeypatch):
+    monkeypatch.setenv("ASISTENTE_IA_CLAVE", "clave-falsa")
+    sistemas = []
+    monkeypatch.setattr(asistente_ia, "llamar_modelo", lambda m, c, mo: sistemas.append(m[0]["content"]) or "ok")
+    client.post(URL, content=pregunta(), headers=ORIGEN)
+    client.post(URL, content=json.dumps({"pregunta": "q onda", "registro": "informal"}), headers=ORIGEN)
+    assert "«usted»" in sistemas[0] and "coloquial" in sistemas[1]

@@ -61,6 +61,14 @@ def chilenismos() -> dict[str, str]:
     return {normalizar(str(k)): normalizar(str(v or "")) for k, v in (datos.get("chilenismos") or {}).items()}
 
 
+@lru_cache(maxsize=1)
+def informales() -> list[str]:
+    """Frases del diccionario que delatan un tono informal (todas menos las neutras)."""
+    datos = yaml.safe_load(CHILENISMOS_YML.read_text(encoding="utf-8")) or {}
+    neutros = {normalizar(str(n)) for n in datos.get("neutros") or []}
+    return sorted(k for k in chilenismos() if k and k not in neutros)
+
+
 def traducir(palabras: list[str], mapa: dict[str, str]) -> list[str]:
     """Reemplaza frases chilenas (de 3, 2 o 1 palabra, la más larga primero)."""
     salida: list[str] = []

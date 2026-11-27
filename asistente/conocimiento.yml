@@ -10,6 +10,11 @@
 #                Enlaces con el formato [texto](ruta). Las rutas son
 #                relativas a la raíz del sitio (ej.: cv.html, taskflow/).
 #   sugerencias: (opcional) ids de otras intenciones para ofrecer después.
+#   boton:       (opcional) texto formal del botón de sugerencia («¿Qué
+#                tecnologías domina?»). Es el que se muestra primero.
+#   boton_informal / respuesta_informal: (opcionales) versiones coloquiales
+#                que se usan cuando el visitante escribe en tono informal
+#                (chilenismos, abreviaturas). Si no existen, se usa la formal.
 #
 # Para enseñarle algo nuevo: agrega ejemplos a una intención existente o
 # crea una intención nueva, y guarda. Al llegar a main, GitHub Actions
@@ -58,9 +63,12 @@ intenciones:
       - holi
       - hola gervasio
     respuesta: >-
-      ¡Hola! Soy el asistente del portafolio de Gervasio. Puedes preguntarme
-      por sus proyectos, las tecnologías que usa, su formación o cómo
-      contactarlo.
+      Hola, bienvenido o bienvenida. Soy el asistente del portafolio de
+      Gervasio Torres. Puede consultarme por sus proyectos, las tecnologías
+      que usa, su formación o cómo contactarlo. ¿En qué le puedo ayudar?
+    respuesta_informal: >-
+      ¡Wena! Soy el asistente del portafolio de Gervasio. Pregúntame lo que
+      quieras: proyectos, tecnologías, estudios o cómo contactarlo.
     sugerencias: [presentacion, proyectos, stack]
 
   - id: despedida
@@ -88,7 +96,11 @@ intenciones:
       - bye
       - hasta pronto
     respuesta: >-
-      ¡Gracias por pasar! Si quieres seguir la conversación con Gervasio,
+      Gracias por su visita. Si desea continuar la conversación con Gervasio,
+      puede escribirle a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      ¡Chao, gracias por pasar! Si quieres seguir conversando con Gervasio,
       escríbele a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
 
   - id: gracias
@@ -115,11 +127,16 @@ intenciones:
       - ok gracias
       - vale
     respuesta: >-
-      ¡De nada! ¿Quieres saber algo más? Puedo contarte de un proyecto en
-      particular o de cómo lo construyó.
+      Con gusto. ¿Desea saber algo más? Puedo contarle de un proyecto en
+      particular o de cómo fue construido.
+    respuesta_informal: >-
+      ¡De nada! ¿Te cuento algo más? Puedo hablarte de un proyecto o de cómo
+      lo hizo.
     sugerencias: [proyecto_destacado, contacto]
 
   - id: asistente
+    boton: "¿Cómo funciona este asistente?"
+    boton_informal: "¿Cómo funcionai tú?"
     claves: [bot, chatbot, red neuronal, inteligencia artificial, cómo funcionas, quién eres, modelo, entrenamiento del chat]
     ejemplos:
       - ¿cómo sabes lo que respondes?
@@ -139,13 +156,19 @@ intenciones:
       Soy una red neuronal pequeña que Gervasio programó desde cero: un
       perceptrón multicapa escrito en Python con NumPy, sin librerías de
       machine learning. Se entrena con las preguntas que suelen hacer los
-      reclutadores y corre en tu navegador. Solo si no reconozco una
-      pregunta pido ayuda a un modelo de IA externo, y lo marco en la
-      respuesta. El detalle está en
-      [cómo funciono](asistente/).
+      reclutadores y se ejecuta en su navegador. Solo si no reconozco una
+      pregunta consulto un modelo de IA externo, y lo indico en la respuesta.
+      El detalle está en [cómo funciono](asistente/).
+    respuesta_informal: >-
+      Soy una red neuronal chica que Gervasio programó desde cero, en Python
+      con NumPy, sin librerías de machine learning. Corro en tu navegador y,
+      si no cacho una pregunta, le pido ayuda a una IA externa y te lo aviso.
+      El detalle está en [cómo funciono](asistente/).
     sugerencias: [presentacion, proyectos]
 
   - id: presentacion
+    boton: "¿Quién es Gervasio?"
+    boton_informal: "¿Quién eri?"
     claves: [nombre, cómo te llamas, full stack, fullstack, quién es gervasio, perfil, resumen, preséntate, háblame de ti, candidato]
     ejemplos:
       - q haces tu
@@ -175,6 +198,8 @@ intenciones:
     sugerencias: [proyectos, stack, formacion]
 
   - id: formacion
+    boton: "¿Cuál es su formación?"
+    boton_informal: "¿Qué estudiaste?"
     claves: [certificación, certificaciones, cursos, estudios, título, titulado, carrera, universidad, inacap, ingeniería, analista programador, educación]
     ejemplos:
       - q estudiaste
@@ -201,6 +226,8 @@ intenciones:
     sugerencias: [experiencia, stack]
 
   - id: experiencia
+    boton: "¿Qué experiencia laboral tiene?"
+    boton_informal: "¿Qué exp tení?"
     claves: [sercotec, tiempo programando, desde cuándo programas, experiencia, años de experiencia, empresas, trabajado, experiencia laboral, prácticas]
     ejemplos:
       - tenis exp?
@@ -230,6 +257,8 @@ intenciones:
     sugerencias: [practica_tuniche, proyectos, por_que_contratar]
 
   - id: practica_tuniche
+    boton: "¿Qué hizo en su práctica profesional?"
+    boton_informal: "¿Qué hiciste en la práctica?"
     claves: [tuniche, práctica profesional, bots, automatización, rpa, automatizar procesos]
     ejemplos:
       - ¿qué hiciste en tuniche?
@@ -244,8 +273,13 @@ intenciones:
       - ¿sabes automatizar procesos?
     respuesta: >-
       Hice mi práctica profesional en Tuniche entre septiembre y noviembre de
-      2026 y ya la terminé. Ahí desarrollé bots de automatización. Si quieres
-      el detalle de esos procesos, prefiero contártelo en una conversación:
+      2026 y ya la terminé. Ahí desarrollé bots de automatización. Si desea el
+      detalle de esos procesos, prefiero contárselo en una conversación:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Hice mi práctica en Tuniche entre septiembre y noviembre de 2026, ya la
+      terminé, y ahí desarrollé bots de automatización. Si quieres el detalle,
+      te lo cuento mejor por correo:
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [experiencia, disponibilidad]
 
@@ -267,6 +301,8 @@ intenciones:
     sugerencias: [fortalezas, experiencia]
 
   - id: stack
+    boton: "¿Qué tecnologías domina?"
+    boton_informal: "¿Qué lenguajes sabí?"
     claves: [javascript, lenguaje principal, lenguajes de programación, tecnologías, stack, lenguajes, herramientas, skills, frameworks, conocimientos técnicos]
     ejemplos:
       - q lenguajes sabi
@@ -295,6 +331,8 @@ intenciones:
     sugerencias: [frontend, backend, pruebas]
 
   - id: frontend
+    boton: "¿Qué experiencia tiene en frontend?"
+    boton_informal: "¿Cachai de React?"
     claves: [react, next.js, nextjs, frontend, front, interfaz, css, html, vite, typescript, responsive, diseño web]
     ejemplos:
       - sabi react?
@@ -321,6 +359,8 @@ intenciones:
     sugerencias: [backend, portafolio_hecho]
 
   - id: backend
+    boton: "¿Qué experiencia tiene en backend?"
+    boton_informal: "¿Cachai de backend?"
     claves: [microservicios, arquitectura de software, backend, api, apis rest, node, node.js, express, fastapi, python, django, servidor]
     ejemplos:
       - sabi back?
@@ -348,6 +388,8 @@ intenciones:
     sugerencias: [bases_datos, pruebas, concurrencia]
 
   - id: bases_datos
+    boton: "¿Con qué bases de datos trabaja?"
+    boton_informal: "¿Qué bd usai?"
     claves: [sql, postgresql, postgres, base de datos, orm, prisma, sqlalchemy, migraciones, mysql, sqlite, mongodb]
     ejemplos:
       - sabi bd?
@@ -375,6 +417,8 @@ intenciones:
     sugerencias: [concurrencia, reservaya]
 
   - id: pruebas
+    boton: "¿Cómo prueba su código?"
+    boton_informal: "¿Hací tests?"
     claves: [tests, testing, pruebas, cobertura, jest, vitest, pytest, playwright, pruebas unitarias, e2e, tdd]
     ejemplos:
       - ¿haces pruebas?
@@ -397,6 +441,8 @@ intenciones:
     sugerencias: [devops, buenas_practicas]
 
   - id: devops
+    boton: "¿Tiene experiencia con Docker y la nube?"
+    boton_informal: "¿Cachai de Docker y Azure?"
     claves: [experiencia con docker, contenedores docker, docker, azure, nube, cloud, ci/cd, github actions, despliegue, deploy, contenedores, aws, kubernetes]
     ejemplos:
       - ¿tienes experiencia con contenedores?
@@ -424,6 +470,8 @@ intenciones:
     sugerencias: [portafolio_hecho, pruebas]
 
   - id: git
+    boton: "¿Cómo trabaja con Git?"
+    boton_informal: "¿Cómo usai Git?"
     claves: [git, github, ramas, pull request, merge, control de versiones, commits]
     ejemplos:
       - ¿sabes git?
@@ -440,6 +488,8 @@ intenciones:
     sugerencias: [devops, buenas_practicas]
 
   - id: buenas_practicas
+    boton: "¿Cómo cuida la seguridad de su código?"
+    boton_informal: "¿Cómo cuidai la seguridad?"
     claves: [seguridad, secretos, credenciales, validación, owasp, código limpio, buenas prácticas, proteger api]
     ejemplos:
       - ¿cómo escribes código limpio?
@@ -479,6 +529,8 @@ intenciones:
     sugerencias: [asistente, buenas_practicas]
 
   - id: proyectos
+    boton: "¿Qué proyectos ha desarrollado?"
+    boton_informal: "¿Qué proyectos tení?"
     claves: [proyectos, aplicaciones, demos, qué has construido, trabajos realizados, portafolio de proyectos]
     ejemplos:
       - q proyectos tenis
@@ -503,6 +555,8 @@ intenciones:
     sugerencias: [proyecto_destacado, taskflow, tiendanova]
 
   - id: proyecto_destacado
+    boton: "¿Cuál es su proyecto más destacado?"
+    boton_informal: "¿Cuál es tu mejor proyecto?"
     claves: [logro, mayor logro, mejor proyecto, proyecto favorito, más orgulloso, más complejo, cuál ver primero]
     ejemplos:
       - ¿cuál es tu mayor logro?
@@ -515,13 +569,21 @@ intenciones:
       - si tuviera que ver uno solo
       - ¿cuál representa mejor tu trabajo?
     respuesta: >-
-      Si tienes poco tiempo, mira TaskFlow: es el más cercano a un sistema de
-      empresa, con roles, SLA, panel de control y 98,9 % de cobertura en la
-      API. Si te interesa la lógica difícil, Snake: el servidor vuelve a
-      jugar cada partida para que nadie haga trampa en el ranking.
+      Si dispone de poco tiempo, le recomiendo TaskFlow: es el más cercano a
+      un sistema de empresa, con roles, SLA, panel de control y 98,9 % de
+      cobertura en la API. Si le interesa la lógica compleja, Snake: el
+      servidor vuelve a jugar cada partida para que nadie haga trampa en el
+      ranking.
+    respuesta_informal: >-
+      Si tienes poco tiempo, mira TaskFlow: es el más parecido a un sistema de
+      empresa, con roles, SLA y 98,9 % de cobertura en la API. Si te tinca la
+      lógica difícil, Snake: el servidor vuelve a jugar cada partida para que
+      nadie haga trampa.
     sugerencias: [taskflow, snake, desafio]
 
   - id: taskflow
+    boton: "¿De qué trata TaskFlow?"
+    boton_informal: "¿Qué onda TaskFlow?"
     claves: [taskflow, kanban, tablero, tareas, sla, gestión de equipos]
     ejemplos:
       - háblame de taskflow
@@ -542,6 +604,8 @@ intenciones:
     sugerencias: [reservaya, concurrencia]
 
   - id: reservaya
+    boton: "¿De qué trata ReservaYa?"
+    boton_informal: "¿Qué onda ReservaYa?"
     claves: [reservaya, reservas, canchas, turnos, reserva duplicada]
     ejemplos:
       - háblame de reservaya
@@ -561,6 +625,8 @@ intenciones:
     sugerencias: [tiendanova, bases_datos]
 
   - id: tiendanova
+    boton: "¿De qué trata TiendaNova?"
+    boton_informal: "¿Qué onda TiendaNova?"
     claves: [tiendanova, tienda, ecommerce, e-commerce, checkout, carrito, pagos, comercio electrónico]
     ejemplos:
       - háblame de tiendanova
@@ -581,6 +647,8 @@ intenciones:
     sugerencias: [snake, concurrencia]
 
   - id: snake
+    boton: "¿De qué trata Snake?"
+    boton_informal: "¿Qué onda Snake?"
     claves: [snake, serpiente, juego, ranking, trampas, pwa, videojuego]
     ejemplos:
       - háblame de snake
@@ -600,6 +668,8 @@ intenciones:
     sugerencias: [interrogatorio, desafio]
 
   - id: interrogatorio
+    boton: "¿De qué trata Interrogatorio?"
+    boton_informal: "¿Qué onda Interrogatorio?"
     claves: [interrogatorio, detective, deducción, sospechosos, expediente, caso policial]
     ejemplos:
       - háblame de interrogatorio
@@ -618,6 +688,8 @@ intenciones:
     sugerencias: [laboratorios, buenas_practicas]
 
   - id: laboratorios
+    boton: "¿Qué son DataLab, DocFlow y CloudOps?"
+    boton_informal: "¿Qué son las herramientas chicas?"
     claves: [datalab, docflow, cloudops, csv, excel, facturas, ocr, monitoreo, procesamiento de datos, limpieza de datos]
     ejemplos:
       - ¿qué es datalab?
@@ -640,6 +712,8 @@ intenciones:
     sugerencias: [backend, devops]
 
   - id: portafolio_hecho
+    boton: "¿Cómo construyó este portafolio?"
+    boton_informal: "¿Cómo hiciste esta página?"
     claves: [esta página, este sitio, portafolio web, plantilla, github pages, dominio, cómo hiciste la web]
     ejemplos:
       - ¿cómo hiciste esta página?
@@ -658,6 +732,8 @@ intenciones:
     sugerencias: [asistente, devops]
 
   - id: desafio
+    boton: "¿Cuál ha sido su mayor desafío técnico?"
+    boton_informal: "¿Qué es lo más difícil que has hecho?"
     claves: [desafío, reto, problema difícil, bug, depurar, debug, situación difícil]
     ejemplos:
       - ¿qué es lo más complicado que has programado?
@@ -680,6 +756,8 @@ intenciones:
     sugerencias: [concurrencia, pruebas]
 
   - id: concurrencia
+    boton: "¿Cómo maneja la concurrencia en sus sistemas?"
+    boton_informal: "¿Cachai de concurrencia?"
     claves: [concurrencia, transacciones, idempotencia, condición de carrera, race condition, bloqueos, duplicados]
     ejemplos:
       - ¿sabes manejar concurrencia?
@@ -699,6 +777,8 @@ intenciones:
     sugerencias: [reservaya, tiendanova, taskflow]
 
   - id: fortalezas
+    boton: "¿Cuáles son sus fortalezas?"
+    boton_informal: "¿En qué erí bueno?"
     claves: [puntos fuertes, lo mejor de ti, fortalezas, virtudes, habilidades blandas, soft skills, trabajo en equipo, compañero, qué te diferencia]
     ejemplos:
       - ¿cómo trabajas bajo presión?
@@ -719,6 +799,8 @@ intenciones:
     sugerencias: [debilidades, por_que_contratar]
 
   - id: debilidades
+    boton: "¿Cuáles son sus áreas de mejora?"
+    boton_informal: "¿En qué te falta mejorar?"
     claves: [debilidades, defectos, puntos débiles, qué te falta, qué no sabes, mejorar]
     ejemplos:
       - ¿cuáles son tus debilidades?
@@ -735,6 +817,8 @@ intenciones:
     sugerencias: [aprendizaje, fortalezas]
 
   - id: aprendizaje
+    boton: "¿Qué está aprendiendo actualmente?"
+    boton_informal: "¿Qué andai aprendiendo?"
     claves: [aprender, aprendiendo, actualizado, cursos, estudiar más, próximos pasos]
     ejemplos:
       - ¿qué estás aprendiendo?
@@ -750,6 +834,8 @@ intenciones:
     sugerencias: [asistente, proyectos]
 
   - id: por_que_contratar
+    boton: "¿Por qué debería contratarlo?"
+    boton_informal: "¿Por qué te contrataría?"
     claves: [elegirte, escogerte, por qué elegirte, contratarte, por qué tú, aportas, valor, buen candidato, convénceme]
     ejemplos:
       - xq deberia contratarte
@@ -765,13 +851,20 @@ intenciones:
       - ¿qué te hace distinto a otros juniors?
     respuesta: >-
       Porque ya trabajo como se trabaja en un equipo: aplicaciones completas
-      con pruebas, integración continua y despliegue en la nube, y puedes
+      con pruebas, integración continua y despliegue en la nube, y usted puede
       verificarlo abriendo cualquiera de los proyectos. Aprendo rápido, cuido
       los detalles que evitan errores en producción y tengo muchas ganas de
       aportar desde el primer día.
+    respuesta_informal: >-
+      Porque ya trabajo como en un equipo de verdad: apps completas con
+      pruebas, integración continua y despliegue en la nube, y lo puedes
+      comprobar abriendo cualquier proyecto. Aprendo rápido y tengo muchas
+      ganas de aportar desde el día uno.
     sugerencias: [proyecto_destacado, contacto]
 
   - id: busca
+    boton: "¿Qué tipo de puesto busca?"
+    boton_informal: "¿Qué pega andai buscando?"
     claves: [qué buscas, puesto, cargo, rol, trabajo de desarrollador, junior, pasantía, empleo]
     ejemplos:
       - ¿andai buscando pega?
@@ -793,6 +886,8 @@ intenciones:
     sugerencias: [disponibilidad, modalidad, contacto]
 
   - id: disponibilidad
+    boton: "¿Cuál es su disponibilidad?"
+    boton_informal: "¿Cuándo podí empezar?"
     claves: [disponibilidad, cuándo empiezas, disponible, fecha de inicio, inmediata, trabajando actualmente]
     ejemplos:
       - cdo podi empezar
@@ -809,11 +904,16 @@ intenciones:
       - ¿cuál es tu disponibilidad horaria?
     respuesta: >-
       Ya terminé mi práctica profesional y estoy buscando trabajo. Para
-      coordinar fechas, escríbeme a
+      coordinar fechas, puede escribirme a
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Ya terminé la práctica y estoy buscando pega. Para coordinar fechas,
+      escríbeme a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [modalidad, contacto]
 
   - id: modalidad
+    boton: "¿Trabaja de forma remota o presencial?"
+    boton_informal: "¿Trabajai remoto?"
     claves: [mudarte, cambiarte de ciudad, reubicarte, relocalizarte, teletrabajo, trabajo a distancia, remoto, presencial, híbrido, trasladarse, viajar, auto, licencia de conducir, movilización]
     ejemplos:
       - trabajai remoto?
@@ -831,11 +931,17 @@ intenciones:
       - ¿tienes movilización?
     respuesta: >-
       Vivo en la Región de O'Higgins y tengo licencia de conducir clase B con
-      movilización propia. La modalidad (remota, híbrida o presencial) la
-      conversamos según el puesto: [escríbeme](mailto:Gervasiot19@gmail.com).
+      movilización propia. La modalidad (remota, híbrida o presencial) podemos
+      conversarla según el puesto: [escríbame](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Vivo en la Región de O'Higgins y tengo licencia clase B con auto. Lo de
+      remoto, híbrido o presencial lo conversamos según la pega:
+      [escríbeme](mailto:Gervasiot19@gmail.com).
     sugerencias: [ubicacion, contacto]
 
   - id: ubicacion
+    boton: "¿Dónde vive?"
+    boton_informal: "¿Dónde vivís?"
     claves: [dónde vives, ubicación, ciudad, región, comuna, chile, de dónde eres]
     ejemplos:
       - dnd vivis
@@ -868,11 +974,17 @@ intenciones:
       - ¿cuánto pides?
       - renta líquida
     respuesta: >-
-      Eso prefiero conversarlo directamente según el cargo y sus condiciones.
+      Prefiero conversarlo directamente, según el cargo y sus condiciones.
+      Puede escribirme a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Eso prefiero conversarlo directo, según la pega y las condiciones.
       Escríbeme a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [contacto, busca]
 
   - id: contacto
+    boton: "¿Cómo puedo contactarlo?"
+    boton_informal: "¿Cómo te contacto?"
     claves: [agendar, llamada, videollamada, coordinar entrevista, contacto, correo, email, mail, teléfono, número, whatsapp, linkedin, escribirte, entrevista]
     ejemplos:
       - pasame tu wsp
@@ -894,12 +1006,19 @@ intenciones:
       - ¿tienes linkedin?
     respuesta: >-
       La mejor forma es por correo:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com). También puede
+      revisar mi [GitHub](https://github.com/Gervasio02) y descargar mi [CV en
+      PDF](cv/Gervasio-Torres-CV.pdf).
+    respuesta_informal: >-
+      Lo mejor es por correo:
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com). También puedes
-      revisar mi [GitHub](https://github.com/Gervasio02) y descargar mi
-      [CV en PDF](cv/Gervasio-Torres-CV.pdf).
+      ver mi [GitHub](https://github.com/Gervasio02) o bajar mi [CV en
+      PDF](cv/Gervasio-Torres-CV.pdf).
     sugerencias: [cv, disponibilidad]
 
   - id: cv
+    boton: "¿Dónde puedo descargar su CV?"
+    boton_informal: "¿Me pasai tu CV?"
     claves: [cv, currículum, curriculum, hoja de vida, resume, pdf]
     ejemplos:
       - tenis cv?
@@ -913,8 +1032,11 @@ intenciones:
       - resume
       - ¿dónde está tu cv?
     respuesta: >-
-      Aquí está: puedes [verlo en línea](cv.html) o
-      [descargarlo en PDF](cv/Gervasio-Torres-CV.pdf).
+      Por supuesto: puede [verlo en línea](cv.html) o [descargarlo en
+      PDF](cv/Gervasio-Torres-CV.pdf).
+    respuesta_informal: >-
+      ¡Al tiro! Puedes [verlo en línea](cv.html) o [bajarlo en
+      PDF](cv/Gervasio-Torres-CV.pdf).
     sugerencias: [contacto, experiencia]
 
   - id: github
@@ -946,7 +1068,11 @@ intenciones:
       - do you speak english?
       - ¿lees documentación en inglés?
     respuesta: >-
-      No lo incluí en el portafolio todavía. Pregúntamelo por correo y te
+      Aún no lo incluí en el portafolio. Puede consultármelo por correo y con
+      gusto le respondo:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Todavía no lo puse en el portafolio. Pregúntamelo por correo y te
       cuento: [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [contacto]
 
@@ -962,12 +1088,18 @@ intenciones:
       - fecha de nacimiento
       - edad
     respuesta: >-
-      No publico datos personales en el portafolio. Si los necesitas para un
-      proceso de selección, escríbeme a
+      No publico datos personales en el portafolio. Si los necesita para un
+      proceso de selección, puede escribirme a
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      No publico datos personales acá. Si los necesitas para un proceso de
+      selección, escríbeme a
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [contacto, presentacion]
 
   - id: otros_lenguajes
+    boton: "¿Conoce otros lenguajes, como Java?"
+    boton_informal: "¿Sabí Java?"
     claves: [java, php, go, golang, kotlin, swift, ruby, c++, angular, vue, laravel, spring]
     ejemplos:
       - ¿sabes java?
@@ -986,6 +1118,8 @@ intenciones:
     sugerencias: [stack, bodeganet]
 
   - id: bodeganet
+    boton: "¿Tiene experiencia con C# y .NET?"
+    boton_informal: "¿Sabí .NET?"
     claves: [bodeganet, .net, dotnet, c#, csharp, asp.net, entity framework, razor, inventario, kardex, bodega, stock, costo promedio]
     ejemplos:
       - ¿tienes experiencia con .net?
@@ -1022,8 +1156,12 @@ intenciones:
     respuesta: >-
       En mis proyectos trabajo con un flujo de equipo: una rama por tema, pull
       request, revisión con integración continua y despliegue automático. Si
-      tu equipo usa Scrum u otra metodología, me adapto; prefiero contarte el
+      su equipo usa Scrum u otra metodología, me adapto; prefiero contarle el
       detalle en una conversación.
+    respuesta_informal: >-
+      En mis proyectos trabajo como en equipo: una rama por tema, pull
+      request, integración continua y despliegue automático. Si tu equipo usa
+      Scrum u otra metodología, me adapto sin drama.
     sugerencias: [git, contacto]
 
   - id: motivacion
@@ -1059,11 +1197,16 @@ intenciones:
       - tengo una oferta de trabajo
       - me interesa tu perfil
     respuesta: >-
-      ¡Bienvenido o bienvenida, y gracias por revisar mi perfil! Si tienes
-      poco tiempo, te recomiendo ver TaskFlow o BodegaNet, que son los más
-      cercanos a sistemas de empresa, y descargar mi [CV](cv/Gervasio-Torres-CV.pdf).
-      Puedes preguntarme lo que necesites o escribirme directo a
+      Bienvenido o bienvenida, y gracias por revisar mi perfil. Si dispone de
+      poco tiempo, le recomiendo ver TaskFlow o BodegaNet, los más cercanos a
+      sistemas de empresa, y descargar mi [CV](cv/Gervasio-Torres-CV.pdf).
+      Puede consultarme lo que necesite o escribirme directamente a
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      ¡Bienvenido o bienvenida, y gracias por revisar mi perfil! Si andas con
+      poco tiempo, mira TaskFlow o BodegaNet y baja mi
+      [CV](cv/Gervasio-Torres-CV.pdf). Pregúntame lo que necesites o escríbeme
+      a [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [presentacion, proyecto_destacado, disponibilidad]
 
   - id: como_estas
@@ -1087,8 +1230,11 @@ intenciones:
       - ¿cómo andas?
       - ¿estás bien?
     respuesta: >-
-      ¡Bien, gracias por preguntar! Listo para contarte del portafolio de
-      Gervasio. ¿Qué te gustaría saber?
+      Muy bien, gracias por preguntar. ¿En qué le puedo ayudar respecto del
+      portafolio de Gervasio?
+    respuesta_informal: >-
+      ¡Bien, bien! Aquí, listo para contarte del portafolio de Gervasio. ¿Qué
+      quieres saber?
     sugerencias: [presentacion, proyectos, ayuda]
 
   - id: acuse
@@ -1113,11 +1259,16 @@ intenciones:
       - claro
       - sí
     respuesta: >-
-      ¿Te cuento algo más? Puedo hablarte de un proyecto en particular, de su
-      experiencia o de cómo contactarlo.
+      ¿Desea saber algo más? Puedo contarle de un proyecto en particular, de
+      su experiencia o de cómo contactarlo.
+    respuesta_informal: >-
+      ¿Te cuento algo más? Puedo hablarte de un proyecto, de su experiencia o
+      de cómo contactarlo.
     sugerencias: [proyectos, experiencia, contacto]
 
   - id: ayuda
+    boton: "¿En qué me puede ayudar?"
+    boton_informal: "¿Qué cosas sabí?"
     claves: [ayuda, qué puedes hacer, opciones, menú, qué te puedo preguntar, temas]
     ejemplos:
       - q puedo preguntar
@@ -1133,11 +1284,17 @@ intenciones:
       - no sé qué preguntar
       - ¿en qué me puedes ayudar?
     respuesta: >-
-      Puedo contarte de los proyectos de Gervasio (TaskFlow, ReservaYa,
+      Puedo informarle sobre los proyectos de Gervasio (TaskFlow, ReservaYa,
       TiendaNova, BodegaNet, Snake, Interrogatorio y sus herramientas), las
       tecnologías que usa, su formación y experiencia, su disponibilidad y
-      cómo contactarlo. También te digo la hora en Chile y, para el clima,
-      el dólar o las noticias, te paso un enlace confiable.
+      cómo contactarlo. También le indico la hora en Chile y, para el clima,
+      el dólar o las noticias, le comparto un enlace confiable.
+    respuesta_informal: >-
+      Te puedo contar de los proyectos de Gervasio (TaskFlow, ReservaYa,
+      TiendaNova, BodegaNet, Snake, Interrogatorio y sus herramientas), qué
+      tecnologías usa, qué estudió, su experiencia, disponibilidad y cómo
+      contactarlo. También te digo la hora y, para clima, dólar o noticias, te
+      paso un link confiable.
     sugerencias: [presentacion, proyectos, contacto]
 
   - id: molestia
@@ -1151,12 +1308,18 @@ intenciones:
       - eso no era lo que pregunté
       - respondes mal
     respuesta: >-
-      Perdón, todavía estoy aprendiendo y guardé tu pregunta para mejorar.
-      Si es urgente, escríbele directo a Gervasio:
+      Le pido disculpas: todavía estoy aprendiendo y guardé su pregunta para
+      mejorar. Si es urgente, puede escribirle directamente a Gervasio:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Perdón, todavía estoy aprendiendo y guardé tu pregunta para mejorar. Si
+      es urgente, escríbele directo a Gervasio:
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [ayuda, contacto]
 
   - id: hora
+    boton: "¿Qué hora es en Chile?"
+    boton_informal: "¿Qué hora es?"
     claves: [hora, qué hora es, fecha, qué día es, hoy, día de hoy]
     ejemplos:
       - ¿qué hora es?
@@ -1181,10 +1344,14 @@ intenciones:
       - ¿hace frío en rancagua?
       - ¿cómo está el día afuera?
     respuesta: >-
-      No tengo el tiempo en vivo, así que no quiero inventarte un dato. El
-      pronóstico oficial está en la
-      [Dirección Meteorológica de Chile](https://www.meteochile.gob.cl/), o
-      puedes [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+      No tengo el tiempo en vivo y prefiero no darle un dato inexacto. El
+      pronóstico oficial está en la [Dirección Meteorológica de
+      Chile](https://www.meteochile.gob.cl/), o puede [buscarlo
+      aquí](https://www.google.com/search?q={pregunta}).
+    respuesta_informal: >-
+      No tengo el tiempo en vivo, así que no te voy a inventar nada. Míralo en
+      la [Dirección Meteorológica de Chile](https://www.meteochile.gob.cl/) o
+      [búscalo aquí](https://www.google.com/search?q={pregunta}).
     sugerencias: [hora, ayuda]
 
   - id: indicadores
@@ -1198,9 +1365,13 @@ intenciones:
       - precio del euro
       - ¿a cuánto está el bitcoin?
     respuesta: >-
-      Esos valores cambian a diario y no los tengo al día. Los oficiales los
-      publica el [Banco Central de Chile](https://www.bcentral.cl/), o puedes
-      [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+      Esos valores cambian a diario y no los tengo actualizados. Los oficiales
+      los publica el [Banco Central de Chile](https://www.bcentral.cl/), o
+      puede [buscarlo aquí](https://www.google.com/search?q={pregunta}).
+    respuesta_informal: >-
+      Eso cambia todos los días y no lo tengo al día. Revísalo en el [Banco
+      Central](https://www.bcentral.cl/) o [búscalo
+      aquí](https://www.google.com/search?q={pregunta}).
     sugerencias: [hora, ayuda]
 
   - id: actualidad
@@ -1215,12 +1386,19 @@ intenciones:
       - ¿quién va a ganar el mundial?
       - últimas noticias
     respuesta: >-
-      De actualidad no tengo información verificada al día. Puedes revisarlo
-      en [Google Noticias](https://news.google.com/search?q={pregunta}&hl=es-419&gl=CL&ceid=CL:es-419).
-      Yo te puedo contar del portafolio de Gervasio.
+      No tengo información de actualidad verificada al día. Puede revisarla en
+      [Google
+      Noticias](https://news.google.com/search?q={pregunta}&hl=es-419&gl=CL&ceid=CL:es-419).
+      Con gusto le cuento del portafolio de Gervasio.
+    respuesta_informal: >-
+      De actualidad no tengo nada verificado al día. Cáchalo en [Google
+      Noticias](https://news.google.com/search?q={pregunta}&hl=es-419&gl=CL&ceid=CL:es-419).
+      Yo te cuento del portafolio de Gervasio.
     sugerencias: [ayuda, proyectos]
 
   - id: juegos_portafolio
+    boton: "¿Qué juegos desarrolló?"
+    boton_informal: "¿Qué juegos hiciste?"
     claves: [juegos, videojuegos, juego, gaming, gamer, hiciste juegos]
     ejemplos:
       - tenis juegos?
@@ -1250,8 +1428,12 @@ intenciones:
       - ¿cuál es tu juego favorito?
     respuesta: >-
       El tema me interesa tanto que dos de mis proyectos son juegos y el
-      diseño de este sitio tiene estética gamer. Mis gustos personales te los
-      cuento mejor en una conversación:
+      diseño de este sitio tiene estética gamer. Mis gustos personales
+      prefiero contárselos en una conversación:
+      [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
+    respuesta_informal: >-
+      Me interesa tanto que dos de mis proyectos son juegos y el sitio tiene
+      estética gamer. Lo personal te lo cuento mejor en una conversa:
       [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).
     sugerencias: [juegos_portafolio, diseno_sitio]
 
@@ -1266,12 +1448,20 @@ intenciones:
       - recomiéndame una serie
       - ¿qué película me recomiendas?
     respuesta: >-
-      Lanzamientos, precios y recomendaciones cambian todo el tiempo y no los
-      tengo verificados al día. Puedes [buscarlo aquí](https://www.google.com/search?q={pregunta}).
-      Si quieres jugar algo ahora mismo, prueba los juegos del portafolio.
+      Lanzamientos, precios y recomendaciones cambian constantemente y no los
+      tengo verificados al día. Puede [buscarlo
+      aquí](https://www.google.com/search?q={pregunta}). Si desea jugar algo
+      ahora, le invito a probar los juegos del portafolio.
+    respuesta_informal: >-
+      Lanzamientos, precios y recomendaciones cambian todo el rato y no los
+      tengo al día. [Búscalo
+      aquí](https://www.google.com/search?q={pregunta}). Si quieres jugar algo
+      ya, prueba los juegos del portafolio.
     sugerencias: [juegos_portafolio, ayuda]
 
   - id: jugar_snake
+    boton: "¿Cómo se juega Snake?"
+    boton_informal: "¿Cómo se juega Snake?"
     claves: [cómo se juega snake, controles, modos de snake, contrarreloj, sin paredes, clásico]
     ejemplos:
       - ¿cómo se juega snake?
@@ -1282,15 +1472,24 @@ intenciones:
       - ¿se puede jugar en el celular?
       - ¿cómo entro al ranking?
     respuesta: >-
-      Snake tiene tres modos: Clásico, Sin paredes y Contrarreloj. Te mueves
+      Snake tiene tres modos: Clásico, Sin paredes y Contrarreloj. Se juega
       con las flechas o con W, A, S y D, o deslizando el dedo en el teléfono,
-      y pausas con la barra espaciadora. Hay comidas especiales (dorada, lenta
-      y escudo), un desafío diario y logros; para aparecer en el ranking
-      creas una cuenta y el servidor verifica tu partida.
-      [Jugar Snake](https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/).
+      y se pausa con la barra espaciadora. Hay comidas especiales (dorada,
+      lenta y escudo), un desafío diario y logros; para aparecer en el ranking
+      se crea una cuenta y el servidor verifica la partida. [Jugar
+      Snake](https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/).
+    respuesta_informal: >-
+      Snake tiene tres modos: Clásico, Sin paredes y Contrarreloj. Te mueves
+      con las flechas o W, A, S, D, o deslizando el dedo en el celu, y pausas
+      con espacio. Hay comidas especiales, desafío diario y logros; para salir
+      en el ranking te creas una cuenta y el servidor revisa tu partida.
+      [Jugar
+      Snake](https://snake-gervasio-std.purpleocean-4aad06ee.chilecentral.azurecontainerapps.io/).
     sugerencias: [snake, jugar_interrogatorio]
 
   - id: jugar_interrogatorio
+    boton: "¿Cómo se juega Interrogatorio?"
+    boton_informal: "¿Cómo se juega Interrogatorio?"
     claves: [cómo se juega interrogatorio, acusar, sospechoso, pistas, expediente]
     ejemplos:
       - ¿cómo se juega interrogatorio?
@@ -1307,6 +1506,8 @@ intenciones:
     sugerencias: [interrogatorio, juegos_portafolio]
 
   - id: diseno_sitio
+    boton: "¿Cómo diseñó este sitio?"
+    boton_informal: "¿Cómo hiciste el diseño?"
     claves: [diseño, colores, estética, neón, por qué se ve así, animaciones, fuente, tipografía]
     ejemplos:
       - ¿por qué el sitio se ve gamer?
@@ -1412,7 +1613,12 @@ intenciones:
       - ayúdame con mi tarea de matemáticas
       - ¿cuál es tu color favorito?
     respuesta: >-
-      Eso está fuera de lo que sé: conozco el portafolio de Gervasio. Para no
-      inventarte nada, puedes [buscarlo en la web](https://www.google.com/search?q={pregunta}).
-      Si quieres, te cuento de sus proyectos, tecnologías o cómo contactarlo.
+      Ese tema está fuera de lo que conozco: me especializo en el portafolio
+      de Gervasio. Para no darle información inexacta, puede [buscarlo en la
+      web](https://www.google.com/search?q={pregunta}). Si lo desea, le cuento
+      de sus proyectos, tecnologías o cómo contactarlo.
+    respuesta_informal: >-
+      Eso no lo cacho: lo mío es el portafolio de Gervasio. Para no inventarte
+      nada, [búscalo en la web](https://www.google.com/search?q={pregunta}).
+      Si quieres, te cuento de sus proyectos o tecnologías.
     sugerencias: [ayuda, proyectos, contacto]
