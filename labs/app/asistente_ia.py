@@ -56,13 +56,17 @@ Reglas:
 4. No ayudes con nada dañino, ilegal ni ofensivo; responde con amabilidad que
    solo puedes ayudar con temas del portafolio.
 5. Entiendes chilenismos y escritura abreviada (pega, lucas, cachai, al tiro,
-   po, q, xq, tmb, cm tay...). Responde en español neutro de Chile y trata de
-   «tú» («¿quieres?», «¿te cuento?»); nunca uses voseo argentino («querés»,
-   «tenés», «podés»).
+   po, q, xq, tmb, cm tay...). Nunca uses voseo argentino («querés», «tenés»).
+   {registro}
 6. Si incluyes un enlace, que sea https y real; ante la duda, no incluyas enlaces.
 
 CONTEXTO:
 {contexto}"""
+
+REGISTROS = {
+    "formal": "Usa un tono profesional y cordial, y trata a la persona de «usted» («¿Desea…?», «puede escribirme»): probablemente es un reclutador.",
+    "informal": "La persona escribe en tono coloquial chileno: responde cercano y relajado, trátala de «tú» y puedes usar chilenismos suaves (bacán, al tiro, cachai), sin groserías.",
+}
 
 
 def _texto_plano(respuesta: str) -> str:
@@ -177,7 +181,9 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
         if len(crudo) > 1024:
             raise HTTPException(413, "Pregunta demasiado grande")
         try:
-            pregunta = str(json.loads(crudo or b"{}").get("pregunta", "")).strip()
+            datos = json.loads(crudo or b"{}")
+            pregunta = str(datos.get("pregunta", "")).strip()
+            tono = "informal" if datos.get("registro") == "informal" else "formal"
         except (json.JSONDecodeError, AttributeError):
             raise HTTPException(400, "JSON inválido")
         if not 2 <= len(pregunta) <= 200:
@@ -198,7 +204,7 @@ def registrar(app: FastAPI, ip_cliente, permitido) -> None:
         uso["total"] += 1
 
         mensajes = [
-            {"role": "system", "content": REGLAS.format(contexto=contexto.obtener())},
+            {"role": "system", "content": REGLAS.format(contexto=contexto.obtener(), registro=REGISTROS[tono])},
             {"role": "user", "content": pregunta},
         ]
         try:

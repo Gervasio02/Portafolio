@@ -31,6 +31,17 @@ preguntas nuevas y luego entrena el modelo final con todos. Para generalizar
 mejor, cada ejemplo se aumenta con errores de tipeo, palabras de relleno y
 palabras omitidas.
 
+## Registro formal y coloquial
+
+- El chat empieza formal, de «usted», pensando en un reclutador: bienvenida,
+  respuestas y botones de sugerencia (`boton` en `conocimiento.yml`).
+- Si el visitante escribe con chilenismos, abreviaturas, letras estiradas o
+  risas («cachai», «q», «xq», «holaaa», «jaja»), el chat pasa a registro
+  coloquial durante esa conversación: usa `respuesta_informal` y
+  `boton_informal` cuando existen, y la IA de respaldo responde de «tú».
+- Qué palabras cuentan como informales: todas las de `chilenismos.yml` salvo
+  la lista `neutros` (siglas técnicas como cv, js o bd).
+
 ## Respuestas con datos en vivo y respaldo con IA
 
 - En `respuesta` se pueden usar `{hora}` y `{fecha}` (hora de Chile, calculada

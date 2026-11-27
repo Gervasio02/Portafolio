@@ -140,7 +140,29 @@
       return { vacio: x.size === 0, resultado };
     }
 
-    return { predecir, rasgos: (texto) => rasgos(texto, mapa), umbral: modelo.umbral, intenciones: modelo.intenciones, metricas: modelo.metricas };
+    const informales = new Set(modelo.informales || []);
+
+    // ¿El visitante escribe en tono informal? (chilenismos, abreviaturas,
+    // letras estiradas como «holaaa» o risas como «jaja»).
+    function esInformal(texto) {
+      if (/([a-záéíóúñ])\1{2,}/i.test(texto) || /\b(ja){2,}|\bxd\b|\b(js){2,}/i.test(texto)) return true;
+      const palabras = normalizar(texto).split(" ").filter(Boolean);
+      for (let i = 0; i < palabras.length; i++) {
+        for (const largo of [3, 2, 1]) {
+          if (informales.has(palabras.slice(i, i + largo).join(" "))) return true;
+        }
+      }
+      return false;
+    }
+
+    return {
+      predecir,
+      esInformal,
+      rasgos: (texto) => rasgos(texto, mapa),
+      umbral: modelo.umbral,
+      intenciones: modelo.intenciones,
+      metricas: modelo.metricas,
+    };
   }
 
   const api = { normalizar, traducir, fnv1a, rasgos, vector, crear, DIMENSION };
