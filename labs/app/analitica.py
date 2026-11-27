@@ -25,12 +25,19 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
+
+from . import geo
 
 ZONA = ZoneInfo("America/Santiago")
 RETENCION_DIAS = 180
-TIPOS = {"vista", "clic"}
+TIPOS = {"vista", "clic", "salida"}
+COLUMNAS_EVENTOS = ("creado", "sesion", "tipo", "ruta", "destino", "etiqueta", "referente", "dispositivo", "idioma", "pais", "region", "ciudad", "red", "duracion", "scroll")
+NUEVAS_COLUMNAS = {
+    "portafolio_eventos": {"pais": "TEXT", "region": "TEXT", "ciudad": "TEXT", "red": "TEXT", "duracion": "INTEGER", "scroll": "INTEGER"},
+    "asistente_preguntas": {"sesion": "TEXT"},
+}
 DISPOSITIVOS = {"movil", "tablet", "escritorio"}
 LIMITES = {"ruta": 200, "destino": 300, "etiqueta": 80, "referente": 120, "idioma": 12, "sesion": 40}
 
@@ -38,6 +45,13 @@ LIMITES = {"ruta": 200, "destino": 300, "etiqueta": 80, "referente": 120, "idiom
 def _origenes() -> set[str]:
     crudo = os.getenv("PANEL_ORIGENES", "https://gervasio.sbs,https://www.gervasio.sbs")
     return {o.strip().rstrip("/") for o in crudo.split(",") if o.strip()}
+
+
+def _entero(valor, minimo: int, maximo: int) -> int | None:
+    try:
+        return max(minimo, min(maximo, int(valor)))
+    except (TypeError, ValueError):
+        return None
 
 
 def _texto(valor, limite: int) -> str:
@@ -125,20 +139,30 @@ class Almacen:
                     id {clave}, creado TEXT NOT NULL, pregunta TEXT NOT NULL,
                     intencion TEXT, confianza REAL, motivo TEXT NOT NULL, ruta TEXT)"""
             )
+            # Columnas agregadas después: se suman sin perder los datos guardados.
+            for tabla, columnas in NUEVAS_COLUMNAS.items():
+                if self.postgres:
+                    for nombre, tipo in columnas.items():
+                        c.execute(f"ALTER TABLE {tabla} ADD COLUMN IF NOT EXISTS {nombre} {tipo}")
+                else:
+                    existentes = {fila[1] for fila in c.execute(f"PRAGMA table_info({tabla})")}
+                    for nombre, tipo in columnas.items():
+                        if nombre not in existentes:
+                            c.execute(f"ALTER TABLE {tabla} ADD COLUMN {nombre} {tipo}")
 
     def guardar(self, evento: dict):
-        campos = ("creado", "sesion", "tipo", "ruta", "destino", "etiqueta", "referente", "dispositivo", "idioma")
+        campos = COLUMNAS_EVENTOS
         with self._conexion() as c:
             c.execute(
                 self._sql(f"INSERT INTO portafolio_eventos({','.join(campos)}) VALUES({','.join('?' * len(campos))})"),
-                tuple(evento[k] for k in campos),
+                tuple(evento.get(k) for k in campos),
             )
 
     def desde(self, inicio: datetime) -> list[dict]:
         with self._conexion() as c:
             cursor = c.execute(
                 self._sql(
-                    "SELECT creado,sesion,tipo,ruta,destino,etiqueta,referente,dispositivo,idioma "
+                    f"SELECT {','.join(COLUMNAS_EVENTOS)} "
                     "FROM portafolio_eventos WHERE creado>=? ORDER BY creado"
                 ),
                 (inicio.isoformat(),),
@@ -147,18 +171,18 @@ class Almacen:
             return [dict(zip(nombres, fila)) for fila in cursor.fetchall()]
 
     def guardar_pregunta(self, pregunta: dict):
-        campos = ("creado", "pregunta", "intencion", "confianza", "motivo", "ruta")
+        campos = ("creado", "pregunta", "intencion", "confianza", "motivo", "ruta", "sesion")
         with self._conexion() as c:
             c.execute(
                 self._sql(f"INSERT INTO asistente_preguntas({','.join(campos)}) VALUES({','.join('?' * len(campos))})"),
-                tuple(pregunta[k] for k in campos),
+                tuple(pregunta.get(k) for k in campos),
             )
 
     def preguntas_desde(self, inicio: datetime) -> list[dict]:
         with self._conexion() as c:
             cursor = c.execute(
                 self._sql(
-                    "SELECT creado,pregunta,intencion,confianza,motivo,ruta "
+                    "SELECT creado,pregunta,intencion,confianza,motivo,ruta,sesion "
                     "FROM asistente_preguntas WHERE creado>=? ORDER BY creado"
                 ),
                 (inicio.isoformat(),),
@@ -285,10 +309,113 @@ def resumir(eventos: list[dict], dias: int, ahora: datetime | None = None) -> di
     }
 
 
+def _lugar(e: dict) -> str:
+    partes = [e.get("ciudad"), e.get("region"), e.get("pais")]
+    return ", ".join(dict.fromkeys(x for x in partes if x)) or "Desconocida"
+
+
+def resumir_detalle(eventos: list[dict], preguntas: list[dict], dias: int, ahora: datetime | None = None) -> dict:
+    """Ubicación, comportamiento y recorrido exacto de cada visita (anónimo)."""
+    ahora = (ahora or datetime.now(timezone.utc)).astimezone(ZONA)
+    limite = ahora.date() - timedelta(days=dias - 1)
+    sesiones: dict[str, list[dict]] = defaultdict(list)
+    for e in eventos:
+        local = datetime.fromisoformat(e["creado"]).astimezone(ZONA)
+        if local.date() >= limite:
+            sesiones[e["sesion"]].append({**e, "_local": local})
+    preguntas_por_sesion = Counter(p.get("sesion") for p in preguntas if p.get("sesion"))
+
+    vistas = [e for lista in sesiones.values() for e in lista if e["tipo"] == "vista"]
+    salidas = [e for lista in sesiones.values() for e in lista if e["tipo"] == "salida"]
+
+    # Tiempo y scroll promedio por página (eventos de salida).
+    por_pagina: dict[str, list[dict]] = defaultdict(list)
+    for e in salidas:
+        por_pagina[e["ruta"]].append(e)
+    paginas = sorted(
+        (
+            {
+                "ruta": ruta,
+                "vistas": sum(1 for v in vistas if v["ruta"] == ruta),
+                "segundos": round(sum((x.get("duracion") or 0) for x in lista) / len(lista) / 1000),
+                "scroll": round(sum((x.get("scroll") or 0) for x in lista) / len(lista)),
+            }
+            for ruta, lista in por_pagina.items()
+        ),
+        key=lambda x: -x["vistas"],
+    )[:12]
+
+    recorridos = []
+    duraciones = []
+    entradas, finales = Counter(), Counter()
+    rebotes = 0
+    for sesion, lista in sesiones.items():
+        lista.sort(key=lambda e: e["creado"])
+        vistas_sesion = [e for e in lista if e["tipo"] == "vista"]
+        if not vistas_sesion:
+            continue
+        entradas[vistas_sesion[0]["ruta"]] += 1
+        finales[vistas_sesion[-1]["ruta"]] += 1
+        if len(vistas_sesion) == 1:
+            rebotes += 1
+        # La salida se registra al dejar la página, así que la diferencia entre
+        # el primer y el último evento cubre el tiempo real de la visita.
+        duracion = (lista[-1]["_local"] - lista[0]["_local"]).total_seconds()
+        duraciones.append(duracion)
+        pasos = []
+        for e in lista:
+            if e["tipo"] == "vista":
+                pasos.append({"hora": e["_local"].strftime("%H:%M:%S"), "tipo": "vista", "ruta": e["ruta"]})
+            elif e["tipo"] == "clic":
+                pasos.append({"hora": e["_local"].strftime("%H:%M:%S"), "tipo": "clic", "ruta": e["ruta"], "detalle": e.get("etiqueta") or e.get("destino") or ""})
+            else:
+                pasos.append({"hora": e["_local"].strftime("%H:%M:%S"), "tipo": "salida", "ruta": e["ruta"], "segundos": round((e.get("duracion") or 0) / 1000), "scroll": e.get("scroll")})
+        primera = vistas_sesion[0]
+        recorridos.append(
+            {
+                "inicio": primera["_local"].strftime("%d-%m %H:%M"),
+                "_orden": primera["creado"],
+                "duracion": round(duracion),
+                "paginas": len(vistas_sesion),
+                "clics": sum(1 for e in lista if e["tipo"] == "clic"),
+                "preguntas": preguntas_por_sesion.get(sesion, 0),
+                "lugar": _lugar(primera),
+                "red": primera.get("red") or "",
+                "referente": primera.get("referente") or "directo",
+                "dispositivo": primera.get("dispositivo") or "",
+                "idioma": primera.get("idioma") or "",
+                "pasos": pasos[-60:],
+            }
+        )
+    recorridos.sort(key=lambda r: r["_orden"], reverse=True)
+    for r in recorridos:
+        del r["_orden"]
+    total = len(recorridos)
+    primeras = [next(e for e in sorted(lista, key=lambda e: e["creado"]) if e["tipo"] == "vista") for lista in sesiones.values() if any(e["tipo"] == "vista" for e in lista)]
+    return {
+        "comportamiento": {
+            "sesiones": total,
+            "rebote": round(100 * rebotes / total) if total else 0,
+            "duracion_media": round(sum(duraciones) / len(duraciones)) if duraciones else 0,
+            "paginas_por_sesion": round(len(vistas) / total, 1) if total else 0,
+            "entradas": entradas.most_common(6),
+            "salidas": finales.most_common(6),
+            "paginas": paginas,
+        },
+        "ubicacion": {
+            "paises": Counter(e.get("pais") or "Desconocido" for e in primeras).most_common(8),
+            "lugares": Counter(_lugar(e) for e in primeras).most_common(10),
+            "redes": Counter(e.get("red") or "Desconocida" for e in primeras).most_common(10),
+        },
+        "sesiones": recorridos[:40],
+    }
+
+
 def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
     almacen = Almacen(sqlite_path)
     intentos: dict[str, deque] = defaultdict(deque)
     visitas_ip: dict[str, deque] = defaultdict(deque)
+    ubicaciones: dict[str, tuple[float, dict]] = {}
 
     def cors(request: Request, respuesta: Response) -> Response:
         origen = (request.headers.get("origin") or "").rstrip("/")
@@ -309,7 +436,7 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
         return cors(request, Response(status_code=204))
 
     @app.post("/api/visitas", status_code=204, tags=["analítica"])
-    async def visita(request: Request):
+    async def visita(request: Request, tareas: BackgroundTasks):
         origen = (request.headers.get("origin") or "").rstrip("/")
         if origen not in _origenes():
             raise HTTPException(403, "Origen no permitido")
@@ -329,20 +456,40 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
             raise HTTPException(422, "Evento inválido")
         dispositivo = _texto(datos.get("dispositivo"), 12)
         referente = urlsplit(_texto(datos.get("referente"), LIMITES["referente"])).netloc
-        almacen.guardar(
-            {
-                "creado": datetime.now(timezone.utc).isoformat(),
-                "sesion": sesion,
-                "tipo": tipo,
-                "ruta": ruta,
-                "destino": _texto(datos.get("destino"), LIMITES["destino"]),
-                "etiqueta": _texto(datos.get("etiqueta"), LIMITES["etiqueta"]),
-                "referente": "" if referente.endswith("gervasio.sbs") else referente,
-                "dispositivo": dispositivo if dispositivo in DISPOSITIVOS else "",
-                "idioma": _texto(datos.get("idioma"), LIMITES["idioma"]),
-            }
-        )
+        evento = {
+            "creado": datetime.now(timezone.utc).isoformat(),
+            "sesion": sesion,
+            "tipo": tipo,
+            "ruta": ruta,
+            "destino": _texto(datos.get("destino"), LIMITES["destino"]),
+            "etiqueta": _texto(datos.get("etiqueta"), LIMITES["etiqueta"]),
+            "referente": "" if referente.endswith("gervasio.sbs") else referente,
+            "dispositivo": dispositivo if dispositivo in DISPOSITIVOS else "",
+            "idioma": _texto(datos.get("idioma"), LIMITES["idioma"]),
+        }
+        if tipo == "salida":
+            evento["duracion"] = _entero(datos.get("duracion"), 0, 2 * 3600 * 1000)
+            evento["scroll"] = _entero(datos.get("scroll"), 0, 100)
+        if tipo == "vista":
+            # La ubicación se busca después de responder, con la IP solo en
+            # memoria; a la base llegan país, región, ciudad y red.
+            ip = ip_cliente(request)
+            tareas.add_task(guardar_con_ubicacion, evento, ip)
+        else:
+            almacen.guardar(evento)
         return cors(request, Response(status_code=204))
+
+    def guardar_con_ubicacion(evento: dict, ip: str):
+        guardada = ubicaciones.get(evento["sesion"])
+        if guardada and time.monotonic() - guardada[0] < 4 * 3600:
+            lugar = guardada[1]
+        else:
+            lugar = geo.ubicar(ip)
+            ubicaciones[evento["sesion"]] = (time.monotonic(), lugar)
+            if len(ubicaciones) > 5000:
+                ubicaciones.clear()
+        evento.update(lugar)
+        almacen.guardar(evento)
 
     @app.post("/api/asistente/preguntas", status_code=204, tags=["analítica"])
     async def pregunta_asistente(request: Request):
@@ -378,6 +525,7 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
                 "confianza": confianza,
                 "motivo": motivo,
                 "ruta": _texto(datos.get("ruta"), LIMITES["ruta"]),
+                "sesion": _texto(datos.get("sesion"), LIMITES["sesion"]),
             }
         )
         return cors(request, Response(status_code=204))
@@ -401,8 +549,11 @@ def registrar(app: FastAPI, sqlite_path: str, ip_cliente, permitido) -> None:
         dias = max(1, min(dias, 90))
         almacen.purgar()
         inicio = datetime.now(timezone.utc) - timedelta(days=dias + 1)
-        datos = resumir(almacen.desde(inicio), dias)
-        datos["asistente"] = resumir_preguntas(almacen.preguntas_desde(inicio))
+        eventos = almacen.desde(inicio)
+        preguntas = almacen.preguntas_desde(inicio)
+        datos = resumir([dict(e) for e in eventos], dias)
+        datos["asistente"] = resumir_preguntas(preguntas)
+        datos.update(resumir_detalle(eventos, preguntas, dias))
         respuesta = JSONResponse(datos)
         respuesta.headers["Cache-Control"] = "no-store"
         return cors(request, respuesta)

@@ -17,6 +17,81 @@ const NOMBRES_ACCION = {
 const NOMBRES_DISPOSITIVO = { movil: "Móvil", tablet: "Tablet", escritorio: "Escritorio" };
 let temporizador;
 
+// Huellas de las preguntas que ya están en el entrenamiento del asistente:
+// sirven para separar «Por enseñar» de «Ya aprendidas».
+let huellas = null;
+async function cargarHuellas() {
+  if (huellas) return huellas;
+  try {
+    const modelo = await (await fetch("../asistente/modelo.json", { cache: "no-store" })).json();
+    huellas = new Set(modelo.huellas || []);
+  } catch {
+    huellas = new Set();
+  }
+  return huellas;
+}
+const huella = (texto) =>
+  window.RedAsistente ? window.RedAsistente.fnv1a(window.RedAsistente.normalizar(texto)).toString(16).padStart(8, "0") : "";
+const aprendida = (texto) => Boolean(huellas && huellas.has(huella(texto)));
+
+const duracionLegible = (segundos) => {
+  if (!segundos) return "0 s";
+  const m = Math.floor(segundos / 60);
+  const s = segundos % 60;
+  return m ? `${m} min ${s} s` : `${s} s`;
+};
+const NOMBRES_PASO = { vista: "Abrió", clic: "Clic", salida: "Dejó" };
+
+function recorridos(lista) {
+  const caja = $("recorridos");
+  caja.replaceChildren();
+  if (!lista.length) {
+    const p = document.createElement("p");
+    p.className = "vacio";
+    p.textContent = "Sin visitas en el período.";
+    caja.append(p);
+    return;
+  }
+  for (const r of lista) {
+    const detalle = document.createElement("details");
+    detalle.className = "recorrido";
+    const resumen = document.createElement("summary");
+    const titulo = document.createElement("strong");
+    titulo.textContent = `${r.inicio} · ${r.lugar}`;
+    const datos = document.createElement("span");
+    const partes = [
+      `${r.paginas} página${r.paginas === 1 ? "" : "s"}`,
+      duracionLegible(r.duracion),
+      r.clics ? `${r.clics} clic${r.clics === 1 ? "" : "s"}` : "",
+      r.preguntas ? `${r.preguntas} pregunta${r.preguntas === 1 ? "" : "s"} al chat` : "",
+      NOMBRES_DISPOSITIVO[r.dispositivo] || "",
+      `desde ${r.referente}`,
+    ].filter(Boolean);
+    datos.textContent = partes.join(" · ");
+    resumen.append(titulo, datos);
+    if (r.red) {
+      const red = document.createElement("small");
+      red.textContent = `Red: ${r.red}`;
+      resumen.append(red);
+    }
+    const pasos = document.createElement("ol");
+    for (const paso of r.pasos) {
+      const li = document.createElement("li");
+      li.className = `paso-${paso.tipo}`;
+      const hora = document.createElement("time");
+      hora.textContent = paso.hora;
+      const texto = document.createElement("span");
+      if (paso.tipo === "vista") texto.textContent = `${NOMBRES_PASO.vista} ${paso.ruta}`;
+      else if (paso.tipo === "clic") texto.textContent = `${NOMBRES_PASO.clic} en «${paso.detalle}» (en ${paso.ruta})`;
+      else texto.textContent = `${NOMBRES_PASO.salida} ${paso.ruta} tras ${duracionLegible(paso.segundos)}, bajó ${paso.scroll ?? 0} %`;
+      li.append(hora, texto);
+      pasos.append(li);
+    }
+    detalle.append(resumen, pasos);
+    caja.append(detalle);
+  }
+}
+
 function guardarClave(clave) {
   try {
     if (clave) sessionStorage.setItem("panel-clave", clave);
@@ -139,17 +214,43 @@ function pintar(datos) {
   lista("idiomas", datos.idiomas);
   filas("recientes", datos.recientes, [
     (e) => e.hora,
-    (e) => (e.tipo === "vista" ? "Visita" : "Clic"),
+    (e) => ({ vista: "Visita", clic: "Clic", salida: "Salida" })[e.tipo] || e.tipo,
     (e) => e.ruta,
     (e) => e.detalle,
     (e) => NOMBRES_DISPOSITIVO[e.dispositivo] || "–",
   ]);
+  const c = datos.comportamiento || { duracion_media: 0, rebote: 0, paginas_por_sesion: 0, entradas: [], salidas: [], paginas: [] };
+  $("t-duracion").textContent = duracionLegible(c.duracion_media);
+  $("t-paginas-sesion").textContent = `${String(c.paginas_por_sesion).replace(".", ",")} páginas por visita`;
+  $("t-rebote").textContent = `${c.rebote} %`;
+  lista("entradas", c.entradas);
+  lista("salidas", c.salidas);
+  filas("atencion", c.paginas, [
+    (p) => p.ruta,
+    (p) => p.vistas,
+    (p) => duracionLegible(p.segundos),
+    (p) => `${p.scroll} %`,
+  ]);
+  const u = datos.ubicacion || { paises: [], lugares: [], redes: [] };
+  lista("paises", u.paises);
+  lista("lugares", u.lugares);
+  lista("redes", u.redes);
+  recorridos(datos.sesiones || []);
+
   const asistente = datos.asistente || { total: 0, sin_respuesta: 0, no_sirvio: 0, frecuentes: [], recientes: [] };
+  const pendientes = asistente.recientes.filter((p) => !aprendida(p.pregunta));
+  const listas = asistente.recientes.filter((p) => aprendida(p.pregunta));
   $("asistente-resumen").textContent =
-    `${numero(asistente.total)} preguntas por revisar en el período: ` +
-    `${numero(asistente.sin_respuesta)} sin respuesta y ${numero(asistente.no_sirvio)} marcadas como «no me sirvió».`;
-  lista("asistente-frecuentes", asistente.frecuentes);
-  filas("asistente-recientes", asistente.recientes, [
+    `${numero(pendientes.length)} preguntas por enseñar y ${numero(listas.length)} ya aprendidas ` +
+    `(de las últimas ${numero(asistente.recientes.length)}; ${numero(asistente.no_sirvio)} marcadas como «no me sirvió»).`;
+  lista("asistente-frecuentes", asistente.frecuentes.filter(([texto]) => !aprendida(texto)));
+  $("aprendidas-total").textContent = `(${listas.length})`;
+  filas("asistente-aprendidas", listas, [
+    (p) => p.hora,
+    (p) => p.pregunta,
+    (p) => (p.motivo === "no_sirvio" ? "No le sirvió" : "Sin respuesta"),
+  ]);
+  filas("asistente-recientes", pendientes, [
     (p) => p.hora,
     (p) => p.pregunta,
     (p) => (p.intencion || "–").replaceAll("_", " "),
@@ -164,6 +265,7 @@ async function cargar() {
   const clave = leerClave();
   if (!clave) return mostrarAcceso();
   try {
+    await cargarHuellas();
     pintar(await pedir(clave));
   } catch (error) {
     if (error.status === 401 || error.status === 429) {
@@ -199,7 +301,7 @@ $("formulario").addEventListener("submit", async (evento) => {
   boton.disabled = true;
   $("mensaje-acceso").textContent = "Comprobando… (si el servidor estaba apagado puede tardar unos segundos)";
   try {
-    const datos = await pedir(clave);
+    const [datos] = await Promise.all([pedir(clave), cargarHuellas()]);
     guardarClave(clave);
     try {
       if ($("no-contar").checked) localStorage.setItem("panel-no-contar", "1");

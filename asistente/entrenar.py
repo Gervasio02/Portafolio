@@ -30,7 +30,7 @@ import yaml
 AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI))
 
-from caracteristicas import DIMENSION, chilenismos, normalizar, vector  # noqa: E402
+from caracteristicas import DIMENSION, chilenismos, fnv1a, normalizar, vector  # noqa: E402
 
 RAIZ = AQUI.parent
 CONOCIMIENTO = AQUI / "conocimiento.yml"
@@ -278,6 +278,9 @@ def main(argv: list[str] | None = None) -> int:
             "b2": [round(float(v), 5) for v in red.p["b2"]],
         },
         "chilenismos": chilenismos(),
+        # Huellas de las preguntas de entrenamiento: el panel las usa para
+        # separar las preguntas ya aprendidas de las que faltan por enseñar.
+        "huellas": sorted({format(fnv1a(normalizar(e)), "08x") for i in intenciones for e in i["ejemplos"]}),
         "intenciones": [
             {
                 "id": i["id"],
