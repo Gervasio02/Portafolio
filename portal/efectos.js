@@ -1,7 +1,7 @@
 "use strict";
 
 // Efectos animados de la portada, pensados para no trabar la página:
-// 1. Partículas conectadas detrás de la presentación (como una red neuronal).
+// 1. Partículas conectadas fijas detrás de toda la página (como una red neuronal).
 // 2. Una mini serpiente que recorre el pie, en honor al proyecto Snake.
 //
 // Reglas de rendimiento:
@@ -47,7 +47,7 @@
       lienzo.width = Math.round(ancho * densidad);
       lienzo.height = Math.round(alto * densidad);
       ctx.setTransform(densidad, 0, 0, densidad, 0, 0);
-      // Una partícula cada ~22 000 px², con un máximo de 70.
+      // Una partícula cada ~22 000 px² de pantalla, con un máximo de 70.
       const cantidad = Math.max(18, Math.min(70, Math.round((ancho * alto) / 22000)));
       puntos = Array.from({ length: cantidad }, () => ({
         x: Math.random() * ancho,
