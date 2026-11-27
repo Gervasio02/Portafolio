@@ -89,32 +89,51 @@
       }
     }
 
+    // Partícula y estrella nuevas en un punto al azar de la pantalla.
+    const nuevaParticula = () => ({
+      x: Math.random() * ancho,
+      y: Math.random() * alto,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() < 0.2 ? 2.2 : 1.4,
+    });
+    const nuevaEstrella = () => ({
+      x: Math.random() * ancho,
+      y: Math.random() * alto,
+      fase: Math.random() * Math.PI * 2,
+      ritmo: 0.0008 + Math.random() * 0.0016,
+    });
+
+    // Ajusta la cantidad sin rehacer la red: solo suma o quita las que faltan
+    // o sobran, para que nada «salte» al cambiar el tamaño.
+    function ajustar(lista, cantidad, crear) {
+      while (lista.length < cantidad) lista.push(crear());
+      lista.length = cantidad;
+    }
+
     function medir() {
-      ancho = caja.clientWidth;
-      alto = caja.clientHeight;
+      const nuevoAncho = caja.clientWidth;
+      const nuevoAlto = caja.clientHeight;
+      // En el teléfono la barra del navegador dispara «resize» al hacer scroll;
+      // si el tamaño real no cambió no hay nada que hacer.
+      if (nuevoAncho === ancho && nuevoAlto === alto) return false;
+      // Las partículas que ya existen se quedan donde están; si alguna queda
+      // fuera de la pantalla vuelve sola nadando hacia adentro.
+      ancho = nuevoAncho;
+      alto = nuevoAlto;
       lienzo.width = Math.round(ancho * densidad);
       lienzo.height = Math.round(alto * densidad);
       ctx.setTransform(densidad, 0, 0, densidad, 0, 0);
       // Una partícula cada ~22 000 px² de pantalla, con un máximo de 70.
       const cantidad = Math.max(18, Math.min(70, Math.round((ancho * alto) / 22000)));
-      puntos = Array.from({ length: cantidad }, () => ({
-        x: Math.random() * ancho,
-        y: Math.random() * alto,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() < 0.2 ? 2.2 : 1.4,
-      }));
+      ajustar(puntos, cantidad, nuevaParticula);
       // Pocas estrellas que titilan; el resto vive en la capa quieta.
-      estrellas = Array.from({ length: Math.max(12, Math.min(40, cantidad)) }, () => ({
-        x: Math.random() * ancho,
-        y: Math.random() * alto,
-        fase: Math.random() * Math.PI * 2,
-        ritmo: 0.0008 + Math.random() * 0.0016,
-      }));
+      ajustar(estrellas, Math.max(12, Math.min(40, cantidad)), nuevaEstrella);
       pintarCapa();
+      return true;
     }
 
-    function estrellaFugaz(t) {
+    function estrellaFugaz(t, paso) {
       if (!fugaz) {
         if (t < proximaFugaz) return;
         // Cruza en diagonal desde la parte alta, cada 7 a 16 segundos.
@@ -130,9 +149,9 @@
         };
       }
       const f = fugaz;
-      f.x += f.vx;
-      f.y += f.vy;
-      f.vida += 1;
+      f.x += f.vx * paso;
+      f.y += f.vy * paso;
+      f.vida += paso;
       const avance = f.vida / f.duracion;
       const opacidad = Math.sin(Math.min(avance, 1) * Math.PI);
       const cola = ctx.createLinearGradient(f.x, f.y, f.x - f.vx * 12, f.y - f.vy * 12);
@@ -154,7 +173,12 @@
       }
     }
 
+    // El movimiento se mide en tiempo real y no por cuadro: si el navegador
+    // se salta cuadros (scroll, otra pestaña) las partículas no dan saltos.
+    let anterior = 0;
     function dibujar(t = 0) {
+      const paso = anterior ? Math.min(t - anterior, 50) / (1000 / 60) : 1;
+      anterior = t;
       ctx.clearRect(0, 0, ancho, alto);
       ctx.drawImage(capa, 0, 0, ancho, alto);
       for (const e of estrellas) {
@@ -162,13 +186,17 @@
         ctx.fillStyle = `rgba(241, 236, 250, ${luz})`;
         ctx.fillRect(e.x - 0.9, e.y - 0.9, 1.8, 1.8);
       }
-      if (!quieto) estrellaFugaz(t);
+      if (!quieto) estrellaFugaz(t, paso);
       for (const p of puntos) {
         if (!quieto) {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < 0 || p.x > ancho) p.vx *= -1;
-          if (p.y < 0 || p.y > alto) p.vy *= -1;
+          p.x += p.vx * paso;
+          p.y += p.vy * paso;
+          // Rebote suave: al pasar un borde la partícula gira hacia adentro sin
+          // moverla de golpe, así nunca queda temblando en la orilla.
+          if (p.x < 0) p.vx = Math.abs(p.vx);
+          else if (p.x > ancho) p.vx = -Math.abs(p.vx);
+          if (p.y < 0) p.vy = Math.abs(p.vy);
+          else if (p.y > alto) p.vy = -Math.abs(p.vy);
         }
       }
       ctx.lineWidth = 1;
@@ -209,6 +237,7 @@
     const iniciar = () => {
       if (activo || document.hidden) return;
       activo = true;
+      anterior = 0;
       cuadro = requestAnimationFrame(dibujar);
     };
     const detener = () => {
@@ -225,21 +254,24 @@
     window.addEventListener("resize", () => {
       clearTimeout(espera);
       espera = setTimeout(() => {
-        medir();
-        if (!activo) dibujar();
+        if (medir() && !activo) dibujar();
       }, 200);
     });
     window.addEventListener(
       "pointermove",
       (e) => {
+        // En pantallas táctiles el dedo hace scroll: no se dibujan líneas hacia
+        // él, porque quedaban pegadas donde se levantó el dedo.
+        if (e.pointerType !== "mouse") return;
         const caja2 = lienzo.getBoundingClientRect();
         puntero.x = e.clientX - caja2.left;
         puntero.y = e.clientY - caja2.top;
       },
       { passive: true },
     );
-    document.addEventListener("pointerleave", () => {
-      puntero.x = puntero.y = -9999;
+    // El mouse salió de la ventana: se sueltan las líneas.
+    document.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget) puntero.x = puntero.y = -9999;
     });
   }
 

@@ -1102,7 +1102,13 @@ a:hover {
    el documento completo. */
 .fondo-particulas {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Alto de la pantalla grande (con la barra del navegador escondida): en el
+     teléfono el lienzo no cambia de tamaño al hacer scroll. */
+  height: 100vh;
+  height: 100lvh;
   z-index: -1;
   pointer-events: none;
 }
