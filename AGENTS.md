@@ -73,8 +73,9 @@ URLs públicas y recuperación: `GESTION_PORTAFOLIO.md`. Publicación: `PUBLICAC
   desde `portal/fuentes/`. Variables en `portal/portada.css` (portada) y
   `portal/tema.css` (interiores). El CV impreso (PDF) mantiene su estilo claro para impresión.
 - `portal/animaciones.js` anima la portada (consola que escribe y aparición al
-  hacer scroll con cifras que cuentan) y `portal/efectos.js` dibuja las
-  partículas conectadas del inicio y la serpiente del pie (canvas que solo se
+  hacer scroll con cifras que cuentan) y `portal/efectos.js` dibuja el fondo
+  espacial fijo de toda la página (estrellas, dos planetas tenues, estrella
+  fugaz ocasional y partículas conectadas) y la serpiente del pie (canvas que solo se
   anima en pantalla y con la pestaña visible). La línea neón de la cabecera es
   CSS. Todo debe verse igual sin JavaScript, respetar `prefers-reduced-motion`
   y animar solo `transform`/`opacity` o canvas acotado.
