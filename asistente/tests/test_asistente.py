@@ -74,6 +74,13 @@ def intenciones():
 
 
 @pytest.fixture(scope="module")
+def modelo_exportado(tmp_path_factory):
+    salida = tmp_path_factory.mktemp("modelo") / "modelo.json"
+    entrenar.main(["--salida", str(salida), "--rapido"])
+    return salida
+
+
+@pytest.fixture(scope="module")
 def red(intenciones):
     pares, _ = entrenar.preparar(intenciones, entrenar.SEMILLA, 0.0)
     modelo, _ = entrenar.entrenar_red(pares, len(intenciones), entrenar.SEMILLA)
@@ -143,10 +150,12 @@ def test_paridad_con_javascript():
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="requiere Node.js")
-def test_modelo_exportado_responde_igual_en_javascript(tmp_path):
-    salida = tmp_path / "modelo.json"
-    entrenar.main(["--salida", str(salida)])
+def test_modelo_exportado_responde_igual_en_javascript(modelo_exportado):
+    salida = modelo_exportado
     modelo = json.loads(salida.read_text(encoding="utf-8"))
+    from caracteristicas import fnv1a
+
+    assert format(fnv1a(normalizar("¿qué tecnologías usas?")), "08x") in modelo["huellas"]
     assert modelo["metricas"]["exactitud_entrenamiento"] > 0.95
     script = (
         "const r = require(process.argv[1]);"
@@ -164,3 +173,29 @@ def test_modelo_exportado_responde_igual_en_javascript(tmp_path):
     )
     esperados = [e for _, e in PREGUNTAS_NUEVAS]
     assert np.mean([a == b for a, b in zip(ids_js, esperados)]) >= 0.85
+
+
+def test_exporta_botones_formales_y_registro_informal():
+    from caracteristicas import informales
+
+    intenciones = {i["id"]: entrenar.exportar_intencion(i) for i in entrenar.cargar_conocimiento()}
+    assert intenciones["stack"]["pregunta"] == "¿Qué tecnologías domina?"
+    assert intenciones["stack"]["pregunta_informal"] != intenciones["stack"]["pregunta"]
+    assert "usted" in intenciones["saludo"]["respuesta"] or "le puedo" in intenciones["saludo"]["respuesta"]
+    assert "respuesta_informal" in intenciones["saludo"]
+    marcas = set(informales())
+    assert {"cachai", "po", "xq"} <= marcas and "cv" not in marcas and "js" not in marcas
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="requiere Node.js")
+def test_detecta_tono_informal_en_javascript(modelo_exportado):
+    salida = modelo_exportado
+    script = (
+        "const r = require(process.argv[1]); const red = r.crear(require(process.argv[2]));"
+        "const t = JSON.parse(process.argv[3]); console.log(JSON.stringify(t.map(x => red.esInformal(x))));"
+    )
+    textos = ["¿Qué tecnologías domina?", "¿Tiene experiencia con CV y JS?", "cachai de react po", "holaaaa", "jajaja ok", "q lenguajes sabi"]
+    resultado = json.loads(
+        subprocess.run(["node", "-e", script, str(RED_JS), str(salida), json.dumps(textos)], check=True, capture_output=True, text=True).stdout
+    )
+    assert resultado == [False, False, True, True, True, True]

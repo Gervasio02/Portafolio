@@ -353,6 +353,17 @@ th:not(:first-child) {
   color: var(--acento);
 }
 
+.enlace-portafolio {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  color: var(--texto);
+  text-decoration: none;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+}
+
 .recorridos {
   display: grid;
   gap: 0.5rem;
@@ -365,15 +376,25 @@ th:not(:first-child) {
 }
 
 .recorrido summary {
-  display: grid;
-  gap: 0.15rem;
+  display: block;
   padding: 0.7rem 0.9rem;
   cursor: pointer;
   list-style-position: inside;
 }
 
+.recorrido summary strong,
 .recorrido summary span,
 .recorrido summary small {
+  display: block;
+}
+
+.recorrido summary strong {
+  display: inline;
+}
+
+.recorrido summary span,
+.recorrido summary small {
+  margin-top: 0.15rem;
   color: var(--suave);
   font-size: 0.82rem;
 }
@@ -413,4 +434,8 @@ th:not(:first-child) {
   cursor: pointer;
   color: var(--ok);
   font-weight: 600;
+}
+
+#t-duracion {
+  font-size: 1.5rem;
 }

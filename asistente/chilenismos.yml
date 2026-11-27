@@ -9,6 +9,11 @@
 # uso cotidiano; ante dudas de significado, consultar el Diccionario de uso
 # del español de Chile (DUECh) de la Academia Chilena de la Lengua.
 
+# Palabras del diccionario que NO indican un tono informal (siglas técnicas
+# o palabras neutras). Todas las demás, si aparecen en la pregunta, hacen
+# que el asistente responda en registro coloquial.
+neutros: [cv, js, ts, py, bd, bbdd, db, info, dev, devs, front, back, pc, jefe, vale, aca, practica profesional, sorry]
+
 chilenismos:
   # Muletillas y saludos
   po: ""

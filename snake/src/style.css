@@ -504,3 +504,48 @@ footer b {
   margin: 6px 0 14px;
   accent-color: #a6eea1;
 }
+
+/* Botón para volver al portafolio (igual en todas las apps del portafolio). */
+.volver-portafolio {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid #a855f7;
+  border-radius: 999px;
+  background: #14101f;
+  color: #f1ecfa;
+  font: 600 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  text-decoration: none;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35), 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.volver-portafolio:hover,
+.volver-portafolio:focus-visible {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 22px rgba(255, 46, 99, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.volver-portafolio:focus-visible {
+  outline: 2px solid #c084fc;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .volver-portafolio {
+    transition: none;
+  }
+}
+
+@media print {
+  .volver-portafolio {
+    display: none;
+  }
+}

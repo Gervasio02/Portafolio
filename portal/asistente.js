@@ -20,6 +20,38 @@
   let red = null;
   let cargando = null;
   let abierto = false;
+  // Registro de la conversación: empieza formal (pensado para reclutadores)
+  // y pasa a coloquial si el visitante escribe con chilenismos o abreviaturas.
+  let registro = "formal";
+  const informal = () => registro === "informal";
+  const T = {
+    bienvenida: {
+      formal: "Bienvenido o bienvenida. Soy el asistente del portafolio de Gervasio Torres, una red neuronal que él programó. ¿En qué le puedo ayudar? Puede consultarme por su experiencia, proyectos, tecnologías o disponibilidad.",
+      informal: "¡Wena! Soy el asistente del portafolio de Gervasio. Pregúntame lo que quieras.",
+    },
+    noSe: {
+      formal:
+        "No estoy seguro de haber entendido y prefiero no darle una respuesta inexacta. Registré su pregunta para que Gervasio me enseñe. " +
+        "Mientras tanto, puede [buscarlo en la web](https://www.google.com/search?q={pregunta}) o escribirle a " +
+        "[Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
+      informal:
+        "Uf, no te caché bien y no te quiero inventar nada. Guardé tu pregunta para que Gervasio me enseñe. " +
+        "Mientras, puedes [buscarlo en la web](https://www.google.com/search?q={pregunta}) o escribirle a " +
+        "[Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
+    },
+    sinRed: {
+      formal: "No pude cargar mi red en este momento. Puede escribirle a Gervasio: [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
+      informal: "No pude cargar mi red ahora. Escríbele a Gervasio: [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
+    },
+    quisiste: { formal: "¿Quiso consultar…?", informal: "¿Quisiste preguntar…?" },
+    temas: { formal: "Puedo ayudarle con:", informal: "Te puedo ayudar con:" },
+    util: { formal: "¿Le fue útil?", informal: "¿Te sirvió?" },
+    graciasSi: { formal: "Muchas gracias.", informal: "¡Bacán, gracias!" },
+    graciasNo: { formal: "Gracias, se lo comunicaré a Gervasio para mejorar.", informal: "Gracias, se lo cuento a Gervasio para mejorar." },
+    consultando: { formal: "Consultando…", informal: "Dame un segundo…" },
+    notaIA: { formal: "respuesta generada con IA · puede contener errores", informal: "respuesta generada con IA · puede equivocarse" },
+  };
+  const texto = (clave) => T[clave][registro];
 
   /* ---------- interfaz ---------- */
   const raiz = document.createElement("div");
@@ -42,7 +74,7 @@
       <form class="asis-formulario" autocomplete="off">
         <label class="asis-oculto" for="asis-entrada">Escribe tu pregunta</label>
         <input id="asis-entrada" name="pregunta" type="text" maxlength="200"
-          placeholder="Ej.: ¿qué tecnologías usas?" required />
+          placeholder="Ej.: ¿Qué tecnologías domina?" required />
         <button type="submit">Enviar</button>
       </form>
       <p class="asis-pie">
@@ -148,7 +180,8 @@
       if (!intencion) continue;
       const chip = document.createElement("button");
       chip.type = "button";
-      chip.textContent = intencion.pregunta.replace(/^\s*¿?/, "¿").replace(/\??\s*$/, "?");
+      const base = informal() ? intencion.pregunta_informal || intencion.pregunta : intencion.pregunta;
+      chip.textContent = base.replace(/^\s*¿?/, "¿").replace(/\??\s*$/, "?");
       chip.addEventListener("click", () => preguntar(chip.textContent));
       caja.append(chip);
     }
@@ -170,7 +203,14 @@
   /* ---------- aprendizaje (opt-out con «No rastrear») ---------- */
   function aprender(pregunta, prediccion, motivo) {
     if (!enProduccion || navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true) return;
+    let sesion = "";
+    try {
+      sesion = sessionStorage.getItem("visita-sesion") || "";
+    } catch {
+      /* sin almacenamiento */
+    }
     const cuerpo = JSON.stringify({
+      sesion,
       pregunta: pregunta.slice(0, 200),
       intencion: prediccion.intencion.id,
       confianza: Math.round(prediccion.probabilidad * 1000) / 1000,
@@ -190,7 +230,7 @@
     const caja = document.createElement("div");
     caja.className = "asis-valorar";
     const etiqueta = document.createElement("span");
-    etiqueta.textContent = "¿Te sirvió?";
+    etiqueta.textContent = texto("util");
     const si = document.createElement("button");
     si.type = "button";
     si.textContent = "Sí";
@@ -198,7 +238,7 @@
     no.type = "button";
     no.textContent = "No";
     const responder = (util) => {
-      caja.replaceChildren(util ? "¡Gracias!" : "Gracias, se lo cuento a Gervasio para enseñarme.");
+      caja.replaceChildren(util ? texto("graciasSi") : texto("graciasNo"));
       if (!util) aprender(pregunta, prediccion, "no_sirvio");
     };
     si.addEventListener("click", () => responder(true));
@@ -216,7 +256,7 @@
       const respuesta = await fetch(API_IA, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ pregunta: pregunta.slice(0, 200) }),
+        body: JSON.stringify({ pregunta: pregunta.slice(0, 200), registro }),
         signal: control.signal,
       });
       if (!respuesta.ok) return null;
@@ -229,20 +269,20 @@
     }
   }
 
-  function respuestaIA(texto) {
-    const msg = burbuja("bot", conEnlaces(texto, true));
+  function respuestaIA(generado) {
+    const msg = burbuja("bot", conEnlaces(generado, true));
     const nota = document.createElement("div");
     nota.className = "asis-confianza";
     const etiqueta = document.createElement("span");
-    etiqueta.textContent = "respuesta generada con IA · puede equivocarse";
+    etiqueta.textContent = texto("notaIA");
     nota.append(document.createElement("i"), etiqueta);
     msg.append(nota);
     return msg;
   }
 
   /* ---------- conversación ---------- */
-  async function preguntar(texto) {
-    const pregunta = texto.trim();
+  async function preguntar(escrito) {
+    const pregunta = escrito.trim();
     if (!pregunta) return;
     burbuja("usuario", pregunta);
     const escribiendo = burbuja("bot asis-escribiendo", "…");
@@ -250,9 +290,10 @@
       await cargarRed();
     } catch {
       escribiendo.remove();
-      burbuja("bot", conEnlaces("No pude cargar mi red ahora. Escríbele a Gervasio: [Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com)."));
+      burbuja("bot", conEnlaces(texto("sinRed")));
       return;
     }
+    if (red.esInformal(pregunta)) registro = "informal";
     const { vacio, resultado } = red.predecir(pregunta);
     const [mejor, segunda] = resultado;
     await new Promise((r) => setTimeout(r, 250));
@@ -261,11 +302,11 @@
     const sinRespuesta = vacio || mejor.probabilidad < red.umbral;
     if (sinRespuesta || mejor.intencion.id === "fuera_de_tema") {
       aprender(pregunta, mejor, "sin_respuesta");
-      const pensando = burbuja("bot asis-escribiendo", "Consultando…");
-      const texto = await consultarIA(pregunta);
+      const pensando = burbuja("bot asis-escribiendo", texto("consultando"));
+      const respuestaGenerada = await consultarIA(pregunta);
       pensando.remove();
-      if (texto) {
-        const msg = respuestaIA(texto);
+      if (respuestaGenerada) {
+        const msg = respuestaIA(respuestaGenerada);
         msg.append(valoracion(pregunta, mejor));
         sugerencias(["ayuda", "proyectos"]);
         return;
@@ -276,13 +317,7 @@
       const msg = burbuja(
         "bot",
         conEnlaces(
-          completar(
-            "No estoy seguro de haber entendido, así que no quiero inventarte una respuesta. " +
-              "Guardé tu pregunta para que Gervasio me enseñe. Mientras tanto, puedes " +
-              "[buscarlo en la web](https://www.google.com/search?q={pregunta}) o escribirle a " +
-              "[Gervasiot19@gmail.com](mailto:Gervasiot19@gmail.com).",
-            pregunta
-          )
+          completar(texto("noSe"), pregunta)
         )
       );
       msg.append(confianza(mejor.probabilidad));
@@ -291,12 +326,13 @@
       const opciones = [mejor, segunda]
         .filter((p) => p.probabilidad >= 0.2 && p.intencion.id !== "fuera_de_tema")
         .map((p) => p.intencion.id);
-      if (opciones.length) sugerencias(opciones, "¿Quisiste preguntar…?");
-      else sugerencias(INICIO, "Puedo ayudarte con:");
+      if (opciones.length) sugerencias(opciones, texto("quisiste"));
+      else sugerencias(INICIO, texto("temas"));
       return;
     }
 
-    const msg = burbuja("bot", conEnlaces(completar(mejor.intencion.respuesta, pregunta)));
+    const elegida = (informal() && mejor.intencion.respuesta_informal) || mejor.intencion.respuesta;
+    const msg = burbuja("bot", conEnlaces(completar(elegida, pregunta)));
     msg.append(confianza(mejor.probabilidad));
     const charla = ["saludo", "despedida", "gracias", "acuse", "como_estas", "hora", "fuera_de_tema"];
     if (!charla.includes(mejor.intencion.id)) {
@@ -313,7 +349,7 @@
     raiz.classList.add("asis-activo");
     entrada.focus();
     if (!mensajes.childElementCount) {
-      burbuja("bot", "¡Hola! Soy una red neuronal que Gervasio programó y entrenó con su portafolio. Pregúntame lo que quieras saber de él.");
+      burbuja("bot", texto("bienvenida"));
       try {
         await cargarRed();
         sugerencias(INICIO);
@@ -338,9 +374,9 @@
   });
   formulario.addEventListener("submit", (e) => {
     e.preventDefault();
-    const texto = entrada.value;
+    const escrito = entrada.value;
     entrada.value = "";
-    preguntar(texto);
+    preguntar(escrito);
   });
 
   // Permite abrir el chat con un enlace a #preguntame.

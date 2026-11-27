@@ -30,7 +30,7 @@ import yaml
 AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI))
 
-from caracteristicas import DIMENSION, chilenismos, fnv1a, normalizar, vector  # noqa: E402
+from caracteristicas import DIMENSION, chilenismos, fnv1a, informales, normalizar, vector  # noqa: E402
 
 RAIZ = AQUI.parent
 CONOCIMIENTO = AQUI / "conocimiento.yml"
@@ -230,24 +230,47 @@ def cuantizar(matriz: np.ndarray) -> dict:
     }
 
 
+def _texto(valor) -> str:
+    return " ".join(str(valor).split())
+
+
+def exportar_intencion(intencion: dict) -> dict:
+    """Datos de una intención para el navegador (registro formal e informal)."""
+    formales = [e for e in intencion["ejemplos"] if e.strip().startswith("¿")]
+    pregunta = intencion.get("boton") or (formales or intencion["ejemplos"])[0]
+    salida = {
+        "id": intencion["id"],
+        "pregunta": pregunta,
+        "pregunta_informal": intencion.get("boton_informal") or pregunta,
+        "respuesta": _texto(intencion["respuesta"]),
+        "sugerencias": intencion.get("sugerencias", []),
+    }
+    if intencion.get("respuesta_informal"):
+        salida["respuesta_informal"] = _texto(intencion["respuesta_informal"])
+    return salida
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--informe", action="store_true", help="muestra las preguntas de validación que falló")
     parser.add_argument("--salida", type=Path, default=SALIDA)
+    parser.add_argument("--rapido", action="store_true", help="omite la validación (para pruebas)")
     args = parser.parse_args(argv)
 
     intenciones = cargar_conocimiento()
     clases = len(intenciones)
 
     # 1) Validación: entrena sin el 20 % de los ejemplos y mide con ellos.
-    entrenamiento, prueba = preparar(intenciones, SEMILLA, 0.2)
-    red, _ = entrenar_red(entrenamiento, clases, SEMILLA)
-    prob = red.predecir(a_matriz([f for f, _ in prueba]))
-    acierto = float(np.mean(prob.argmax(axis=1) == np.array([c for _, c in prueba])))
-    if args.informe:
-        for (frase, clase), fila in zip(prueba, prob):
-            if fila.argmax() != clase:
-                print(f"  ✗ «{frase}» → {intenciones[fila.argmax()]['id']} (esperaba {intenciones[clase]['id']})")
+    acierto = 0.0
+    if not args.rapido:
+        entrenamiento, prueba = preparar(intenciones, SEMILLA, 0.2)
+        red, _ = entrenar_red(entrenamiento, clases, SEMILLA)
+        prob = red.predecir(a_matriz([f for f, _ in prueba]))
+        acierto = float(np.mean(prob.argmax(axis=1) == np.array([c for _, c in prueba])))
+        if args.informe:
+            for (frase, clase), fila in zip(prueba, prob):
+                if fila.argmax() != clase:
+                    print(f"  ✗ «{frase}» → {intenciones[fila.argmax()]['id']} (esperaba {intenciones[clase]['id']})")
 
     # 2) Modelo final: entrena con todos los ejemplos.
     todos, _ = preparar(intenciones, SEMILLA, 0.0)
@@ -281,15 +304,8 @@ def main(argv: list[str] | None = None) -> int:
         # Huellas de las preguntas de entrenamiento: el panel las usa para
         # separar las preguntas ya aprendidas de las que faltan por enseñar.
         "huellas": sorted({format(fnv1a(normalizar(e)), "08x") for i in intenciones for e in i["ejemplos"]}),
-        "intenciones": [
-            {
-                "id": i["id"],
-                "pregunta": i["ejemplos"][0],
-                "respuesta": " ".join(str(i["respuesta"]).split()),
-                "sugerencias": i.get("sugerencias", []),
-            }
-            for i in intenciones
-        ],
+        "informales": informales(),
+        "intenciones": [exportar_intencion(i) for i in intenciones],
     }
     args.salida.parent.mkdir(parents=True, exist_ok=True)
     args.salida.write_text(json.dumps(modelo, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
