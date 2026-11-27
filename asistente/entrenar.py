@@ -30,7 +30,7 @@ import yaml
 AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI))
 
-from caracteristicas import DIMENSION, chilenismos, informales, normalizar, vector  # noqa: E402
+from caracteristicas import DIMENSION, chilenismos, fnv1a, informales, normalizar, vector  # noqa: E402
 
 RAIZ = AQUI.parent
 CONOCIMIENTO = AQUI / "conocimiento.yml"
@@ -254,20 +254,23 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--informe", action="store_true", help="muestra las preguntas de validación que falló")
     parser.add_argument("--salida", type=Path, default=SALIDA)
+    parser.add_argument("--rapido", action="store_true", help="omite la validación (para pruebas)")
     args = parser.parse_args(argv)
 
     intenciones = cargar_conocimiento()
     clases = len(intenciones)
 
     # 1) Validación: entrena sin el 20 % de los ejemplos y mide con ellos.
-    entrenamiento, prueba = preparar(intenciones, SEMILLA, 0.2)
-    red, _ = entrenar_red(entrenamiento, clases, SEMILLA)
-    prob = red.predecir(a_matriz([f for f, _ in prueba]))
-    acierto = float(np.mean(prob.argmax(axis=1) == np.array([c for _, c in prueba])))
-    if args.informe:
-        for (frase, clase), fila in zip(prueba, prob):
-            if fila.argmax() != clase:
-                print(f"  ✗ «{frase}» → {intenciones[fila.argmax()]['id']} (esperaba {intenciones[clase]['id']})")
+    acierto = 0.0
+    if not args.rapido:
+        entrenamiento, prueba = preparar(intenciones, SEMILLA, 0.2)
+        red, _ = entrenar_red(entrenamiento, clases, SEMILLA)
+        prob = red.predecir(a_matriz([f for f, _ in prueba]))
+        acierto = float(np.mean(prob.argmax(axis=1) == np.array([c for _, c in prueba])))
+        if args.informe:
+            for (frase, clase), fila in zip(prueba, prob):
+                if fila.argmax() != clase:
+                    print(f"  ✗ «{frase}» → {intenciones[fila.argmax()]['id']} (esperaba {intenciones[clase]['id']})")
 
     # 2) Modelo final: entrena con todos los ejemplos.
     todos, _ = preparar(intenciones, SEMILLA, 0.0)
@@ -298,6 +301,9 @@ def main(argv: list[str] | None = None) -> int:
             "b2": [round(float(v), 5) for v in red.p["b2"]],
         },
         "chilenismos": chilenismos(),
+        # Huellas de las preguntas de entrenamiento: el panel las usa para
+        # separar las preguntas ya aprendidas de las que faltan por enseñar.
+        "huellas": sorted({format(fnv1a(normalizar(e)), "08x") for i in intenciones for e in i["ejemplos"]}),
         "informales": informales(),
         "intenciones": [exportar_intencion(i) for i in intenciones],
     }

@@ -3,7 +3,8 @@
 // Conteo anónimo de visitas para el panel privado (panel/).
 // Sin cookies ni datos personales: solo una sesión aleatoria por pestaña,
 // la página, el enlace pulsado, el sitio de procedencia, el tipo de
-// dispositivo y el idioma. Respeta "No rastrear" y no cuenta las visitas
+// dispositivo, el idioma, el tiempo en la página y cuánto se bajó en ella.
+// El servidor agrega la ubicación aproximada (ciudad y red) sin guardar la IP. Respeta "No rastrear" y no cuenta las visitas
 // del propio dueño (se marca al entrar al panel).
 
 (() => {
@@ -64,4 +65,30 @@
     },
     { capture: true },
   );
+
+  // Tiempo con la página visible y porcentaje máximo que se bajó en ella.
+  let visible = document.visibilityState === "visible" ? performance.now() : null;
+  let acumulado = 0;
+  let maximo = 0;
+  const medirScroll = () => {
+    const alto = document.documentElement.scrollHeight - window.innerHeight;
+    const porcentaje = alto > 0 ? Math.round((window.scrollY / alto) * 100) : 100;
+    if (porcentaje > maximo) maximo = Math.min(100, porcentaje);
+  };
+  medirScroll();
+  window.addEventListener("scroll", medirScroll, { passive: true });
+
+  let enviada = false;
+  const salir = () => {
+    if (visible !== null) acumulado += performance.now() - visible;
+    visible = null;
+    if (enviada) return;
+    enviada = true;
+    enviar({ tipo: "salida", duracion: Math.round(acumulado), scroll: maximo });
+  };
+  // En el teléfono «pagehide» no siempre llega: se envía al ocultar la pestaña.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") salir();
+  });
+  window.addEventListener("pagehide", salir);
 })();

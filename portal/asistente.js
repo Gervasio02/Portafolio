@@ -203,7 +203,14 @@
   /* ---------- aprendizaje (opt-out con «No rastrear») ---------- */
   function aprender(pregunta, prediccion, motivo) {
     if (!enProduccion || navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true) return;
+    let sesion = "";
+    try {
+      sesion = sessionStorage.getItem("visita-sesion") || "";
+    } catch {
+      /* sin almacenamiento */
+    }
     const cuerpo = JSON.stringify({
+      sesion,
       pregunta: pregunta.slice(0, 200),
       intencion: prediccion.intencion.id,
       confianza: Math.round(prediccion.probabilidad * 1000) / 1000,

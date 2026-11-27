@@ -14,6 +14,7 @@
     <title>Acceso privado</title>
     <link rel="stylesheet" href="../fuentes/fuentes.css" />
     <link rel="stylesheet" href="panel.css" />
+    <script src="../asistente/red.js" defer></script>
     <script src="panel.js" defer></script>
   </head>
   <body>
@@ -57,6 +58,8 @@
         <article><span>Visitas 7 días</span><strong id="t-7d">–</strong><small id="t-7d-ses">–</small></article>
         <article><span>Visitas del período</span><strong id="t-periodo">–</strong><small id="t-periodo-ses">–</small></article>
         <article><span>Clics del período</span><strong id="t-clics">–</strong><small>en enlaces y botones</small></article>
+        <article><span>Tiempo medio por visita</span><strong id="t-duracion">–</strong><small id="t-paginas-sesion">–</small></article>
+        <article><span>Rebote</span><strong id="t-rebote">–</strong><small>visitas que vieron una sola página</small></article>
       </section>
 
       <section class="bloque" aria-labelledby="h-dias">
@@ -95,12 +98,48 @@
         </section>
       </div>
 
+      <div class="columnas">
+        <section class="bloque" aria-labelledby="h-lugares">
+          <h2 id="h-lugares">Desde dónde se conectan</h2>
+          <h3 class="sub">Países</h3>
+          <ul id="paises" class="barras"></ul>
+          <h3 class="sub">Ciudades</h3>
+          <ul id="lugares" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-redes">
+          <h2 id="h-redes">Red u organización</h2>
+          <p class="suave">Proveedor de internet, empresa o institución desde la que navegan. No identifica personas.</p>
+          <ul id="redes" class="barras"></ul>
+        </section>
+        <section class="bloque" aria-labelledby="h-entradas">
+          <h2 id="h-entradas">Por dónde entran y salen</h2>
+          <h3 class="sub">Página de entrada</h3>
+          <ul id="entradas" class="barras"></ul>
+          <h3 class="sub">Última página vista</h3>
+          <ul id="salidas" class="barras"></ul>
+        </section>
+      </div>
+
+      <section class="bloque" aria-labelledby="h-atencion">
+        <h2 id="h-atencion">Atención por página</h2>
+        <table>
+          <thead><tr><th>Página</th><th>Vistas</th><th>Tiempo medio</th><th>Bajó en promedio</th></tr></thead>
+          <tbody id="atencion"></tbody>
+        </table>
+      </section>
+
+      <section class="bloque" aria-labelledby="h-recorridos">
+        <h2 id="h-recorridos">Recorrido de cada visita</h2>
+        <p class="suave">Las 40 visitas más recientes, paso a paso. Pulsa una para ver su navegación exacta.</p>
+        <div id="recorridos" class="recorridos"></div>
+      </section>
+
       <section class="bloque" aria-labelledby="h-asistente">
         <h2 id="h-asistente">Asistente: preguntas para enseñarle</h2>
         <p class="suave" id="asistente-resumen">–</p>
         <div class="columnas">
           <div>
-            <h3 class="sub">Las más repetidas</h3>
+            <h3 class="sub">Por enseñar: las más repetidas</h3>
             <ul id="asistente-frecuentes" class="barras"></ul>
           </div>
           <div>
@@ -110,10 +149,19 @@
               y guarda en <code>main</code>: GitHub Actions reentrena la red y la publica sola.</p>
           </div>
         </div>
+        <h3 class="sub">Por enseñar</h3>
         <table>
           <thead><tr><th>Hora</th><th>Pregunta</th><th>La red pensó</th><th>Seguridad</th><th>Motivo</th></tr></thead>
           <tbody id="asistente-recientes"></tbody>
         </table>
+        <details class="aprendidas">
+          <summary>Ya aprendidas <span id="aprendidas-total">(0)</span></summary>
+          <p class="suave">Preguntas que ya están como ejemplo en el entrenamiento actual de la red.</p>
+          <table>
+            <thead><tr><th>Hora</th><th>Pregunta</th><th>Motivo original</th></tr></thead>
+            <tbody id="asistente-aprendidas"></tbody>
+          </table>
+        </details>
       </section>
 
       <section class="bloque" aria-labelledby="h-vivo">
@@ -123,7 +171,7 @@
           <tbody id="recientes"></tbody>
         </table>
       </section>
-      <p class="suave nota">Datos anónimos: sin cookies, IP ni datos personales. Se conservan 180 días.</p>
+      <p class="suave nota">Datos anónimos: sin cookies ni datos personales. La IP no se guarda: solo la ciudad aproximada y la red de origen. Se conservan 180 días.</p>
     </div>
   </body>
 </html>

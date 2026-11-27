@@ -169,3 +169,36 @@ def test_si_postgres_no_responde_usa_sqlite(tmp_path, monkeypatch):
     cliente = TestClient(create_app(str(tmp_path / "a.db"), targets={"demo": "http://x"}))
     assert cliente.post("/api/visitas", content=evento(), headers=ORIGEN).status_code == 204
     assert cliente.get("/api/panel/resumen", headers=autorizado()).json()["totales"]["vistas_hoy"] == 1
+
+
+def test_recorrido_detallado_con_ubicacion_y_salidas(client, monkeypatch):
+    from app import geo
+
+    monkeypatch.setattr(geo, "ubicar", lambda ip: {"pais": "Chile", "region": "O'Higgins", "ciudad": "Rancagua", "red": "Universidad Ejemplo"})
+    s = "sesion-recorrido-1"
+    client.post("/api/visitas", content=evento(sesion=s, ruta="/"), headers=ORIGEN)
+    client.post("/api/visitas", content=evento(sesion=s, tipo="clic", destino="https://gervasio.sbs/taskflow/", etiqueta="Ver ficha"), headers=ORIGEN)
+    client.post("/api/visitas", content=evento(sesion=s, tipo="salida", ruta="/", duracion=42000, scroll=80), headers=ORIGEN)
+    client.post("/api/visitas", content=evento(sesion=s, ruta="/taskflow/"), headers=ORIGEN)
+    client.post("/api/asistente/preguntas", content=json.dumps({"pregunta": "¿sabes go?", "motivo": "sin_respuesta", "sesion": s}), headers=ORIGEN)
+
+    datos = client.get("/api/panel/resumen", headers=autorizado()).json()
+    recorrido = datos["sesiones"][0]
+    assert recorrido["lugar"] == "Rancagua, O'Higgins, Chile"
+    assert recorrido["red"] == "Universidad Ejemplo"
+    assert recorrido["paginas"] == 2 and recorrido["clics"] == 1 and recorrido["preguntas"] == 1
+    assert [p["tipo"] for p in recorrido["pasos"]] == ["vista", "clic", "salida", "vista"]
+    assert recorrido["pasos"][2]["segundos"] == 42 and recorrido["pasos"][2]["scroll"] == 80
+    assert datos["comportamiento"]["paginas"][0] == {"ruta": "/", "vistas": 1, "segundos": 42, "scroll": 80}
+    assert datos["comportamiento"]["entradas"] == [["/", 1]]
+    assert datos["ubicacion"]["redes"] == [["Universidad Ejemplo", 1]]
+    assert datos["totales"]["vistas_hoy"] == 2
+
+
+def test_la_ubicacion_no_guarda_la_ip(monkeypatch):
+    from app import geo
+
+    monkeypatch.setattr(geo, "consultar", lambda ip: {"status": "success", "country": "Chile", "regionName": "RM", "city": "Santiago", "org": "Empresa X"})
+    monkeypatch.setenv("ANALITICA_GEO", "on")
+    assert geo.ubicar("8.8.8.8") == {"pais": "Chile", "region": "RM", "ciudad": "Santiago", "red": "Empresa X"}
+    assert geo.ubicar("192.168.0.10") == {"pais": "", "region": "", "ciudad": "", "red": ""}

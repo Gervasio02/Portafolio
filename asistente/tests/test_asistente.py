@@ -74,6 +74,13 @@ def intenciones():
 
 
 @pytest.fixture(scope="module")
+def modelo_exportado(tmp_path_factory):
+    salida = tmp_path_factory.mktemp("modelo") / "modelo.json"
+    entrenar.main(["--salida", str(salida), "--rapido"])
+    return salida
+
+
+@pytest.fixture(scope="module")
 def red(intenciones):
     pares, _ = entrenar.preparar(intenciones, entrenar.SEMILLA, 0.0)
     modelo, _ = entrenar.entrenar_red(pares, len(intenciones), entrenar.SEMILLA)
@@ -143,10 +150,12 @@ def test_paridad_con_javascript():
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="requiere Node.js")
-def test_modelo_exportado_responde_igual_en_javascript(tmp_path):
-    salida = tmp_path / "modelo.json"
-    entrenar.main(["--salida", str(salida)])
+def test_modelo_exportado_responde_igual_en_javascript(modelo_exportado):
+    salida = modelo_exportado
     modelo = json.loads(salida.read_text(encoding="utf-8"))
+    from caracteristicas import fnv1a
+
+    assert format(fnv1a(normalizar("¿qué tecnologías usas?")), "08x") in modelo["huellas"]
     assert modelo["metricas"]["exactitud_entrenamiento"] > 0.95
     script = (
         "const r = require(process.argv[1]);"
@@ -179,9 +188,8 @@ def test_exporta_botones_formales_y_registro_informal():
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="requiere Node.js")
-def test_detecta_tono_informal_en_javascript(tmp_path):
-    salida = tmp_path / "modelo.json"
-    entrenar.main(["--salida", str(salida)])
+def test_detecta_tono_informal_en_javascript(modelo_exportado):
+    salida = modelo_exportado
     script = (
         "const r = require(process.argv[1]); const red = r.crear(require(process.argv[2]));"
         "const t = JSON.parse(process.argv[3]); console.log(JSON.stringify(t.map(x => red.esInformal(x))));"

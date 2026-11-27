@@ -363,3 +363,79 @@ th:not(:first-child) {
   border: 1px solid var(--borde);
   border-radius: 6px;
 }
+
+.recorridos {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.recorrido {
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--fondo);
+}
+
+.recorrido summary {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.recorrido summary strong,
+.recorrido summary span,
+.recorrido summary small {
+  display: block;
+}
+
+.recorrido summary strong {
+  display: inline;
+}
+
+.recorrido summary span,
+.recorrido summary small {
+  margin-top: 0.15rem;
+  color: var(--suave);
+  font-size: 0.82rem;
+}
+
+.recorrido ol {
+  margin: 0;
+  padding: 0 0.9rem 0.8rem 2.2rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.recorrido li time {
+  display: inline-block;
+  min-width: 4.8rem;
+  color: var(--suave);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.recorrido .paso-vista span {
+  color: var(--texto);
+}
+
+.recorrido .paso-clic span {
+  color: #c084fc;
+}
+
+.recorrido .paso-salida span {
+  color: var(--suave);
+}
+
+.aprendidas {
+  margin-top: 1rem;
+}
+
+.aprendidas summary {
+  cursor: pointer;
+  color: var(--ok);
+  font-weight: 600;
+}
+
+#t-duracion {
+  font-size: 1.5rem;
+}
